@@ -1,0 +1,24 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  margin: 0;
+  box-sizing: border-box;
+}
+
+@layer components {
+  .input {
+    @apply outline-none border border-gray-300 px-4 py-2 my-2 text-awblack text-sm;
+  }
+  .input-error {
+    @apply text-xs mb-2 text-right text-red-500;
+    font-family: cursive;
+  }
+  .button {
+    @apply bg-awblack text-transparent px-4 py-2 text-xs relative font-bold bg-gradient-to-r from-red-500 to-green-500 bg-clip-text border border-gray-300 rounded-lg;
+  }
+  .spinner {
+    @apply w-5 h-5 border-2 border-gray-50 border-b-0 rounded-full animate-spin absolute top-1.5 left-7;
+  }
+}
