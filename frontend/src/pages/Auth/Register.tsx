@@ -7,7 +7,6 @@ import { TResponse } from "../../misc/types";
 import { setAlert, setUser } from "../../redux/slices/global";
 
 type TInfo = {
-  name: string;
   email: string;
   password: string;
   confirmPassword: string;
@@ -15,7 +14,6 @@ type TInfo = {
 
 function Register() {
   const [info, setInfo] = useState<TInfo>({
-    name: "",
     email: "",
     password: "",
     confirmPassword: "",
@@ -33,8 +31,6 @@ function Register() {
   const onRegister = useCallback(() => {
     if (!loading) {
       const errors = {} as TInfo;
-      if (info.name.trim().length === 0)
-        errors.name = "Name must not be empty!";
       if (info.email.trim().length === 0)
         errors.email = "Email must not be empty!";
       if (info.password.trim().length < 4)
@@ -46,7 +42,7 @@ function Register() {
         cAxios.post<TResponse>("/auth/register", info).then(({ data }) => {
           if (data.status === "SUCCESS") {
             dispatch(setUser(data.data));
-            navigate("/home");
+            navigate("/home/user/edit");
           } else {
             dispatch(setAlert({ state: "ERROR", message: data.message }));
           }
@@ -59,16 +55,6 @@ function Register() {
 
   return (
     <div className="flex flex-col w-[400px]">
-      <input
-        type={"text"}
-        placeholder="Name"
-        className={`input ${classNames({ "border-red-500": errors.name })}`}
-        autoFocus
-        name="name"
-        value={info.name}
-        onChange={onChange}
-      />
-      {errors.name && <span className="input-error">{errors.name}</span>}
       <input
         type={"email"}
         placeholder="Email"

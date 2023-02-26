@@ -1,11 +1,12 @@
-import { BeforeInsert, Column, Entity } from "typeorm";
+import { BeforeInsert, Column, Entity, ManyToOne } from "typeorm";
 import bcrypt from "bcryptjs";
 
 import Base from "./Base";
+import File from "./File";
 
 @Entity("user")
 export default class User extends Base {
-  @Column()
+  @Column({ nullable: true })
   name: string;
 
   @Column()
@@ -13,6 +14,15 @@ export default class User extends Base {
 
   @Column()
   password: string;
+
+  @ManyToOne(() => File)
+  avatar: File;
+
+  @Column({ nullable: true })
+  birthDate: Date;
+
+  @Column({ nullable: true })
+  description: string;
 
   @BeforeInsert()
   async hashPassword() {

@@ -24,8 +24,8 @@ router.get("/", isAuth, async (req: TAuthRequest, res) => {
 
 router.post("/register", isNotAuth, async (req, res) => {
   try {
-    const { name, email, password } = req.body;
-    const user = await User.create({ name, email, password }).save();
+    const { email, password } = req.body;
+    const user = await User.create({ email, password }).save();
 
     res.cookie(COOKIE_NAME, getToken({ id: user.id }));
     return res.json(

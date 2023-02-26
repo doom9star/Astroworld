@@ -15,8 +15,8 @@ export default (req: TAuthRequest, res: Response, next: NextFunction) => {
     ) as TPayload;
     req.user = payload;
     next();
-  } catch (error) {
-    console.error(error);
+  } catch (error: any) {
+    console.error(error.message);
     return res.json(getResponse("ERROR", "User is not authenticated!"));
   }
 };

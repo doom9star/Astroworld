@@ -1,5 +1,4 @@
 import classNames from "classnames";
-import React from "react";
 
 type Props = {
   size: "small" | "medium" | "large";
