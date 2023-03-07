@@ -6,6 +6,7 @@ import File from "../entities/File";
 import uploadBuffer from "../utils/uploadBuffer";
 import initORM from "../misc/typeorm";
 import { v2 } from "cloudinary";
+import { EFileType } from "../misc/types";
 
 const main = async () => {
   dotenv.config({ path: path.join(__dirname, "../../.env") });
@@ -23,16 +24,17 @@ const main = async () => {
     if (fs.lstatSync(opath).isDirectory()) {
       for (const fpath of fs.readdirSync(opath)) {
         const file = fs.readFileSync(path.join(opath, fpath));
-        const res = await uploadBuffer(file, fpath.split(".")[0]);
+        const res = await uploadBuffer(file, fpath.split(".")[0] + ".avatar");
 
         if (res) {
           let file = await File.findOne({
-            where: { cid: fpath.split(".")[0] },
+            where: { cid: fpath.split(".")[0] + ".avatar" },
           });
           if (!file) {
             file = new File();
             file.url = res.secure_url;
             file.cid = res.public_id;
+            file.type = EFileType.IMAGE;
           }
           await file.save();
 

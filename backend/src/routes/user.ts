@@ -1,8 +1,9 @@
 import { Router } from "express";
+import { Like } from "typeorm";
 import File from "../entities/File";
 import User from "../entities/User";
 import isAuth from "../middlewares/isAuth";
-import { EFileType, TAuthRequest } from "../misc/types";
+import { TAuthRequest } from "../misc/types";
 import getResponse from "../utils/getResponse";
 
 const router = Router();
@@ -10,7 +11,7 @@ const router = Router();
 router.get("/avatar", isAuth, async (_, res) => {
   try {
     const avatars = await File.find({
-      where: { type: EFileType.AVATAR },
+      where: { cid: Like(`%avatar%`) },
       select: { id: true, url: true, cid: true },
     });
     return res.json(

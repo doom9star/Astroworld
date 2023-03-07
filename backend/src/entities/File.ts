@@ -10,6 +10,6 @@ export default class File extends Base {
   @Column()
   cid: string;
 
-  @Column({ type: "enum", enum: EFileType, default: EFileType.AVATAR })
+  @Column({ type: "enum", enum: EFileType, default: EFileType.FILE })
   type: EFileType;
 }

@@ -1,8 +1,11 @@
-import { BeforeInsert, Column, Entity, ManyToOne } from "typeorm";
+import { BeforeInsert, Column, Entity, ManyToOne, OneToMany } from "typeorm";
 import bcrypt from "bcryptjs";
 
 import Base from "./Base";
 import File from "./File";
+import { EGender } from "../misc/types";
+import Land from "./Land";
+import Conversation from "./Conversation";
 
 @Entity("user")
 export default class User extends Base {
@@ -21,8 +24,24 @@ export default class User extends Base {
   @Column({ nullable: true })
   birthDate: Date;
 
+  @Column({
+    type: "enum",
+    enum: EGender,
+    default: EGender.NONE,
+  })
+  gender: EGender;
+
   @Column({ nullable: true })
   description: string;
+
+  @Column()
+  coins: number;
+
+  @OneToMany(() => Land, (land) => land.owner)
+  lands: Land[];
+
+  @ManyToOne(() => Conversation, (conversation) => conversation.participants)
+  conversation: Conversation;
 
   @BeforeInsert()
   async hashPassword() {

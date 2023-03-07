@@ -66,7 +66,7 @@ export default function Edit() {
     description: "",
   });
   const [avatars, setAvatars] = useState<IFile[]>([]);
-  const [errors, setErrors] = useState<TInfo>({} as TInfo);
+  const [errors] = useState<TInfo>({} as TInfo);
   const [displayAvatar, setDisplayAvatar] = useState(false);
 
   const { loading } = useGlobalState();
@@ -100,7 +100,7 @@ export default function Edit() {
       )}
       <div className="self-center relative">
         <img
-          src={info.avatar.url ? info.avatar.url : "/images/noImg.png"}
+          src={info.avatar?.url ? info.avatar.url : "/images/noImg.png"}
           alt="User-Avatar"
           className="w-24 h-24 cursor-pointer rounded-full border border-gray-200 p-1 hover:opacity-70"
           onClick={() => setDisplayAvatar(true)}
