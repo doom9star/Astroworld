@@ -3,7 +3,6 @@ import { useCallback, useEffect, useState } from "react";
 import Spinner from "../../../components/Spinner";
 import { cAxios } from "../../../misc/constants";
 import { TResponse } from "../../../misc/types";
-import { setGlobalLoading, useGlobalState } from "../../../redux/slices/global";
 import { IFile } from "../../../redux/types";
 
 type AvatarPickerProps = {
@@ -67,17 +66,16 @@ export default function Edit() {
   });
   const [avatars, setAvatars] = useState<IFile[]>([]);
   const [errors] = useState<TInfo>({} as TInfo);
+  const [loading, setLoading] = useState(false);
   const [displayAvatar, setDisplayAvatar] = useState(false);
 
-  const { loading } = useGlobalState();
-
   useEffect(() => {
-    setGlobalLoading(true);
+    setLoading(true);
     cAxios.get<TResponse>("/user/avatar").then((res) => {
       if (res.data.status === "SUCCESS") {
         setAvatars(res.data.data);
         setInfo((prev) => ({ ...prev, avatar: res.data.data[0] }));
-        setGlobalLoading(false);
+        setLoading(false);
       }
     });
   }, []);

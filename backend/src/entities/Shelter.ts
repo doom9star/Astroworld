@@ -1,5 +1,6 @@
 import { Column, Entity, JoinColumn, OneToOne } from "typeorm";
 import Base from "./Base";
+import Conversation from "./Conversation";
 import Land from "./Land";
 
 @Entity("shelter")
@@ -19,7 +20,11 @@ export default class Shelter extends Base {
   @Column()
   locked: Boolean;
 
-  @OneToOne(() => Land)
+  @OneToOne(() => Land, { onDelete: "CASCADE" })
   @JoinColumn()
   land: Land;
+
+  @OneToOne(() => Conversation)
+  @JoinColumn()
+  conversation: Conversation;
 }

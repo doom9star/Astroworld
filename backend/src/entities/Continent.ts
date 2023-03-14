@@ -11,12 +11,12 @@ export default class Continent extends Base {
   @Column()
   area: number;
 
-  @Column("point")
+  @Column()
   position: string;
 
-  @ManyToOne(() => World, (world) => world.continents)
+  @ManyToOne(() => World, (world) => world.continents, { onDelete: "CASCADE" })
   world: World;
 
-  @OneToMany(() => Land, (land) => land.continent)
+  @OneToMany(() => Land, (land) => land.continent, { cascade: true })
   lands: Land[];
 }

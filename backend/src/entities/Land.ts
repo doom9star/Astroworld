@@ -12,7 +12,7 @@ export default class Land extends Base {
   @Column()
   cost: number;
 
-  @Column("point")
+  @Column()
   position: string;
 
   @Column({
@@ -25,6 +25,8 @@ export default class Land extends Base {
   @ManyToOne(() => User, (user) => user.lands)
   owner: User;
 
-  @ManyToOne(() => Continent, (continent) => continent.lands)
+  @ManyToOne(() => Continent, (continent) => continent.lands, {
+    onDelete: "CASCADE",
+  })
   continent: Continent;
 }
