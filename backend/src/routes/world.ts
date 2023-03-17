@@ -11,7 +11,7 @@ const router = Router();
 router.post("/", isAuth, async (_, res) => {
   const world = new World();
   world.name = "oasis";
-  world.area = 50 * 9 * 9;
+  world.area = 250 * 25 * 9;
   world.thumbnail = new File();
   world.thumbnail.url = "/images/oasis.png";
   world.thumbnail.cid = "world-oasis";
@@ -26,15 +26,15 @@ router.post("/", isAuth, async (_, res) => {
     for (let j = 0; j < 3; j++) {
       const continent = new Continent();
       continent.name = names[i][j];
-      continent.area = 50 * 9;
+      continent.area = 250 * 25;
       continent.position = `${i} ${j}`;
 
       continent.lands = [];
-      for (let k = 0; k < 3; k++) {
-        for (let l = 0; l < 3; l++) {
+      for (let k = 0; k < 5; k++) {
+        for (let l = 0; l < 5; l++) {
           const land = new Land();
-          land.area = 50;
-          land.cost = 250;
+          land.area = 250;
+          land.cost = 500;
           land.position = `${k} ${l}`;
           continent.lands.push(land);
         }
