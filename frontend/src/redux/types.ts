@@ -18,6 +18,7 @@ export interface IUser extends ICommon {
   name: string;
   email: string;
   avatar: IFile;
+  coins: number;
   birthDate: string;
   description: string;
 }

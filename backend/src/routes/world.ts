@@ -59,6 +59,7 @@ router.get("/:id", isAuth, async (req, res) => {
   const world = await World.findOne({
     where: { id: req.params.id },
     relations: ["thumbnail", "continents", "continents.lands"],
+    order: { continents: { position: "ASC", lands: { position: "ASC" } } },
   });
   return res.json(
     getResponse("SUCCESS", "World retrieved successfully!", world)

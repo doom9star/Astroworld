@@ -42,18 +42,25 @@ function Navbar() {
               <span style={{ fontSize: "0.6rem" }}>
                 {user.name || user.email}
               </span>
-              <Link to={"/home/user/edit"}>
-                <button
-                  type={"button"}
-                  className={`button py-1 mt-1 w-14 ${classNames({
-                    "opacity-60": loading,
-                  })}`}
-                  style={{ fontSize: "0.6rem" }}
-                >
-                  {loading && <div className="spinner" />}
-                  Edit
-                </button>
-              </Link>
+              <div className="flex items-center">
+                <Link to={"/home/user/edit"}>
+                  <button
+                    type={"button"}
+                    className={`button py-1 mt-1 w-14 ${classNames({
+                      "opacity-60": loading,
+                    })}`}
+                    style={{ fontSize: "0.6rem" }}
+                  >
+                    {loading && <div className="spinner" />}
+                    Edit
+                  </button>
+                </Link>
+                <div className="text-xs ml-3 flex items-center">
+                  <div className="w-3 h-3 rounded-full bg-yellow-500" />
+                  &nbsp;
+                  <span>{user.coins}</span>
+                </div>
+              </div>
             </div>
             <button
               type={"button"}
