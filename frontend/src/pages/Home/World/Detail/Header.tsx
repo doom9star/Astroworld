@@ -30,36 +30,42 @@ function Header({ header, toLand }: Props) {
         <img
           src={world?.thumbnail.url}
           alt="Oasis"
-          className="w-20 rounded-full"
+          className="w-24 rounded-full"
         />
-        <span
-          className="text-4xl font-mono"
-          style={{
-            WebkitTextStrokeWidth: "1.5px",
-            WebkitTextFillColor: "transparent",
-          }}
-        >
-          {world?.name}
-        </span>
-        <span className="text-xs">
-          &nbsp;&nbsp;{`(${world?.area.toLocaleString()})`}
-        </span>
+        <div className="flex flex-col items-center">
+          <span
+            className="text-4xl font-mono"
+            style={{
+              WebkitTextStrokeWidth: "1.5px",
+              WebkitTextFillColor: "transparent",
+            }}
+          >
+            {world?.name}
+          </span>
+          <span className="text-xs">
+            &nbsp;&nbsp;{`(${world?.area.toLocaleString()})`}
+          </span>
+        </div>
       </div>
       <div className="flex flex-col items-center ml-8">
         <span className="text-lg font-mono">{header.cname.toUpperCase()}</span>
-        <p className="text-sm">
+        <div className="text-sm flex">
           c:&nbsp;&nbsp;
           {scl ? (
             <input
               type={"text"}
               className="w-16 mr-4 p-1 text-xs outline-none border border-gray-300"
               placeholder="eg: 1 1"
+              autoFocus
               name="c"
               value={s.c}
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
                   setSCL(false);
                   toLand(`${s.c} ${s.l}`);
+                  setS({ c: "", l: "" });
+                } else if (e.key === "Escape") {
+                  setSCL(false);
                   setS({ c: "", l: "" });
                 }
               }}
@@ -74,7 +80,7 @@ function Header({ header, toLand }: Props) {
           {scl ? (
             <input
               type={"text"}
-              className="w-16 p-1 text-xs outline-none border border-gray-300"
+              className="w-16 mr-4 p-1 text-xs outline-none border border-gray-300"
               placeholder="eg: 1 1"
               name="l"
               value={s.l}
@@ -82,6 +88,9 @@ function Header({ header, toLand }: Props) {
                 if (e.key === "Enter") {
                   setSCL(false);
                   toLand(`${s.c} ${s.l}`);
+                  setS({ c: "", l: "" });
+                } else if (e.key === "Escape") {
+                  setSCL(false);
                   setS({ c: "", l: "" });
                 }
               }}
@@ -92,7 +101,7 @@ function Header({ header, toLand }: Props) {
               {`(${header.lpos})`}
             </span>
           )}
-        </p>
+        </div>
       </div>
     </div>
   );

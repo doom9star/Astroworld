@@ -23,3 +23,29 @@ body {
     @apply w-5 h-5 border-2 border-gray-50 border-b-0 rounded-full animate-spin absolute top-1.5 left-7;
   }
 }
+
+.slideLeft {
+  animation: slideLeft 300ms ease-in;
+}
+
+.slideRight {
+  animation: slideRight 300ms ease-in;
+}
+
+@keyframes slideLeft {
+  from {
+    right: -30%;
+  }
+  to {
+    right: 0%;
+  }
+}
+
+@keyframes slideRight {
+  from {
+    right: 0%;
+  }
+  to {
+    right: -30%;
+  }
+}

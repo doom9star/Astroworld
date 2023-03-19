@@ -32,11 +32,8 @@ function Home() {
   return (
     <div className="flex ml-40">
       {worlds.map((w) => (
-        <Link to={"/home/world/" + w.id}>
-          <div
-            key={w.id}
-            className="flex text-xs flex-col items-center capitalize font-mono font-bold"
-          >
+        <Link to={"/home/world/" + w.id} key={w.id}>
+          <div className="flex text-xs flex-col items-center capitalize font-mono font-bold">
             <img src={w.thumbnail.url} alt={w.thumbnail.cid} className="w-52" />
             <span
               style={{
