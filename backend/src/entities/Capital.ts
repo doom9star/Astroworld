@@ -4,16 +4,16 @@ import Conversation from "./Conversation";
 import File from "./File";
 import Land from "./Land";
 
-@Entity("shelter")
-export default class Shelter extends Base {
-  @Column()
-  name: string;
-
+@Entity("capital")
+export default class Capital extends Base {
   @Column()
   area: number;
 
   @Column()
   locked: boolean;
+
+  @Column()
+  operating: boolean;
 
   @OneToOne(() => File, { cascade: true })
   @JoinColumn()

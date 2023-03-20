@@ -26,6 +26,14 @@ export interface IUser extends ICommon {
 export enum ELandType {
   NONE = "0",
   SHELTER = "1",
+  CAPITAL = "2",
+}
+
+export interface ICapital extends ICommon {
+  area: number;
+  locked: boolean;
+  operating: boolean;
+  thumbnail: IFile;
 }
 
 export interface ILand extends ICommon {
@@ -34,6 +42,9 @@ export interface ILand extends ICommon {
   position: string;
   type: ELandType;
   owner: IUser;
+  capital: ICapital | null;
+  available: boolean;
+  thumbnail: IFile;
 }
 
 export interface IContinent extends ICommon {

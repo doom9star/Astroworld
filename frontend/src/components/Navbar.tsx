@@ -39,9 +39,7 @@ function Navbar() {
               className="w-14 rounded-full border border-gray-200 p-1"
             />
             <div className="flex flex-col mr-4 ml-2">
-              <span style={{ fontSize: "0.6rem" }}>
-                {user.name || user.email}
-              </span>
+              <span style={{ fontSize: "0.6rem" }}>{user.email}</span>
               <div className="flex items-center">
                 <Link to={"/home/user/edit"}>
                   <button

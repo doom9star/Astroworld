@@ -13,6 +13,7 @@ export enum EFileType {
 export enum ELandType {
   NONE = "0",
   SHELTER = "1",
+  CAPITAL = "2",
 }
 
 export enum EGender {

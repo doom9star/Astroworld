@@ -4,7 +4,8 @@ import { useParams } from "react-router-dom";
 import Spinner from "../../../../components/Spinner";
 import { cAxios } from "../../../../misc/constants";
 import { TResponse } from "../../../../misc/types";
-import { setWorld } from "../../../../redux/slices/world";
+import { setWorld, useWorldState } from "../../../../redux/slices/world";
+import { IContinent, ILand } from "../../../../redux/types";
 import Footer from "./Footer";
 import Header from "./Header";
 import Map from "./Map";
@@ -13,8 +14,12 @@ export type THeader = {
   cname: string;
   cpos: string;
   lpos: string;
-  lcost: number;
 };
+
+export type TSelected = {
+  land: ILand;
+  continent: IContinent;
+} | null;
 
 function Detail() {
   const [loading, setLoading] = useState(true);
@@ -22,28 +27,38 @@ function Detail() {
     cname: "",
     cpos: "",
     lpos: "",
-    lcost: 0,
   });
+  const [selected, setSelected] = useState<TSelected>(null);
 
   const dispatch = useDispatch();
+  const { world } = useWorldState();
   const params = useParams();
 
-  const toLand = useCallback((position: string) => {
-    const land = document.getElementById(position);
-    if (land) {
-      land.scrollIntoView({
-        block: "center",
-        inline: "center",
-        behavior: "smooth",
-      });
-      setHeader({
-        cname: land.dataset.continent as string,
-        cpos: position.substring(0, 3),
-        lpos: position.substring(4),
-        lcost: parseInt(land.dataset.lcost!),
-      });
-    }
-  }, []);
+  const toLand = useCallback(
+    (position: string) => {
+      const landBox = document.getElementById(position);
+      if (landBox) {
+        landBox.scrollIntoView({
+          block: "center",
+          inline: "center",
+          behavior: "smooth",
+        });
+        const cpos = position.substring(0, 3);
+        const lpos = position.substring(4);
+        const continent = world!.continents.find((c) => c.position === cpos)!;
+        setHeader({
+          cname: continent.name,
+          cpos: position.substring(0, 3),
+          lpos: position.substring(4),
+        });
+        if (selected) {
+          const land = continent.lands.find((l) => l.position === lpos)!;
+          setSelected({ continent, land });
+        }
+      }
+    },
+    [selected, world]
+  );
 
   useEffect(() => {
     setLoading(true);
@@ -66,7 +81,12 @@ function Detail() {
   return (
     <div>
       <Header header={header} toLand={toLand} />
-      <Map setHeader={setHeader} toLand={toLand} />
+      <Map
+        setHeader={setHeader}
+        toLand={toLand}
+        selected={selected}
+        setSelected={setSelected}
+      />
       <Footer />
     </div>
   );

@@ -1,25 +1,23 @@
 import classNames from "classnames";
-import { useEffect, useState } from "react";
-import { THeader } from "../";
+import { useEffect } from "react";
+import { THeader, TSelected } from "../";
 import { useWorldState } from "../../../../../redux/slices/world";
-import { IContinent, ILand } from "../../../../../redux/types";
+import { ELandType } from "../../../../../redux/types";
 import LandDetail from "./LandDetail";
 
 type Props = {
   setHeader: React.Dispatch<React.SetStateAction<THeader>>;
   toLand: (position: string) => void;
+  selected: TSelected;
+  setSelected: React.Dispatch<React.SetStateAction<TSelected>>;
 };
 
-function Map({ setHeader, toLand }: Props) {
+function Map({ setHeader, toLand, selected, setSelected }: Props) {
   const { world } = useWorldState();
-  const [landDetail, setLandDetail] = useState<{
-    land: ILand;
-    continent: IContinent;
-  } | null>(null);
 
   useEffect(() => {
     toLand("1 1 2 2");
-  }, [toLand]);
+  }, []);
 
   return (
     <div
@@ -32,11 +30,8 @@ function Map({ setHeader, toLand }: Props) {
         position: "relative",
       }}
     >
-      {landDetail && (
-        <LandDetail
-          landDetail={landDetail}
-          onClose={() => setLandDetail(null)}
-        />
+      {selected && (
+        <LandDetail selected={selected} onClose={() => setSelected(null)} />
       )}
       {world?.continents.map((c, i) => {
         return (
@@ -51,16 +46,14 @@ function Map({ setHeader, toLand }: Props) {
               <div
                 id={`${c.position} ${l.position}`}
                 key={`${c.position} ${l.position}`}
-                data-continent={c.name}
-                data-lcost={l.cost}
                 className={
-                  "w-[250px] h-[250px] border border-gray-300 cursor-pointer hover:bg-gray-100 " +
+                  "w-[250px] h-[250px] relative border border-gray-200 cursor-pointer hover:bg-gray-100 " +
                   classNames({
                     "border-t-0 mt-10": i < 3 && j < 5,
                     "border-l-0 ml-10": i % 3 === 0 && j % 5 === 0,
                     "border-b-0 mb-10": i > 5 && j > 19,
                     "border-r-0 mr-10": (i + 1) % 3 === 0 && (j + 1) % 5 === 0,
-                    "bg-gray-100": landDetail?.land.id === l.id,
+                    "bg-gray-100": selected?.land.id === l.id,
                   })
                 }
                 onMouseEnter={() =>
@@ -68,14 +61,28 @@ function Map({ setHeader, toLand }: Props) {
                     cname: c.name,
                     cpos: c.position,
                     lpos: l.position,
-                    lcost: l.cost,
                   })
                 }
                 onClick={() => {
                   toLand(`${c.position} ${l.position}`);
-                  setLandDetail({ land: l, continent: c });
+                  setSelected({ land: l, continent: c });
                 }}
-              ></div>
+              >
+                {l.type === ELandType.CAPITAL && (
+                  <>
+                    <img
+                      src={l.thumbnail.url}
+                      alt="Decoration"
+                      className="opacity-80"
+                    />
+                    <img
+                      src={l.capital?.thumbnail.url}
+                      alt="Capital"
+                      className="absolute top-8 z-10"
+                    />
+                  </>
+                )}
+              </div>
             ))}
           </div>
         );

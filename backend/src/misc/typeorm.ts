@@ -1,4 +1,5 @@
 import { DataSource } from "typeorm";
+import Capital from "../entities/Capital";
 import Continent from "../entities/Continent";
 import Conversation from "../entities/Conversation";
 import File from "../entities/File";
@@ -23,6 +24,7 @@ export default function initORM() {
       Continent,
       Land,
       Shelter,
+      Capital,
       Conversation,
       Message,
     ],
