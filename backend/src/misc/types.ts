@@ -14,6 +14,7 @@ export enum ELandType {
   NONE = "0",
   SHELTER = "1",
   CAPITAL = "2",
+  DECORATION = "3",
 }
 
 export enum EGender {

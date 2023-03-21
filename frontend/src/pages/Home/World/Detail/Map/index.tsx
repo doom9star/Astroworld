@@ -1,8 +1,7 @@
 import classNames from "classnames";
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { THeader, TSelected } from "../";
 import { useWorldState } from "../../../../../redux/slices/world";
-import { ELandType } from "../../../../../redux/types";
 import LandDetail from "./LandDetail";
 
 type Props = {
@@ -13,10 +12,13 @@ type Props = {
 };
 
 function Map({ setHeader, toLand, selected, setSelected }: Props) {
+  const [zoom, setZoom] = useState(250);
+
   const { world } = useWorldState();
+  const toLandRef = useRef(toLand);
 
   useEffect(() => {
-    toLand("1 1 2 2");
+    toLandRef.current("1 1 2 2");
   }, []);
 
   return (
@@ -30,10 +32,32 @@ function Map({ setHeader, toLand, selected, setSelected }: Props) {
         position: "relative",
       }}
     >
+      <div className="fixed top-[23%] right-[10%] z-10">
+        <button
+          type={"button"}
+          className={`button p-1 w-8 mr-2 ${classNames({
+            "opacity-60": zoom >= 250,
+          })}`}
+          disabled={zoom >= 250}
+          onClick={() => setZoom(zoom + 30)}
+        >
+          {false && <div className="spinner" />}+
+        </button>
+        <button
+          type={"button"}
+          className={`button p-1 w-8 ${classNames({
+            "opacity-60": zoom <= 150,
+          })}`}
+          onClick={() => setZoom(zoom - 30)}
+          disabled={zoom <= 150}
+        >
+          {false && <div className="spinner" />}-
+        </button>
+      </div>
       {selected && (
         <LandDetail selected={selected} onClose={() => setSelected(null)} />
       )}
-      {world?.continents.map((c, i) => {
+      {world?.continents.map((c) => {
         return (
           <div
             key={c.id}
@@ -42,20 +66,25 @@ function Map({ setHeader, toLand, selected, setSelected }: Props) {
               gridTemplateColumns: "repeat(5, 1fr)",
             }}
           >
-            {c.lands.map((l, j) => (
+            {c.lands.map((l) => (
               <div
                 id={`${c.position} ${l.position}`}
                 key={`${c.position} ${l.position}`}
                 className={
-                  "w-[250px] h-[250px] relative border border-gray-200 cursor-pointer hover:bg-gray-100 " +
+                  `relative cursor-pointer hover:bg-gray-100 ` +
                   classNames({
-                    "border-t-0 mt-10": i < 3 && j < 5,
-                    "border-l-0 ml-10": i % 3 === 0 && j % 5 === 0,
-                    "border-b-0 mb-10": i > 5 && j > 19,
-                    "border-r-0 mr-10": (i + 1) % 3 === 0 && (j + 1) % 5 === 0,
+                    //   "border-t-0 mt-10": i < 3 && j < 5,
+                    //   "border-l-0 ml-10": i % 3 === 0 && j % 5 === 0,
+                    //   "border-b-0 mb-10": i > 5 && j > 19,
+                    //   "border-r-0 mr-10": (i + 1) % 3 === 0 && (j + 1) % 5 === 0,
                     "bg-gray-100": selected?.land.id === l.id,
                   })
                 }
+                style={{
+                  width: `${zoom}px`,
+                  height: `${zoom}px`,
+                  transition: "all 1s",
+                }}
                 onMouseEnter={() =>
                   setHeader({
                     cname: c.name,
@@ -68,19 +97,19 @@ function Map({ setHeader, toLand, selected, setSelected }: Props) {
                   setSelected({ land: l, continent: c });
                 }}
               >
-                {l.type === ELandType.CAPITAL && (
-                  <>
-                    <img
-                      src={l.thumbnail.url}
-                      alt="Decoration"
-                      className="opacity-80"
-                    />
-                    <img
-                      src={l.capital?.thumbnail.url}
-                      alt="Capital"
-                      className="absolute top-8 z-10"
-                    />
-                  </>
+                {l.thumbnail && (
+                  <img
+                    src={l.thumbnail.url}
+                    alt="Decoration"
+                    className="w-full h-full"
+                  />
+                )}
+                {l.capital && (
+                  <img
+                    src={l.capital?.thumbnail.url}
+                    alt="Capital"
+                    className="pt-8"
+                  />
                 )}
               </div>
             ))}

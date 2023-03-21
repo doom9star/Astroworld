@@ -7,9 +7,6 @@ import Land from "./Land";
 @Entity("capital")
 export default class Capital extends Base {
   @Column()
-  area: number;
-
-  @Column()
   locked: boolean;
 
   @Column()

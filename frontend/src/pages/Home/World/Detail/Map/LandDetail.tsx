@@ -2,7 +2,8 @@ import classNames from "classnames";
 import { useRef } from "react";
 import { Link } from "react-router-dom";
 import { TSelected } from "..";
-import { useWorldState } from "../../../../../redux/slices/world";
+import { useGlobalState } from "../../../../../redux/slices/global";
+import { ELandType } from "../../../../../redux/types";
 
 type Props = {
   selected: Exclude<TSelected, null>;
@@ -10,8 +11,8 @@ type Props = {
 };
 
 function LandDetail({ onClose, selected }: Props) {
-  const { world } = useWorldState();
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const { user } = useGlobalState();
   return (
     <div
       ref={containerRef}
@@ -53,11 +54,11 @@ function LandDetail({ onClose, selected }: Props) {
         </div>
         {selected.land.available && (
           <div className="flex justify-between my-2 text-xs">
-            <span>cost</span>
+            <span>value</span>
             <span className="text-xs font-bold flex items-center">
               <span className="w-3 h-3 rounded-full bg-yellow-500" />
               &nbsp;
-              {selected.land.cost}
+              {selected.land.value}
             </span>
           </div>
         )}
@@ -93,32 +94,37 @@ function LandDetail({ onClose, selected }: Props) {
         )}
       </div>
       <div className="mt-4 flex justify-center">
-        <Link to={"#"}>
-          <button
-            type={"button"}
-            className={`button p-1 mr-4 w-14 ${classNames({
-              "opacity-60": false,
-            })}`}
-            style={{ fontSize: "0.6rem" }}
-          >
-            {false && <div className="spinner" />}
-            Visit
-          </button>
-        </Link>
-        {selected.land.available && (
+        {![ELandType.NONE, ELandType.DECORATION].includes(
+          selected.land.type
+        ) && (
           <Link to={"#"}>
             <button
               type={"button"}
-              className={`button p-1 w-14 ${classNames({
+              className={`button p-1 mr-4 w-14 ${classNames({
                 "opacity-60": false,
               })}`}
               style={{ fontSize: "0.6rem" }}
             >
               {false && <div className="spinner" />}
-              Buy
+              Visit
             </button>
           </Link>
         )}
+        {selected.land.available &&
+          user?.email !== selected.land.owner.email && (
+            <Link to={"#"}>
+              <button
+                type={"button"}
+                className={`button p-1 w-14 ${classNames({
+                  "opacity-60": false,
+                })}`}
+                style={{ fontSize: "0.6rem" }}
+              >
+                {false && <div className="spinner" />}
+                Buy
+              </button>
+            </Link>
+          )}
       </div>
     </div>
   );

@@ -27,6 +27,7 @@ export enum ELandType {
   NONE = "0",
   SHELTER = "1",
   CAPITAL = "2",
+  DECORATION = "3",
 }
 
 export interface ICapital extends ICommon {
@@ -38,7 +39,7 @@ export interface ICapital extends ICommon {
 
 export interface ILand extends ICommon {
   area: number;
-  cost: number;
+  value: number;
   position: string;
   type: ELandType;
   owner: IUser;

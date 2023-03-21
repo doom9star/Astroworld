@@ -12,7 +12,7 @@ export default class Land extends Base {
   area: number;
 
   @Column()
-  cost: number;
+  value: number;
 
   @Column()
   position: string;
