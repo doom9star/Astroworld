@@ -10,7 +10,7 @@ type Props = {
 function Logo(props: Props) {
   const { user } = useGlobalState();
   return (
-    <Link to={user ? "/home" : "/"}>
+    <Link to={user ? "/home/world" : "/"}>
       <div
         className={` ${classNames({
           [props.className || ""]: props.className,

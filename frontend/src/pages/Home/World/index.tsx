@@ -1,12 +1,15 @@
-import { Route, Routes } from "react-router-dom";
-import Detail from "./Detail";
+import { Route } from "react-router-dom";
+import { CRouter } from "../../../components/Route";
+import DetailRouter from "./Detail";
+import World from "./World";
 
-export default function World() {
+function WorldRouter() {
   return (
-    <div className="flex flex-col items-center">
-      <Routes>
-        <Route path=":id" element={<Detail />} />
-      </Routes>
-    </div>
+    <CRouter redirect="/home/world">
+      <Route path="" element={<World />} />
+      <Route path=":wid/*" element={<DetailRouter />} />
+    </CRouter>
   );
 }
+
+export default WorldRouter;

@@ -1,18 +1,19 @@
 import classNames from "classnames";
 import { useRef } from "react";
-import { Link } from "react-router-dom";
-import { TSelected } from "..";
-import { useGlobalState } from "../../../../../redux/slices/global";
-import { ELandType } from "../../../../../redux/types";
+import { Link, useLocation } from "react-router-dom";
+import { TSelected } from "./Detail";
+import { useGlobalState } from "../../../../redux/slices/global";
+import { ELandType } from "../../../../redux/types";
 
 type Props = {
   selected: Exclude<TSelected, null>;
   onClose: () => void;
 };
 
-function LandDetail({ onClose, selected }: Props) {
+function Info({ onClose, selected }: Props) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const { user } = useGlobalState();
+  const { pathname } = useLocation();
   return (
     <div
       ref={containerRef}
@@ -97,7 +98,7 @@ function LandDetail({ onClose, selected }: Props) {
         {![ELandType.NONE, ELandType.DECORATION].includes(
           selected.land.type
         ) && (
-          <Link to={"#"}>
+          <Link to={`${pathname}/${selected.land.id}`}>
             <button
               type={"button"}
               className={`button p-1 mr-4 w-14 ${classNames({
@@ -130,4 +131,4 @@ function LandDetail({ onClose, selected }: Props) {
   );
 }
 
-export default LandDetail;
+export default Info;

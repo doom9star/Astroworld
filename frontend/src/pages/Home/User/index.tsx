@@ -1,12 +1,11 @@
-import { Route, Routes } from "react-router-dom";
+import { Route } from "react-router-dom";
+import { CRouter } from "../../../components/Route";
 import Edit from "./Edit";
 
-export default function User() {
+export default function UserRouter() {
   return (
-    <div className="flex flex-col items-center">
-      <Routes>
-        <Route path="edit" element={<Edit />} />
-      </Routes>
-    </div>
+    <CRouter redirect="/home/world">
+      <Route path="edit" element={<Edit />} />
+    </CRouter>
   );
 }

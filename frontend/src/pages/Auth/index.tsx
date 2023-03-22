@@ -1,11 +1,12 @@
 import { useEffect } from "react";
-import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
+import { Route, useLocation, useNavigate } from "react-router-dom";
 
+import Logo from "../../components/Logo";
+import { CRouter } from "../../components/Route";
 import Login from "./Login";
 import Register from "./Register";
-import Logo from "../../components/Logo";
 
-function Auth() {
+function AuthRouter() {
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -18,12 +19,12 @@ function Auth() {
   return (
     <div className="flex flex-col items-center my-10">
       <Logo className="w-40" />
-      <Routes>
+      <CRouter>
         <Route path="register" element={<Register />} />
         <Route path="login" element={<Login />} />
-      </Routes>
+      </CRouter>
     </div>
   );
 }
 
-export default Auth;
+export default AuthRouter;

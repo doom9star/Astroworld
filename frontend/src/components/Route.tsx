@@ -1,5 +1,5 @@
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { ReactNode, useEffect } from "react";
+import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
 import { useGlobalState } from "../redux/slices/global";
 import Navbar from "./Navbar";
 
@@ -32,10 +32,27 @@ export function PublicRoute({ component }: Props) {
 
   useEffect(() => {
     if (user) {
-      navigate("/home");
+      navigate("/home/world");
     }
   }, [user, navigate]);
 
   if (user) return null;
   return component;
+}
+
+type RouterProps = {
+  children: ReactNode;
+  redirect?: string;
+};
+
+export function CRouter({ children, redirect }: RouterProps) {
+  return (
+    <Routes>
+      {children}
+      <Route
+        path="*"
+        element={<Navigate to={redirect ? redirect : "/"} replace />}
+      />
+    </Routes>
+  );
 }

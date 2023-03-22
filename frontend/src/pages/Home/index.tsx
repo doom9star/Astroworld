@@ -1,17 +1,14 @@
-import { Route, Routes } from "react-router-dom";
-import Home from "./Home";
-import User from "./User";
-import World from "./World";
+import { Route } from "react-router-dom";
+import { CRouter } from "../../components/Route";
+import UserRouter from "./User";
+import WorldRouter from "./World";
 
 function HomeRouter() {
   return (
-    <div>
-      <Routes>
-        <Route path="" element={<Home />} />
-        <Route path="user/*" element={<User />} />
-        <Route path="world/*" element={<World />} />
-      </Routes>
-    </div>
+    <CRouter redirect="/home/world">
+      <Route path="user/*" element={<UserRouter />} />
+      <Route path="world/*" element={<WorldRouter />} />
+    </CRouter>
   );
 }
 

@@ -1,12 +1,12 @@
 import { useEffect } from "react";
-import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { useDispatch } from "react-redux";
+import { BrowserRouter, Route } from "react-router-dom";
 import Alert from "./components/Alert";
-import { PrivateRoute, PublicRoute } from "./components/Route";
+import { CRouter, PrivateRoute, PublicRoute } from "./components/Route";
 import Spinner from "./components/Spinner";
 import { cAxios } from "./misc/constants";
 import { TResponse } from "./misc/types";
-import Auth from "./pages/Auth";
+import AuthRouter from "./pages/Auth";
 import HomeRouter from "./pages/Home";
 import Landing from "./pages/Landing";
 import {
@@ -33,20 +33,20 @@ function App() {
   }
 
   return (
-    <div>
-      <BrowserRouter>
-        <Alert />
-        <Routes>
-          <Route path="/" element={<Landing />} />
-          <Route path="auth/*" element={<PublicRoute component={<Auth />} />} />
-          <Route
-            path="home/*"
-            element={<PrivateRoute component={<HomeRouter />} />}
-          />
-          <Route path="*" element={<Navigate to={"/"} replace />} />
-        </Routes>
-      </BrowserRouter>
-    </div>
+    <BrowserRouter>
+      <Alert />
+      <CRouter>
+        <Route path="/" element={<Landing />} />
+        <Route
+          path="auth/*"
+          element={<PublicRoute component={<AuthRouter />} />}
+        />
+        <Route
+          path="home/*"
+          element={<PrivateRoute component={<HomeRouter />} />}
+        />
+      </CRouter>
+    </BrowserRouter>
   );
 }
 

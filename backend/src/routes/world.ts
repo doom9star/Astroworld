@@ -131,14 +131,16 @@ router.get("/:id", isAuth, async (req, res) => {
     ],
     order: { continents: { position: "ASC", lands: { position: "ASC" } } },
   })) as World;
-  const land = world.continents[4].lands.find(
-    (l) => l.position === "2 2"
-  ) as Land;
-  const capital = await Capital.findOne({
-    where: { land: { id: land.id } },
-    relations: ["thumbnail"],
-  });
-  land.capital = capital;
+  if (world) {
+    const land = world.continents[4].lands.find(
+      (l) => l.position === "2 2"
+    ) as Land;
+    const capital = await Capital.findOne({
+      where: { land: { id: land.id } },
+      relations: ["thumbnail"],
+    });
+    land.capital = capital;
+  }
   return res.json(
     getResponse("SUCCESS", "World retrieved successfully!", world)
   );

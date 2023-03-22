@@ -46,6 +46,7 @@ export interface ILand extends ICommon {
   capital: ICapital | null;
   available: boolean;
   thumbnail: IFile;
+  continent: IContinent;
 }
 
 export interface IContinent extends ICommon {

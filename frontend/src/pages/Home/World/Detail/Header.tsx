@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { THeader } from ".";
+import { THeader } from "./Detail";
 import { useWorldState } from "../../../../redux/slices/world";
 
 type Props = {

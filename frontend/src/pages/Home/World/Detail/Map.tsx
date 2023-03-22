@@ -1,8 +1,8 @@
 import classNames from "classnames";
 import { useEffect, useRef, useState } from "react";
-import { THeader, TSelected } from "../";
-import { useWorldState } from "../../../../../redux/slices/world";
-import LandDetail from "./LandDetail";
+import { useWorldState } from "../../../../redux/slices/world";
+import { THeader, TSelected } from "./Detail";
+import LandDetail from "./Info";
 
 type Props = {
   setHeader: React.Dispatch<React.SetStateAction<THeader>>;
@@ -106,7 +106,7 @@ function Map({ setHeader, toLand, selected, setSelected }: Props) {
                 )}
                 {l.capital && (
                   <img
-                    src={l.capital?.thumbnail.url}
+                    src={l.capital.thumbnail.url}
                     alt="Capital"
                     className="pt-8"
                   />

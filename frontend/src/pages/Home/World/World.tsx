@@ -1,16 +1,17 @@
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { Link } from "react-router-dom";
-import Spinner from "../../components/Spinner";
-import { cAxios } from "../../misc/constants";
-import { TResponse } from "../../misc/types";
-import { setWorlds, useWorldState } from "../../redux/slices/world";
+import { Link, useLocation } from "react-router-dom";
+import Spinner from "../../../components/Spinner";
+import { cAxios } from "../../../misc/constants";
+import { TResponse } from "../../../misc/types";
+import { setWorlds, useWorldState } from "../../../redux/slices/world";
 
-function Home() {
+function World() {
   const [loading, setLoading] = useState(true);
 
   const { worlds } = useWorldState();
   const dispatch = useDispatch();
+  const { pathname } = useLocation();
 
   useEffect(() => {
     setLoading(true);
@@ -32,7 +33,7 @@ function Home() {
   return (
     <div className="flex ml-40">
       {worlds.map((w) => (
-        <Link to={"/home/world/" + w.id} key={w.id}>
+        <Link to={`${pathname}/${w.id}`} key={w.id}>
           <div className="flex text-xs flex-col items-center capitalize font-mono font-bold">
             <img src={w.thumbnail.url} alt={w.thumbnail.cid} className="w-52" />
             <span
@@ -49,4 +50,4 @@ function Home() {
   );
 }
 
-export default Home;
+export default World;

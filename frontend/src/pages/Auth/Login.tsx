@@ -38,7 +38,7 @@ function Register() {
         cAxios.post<TResponse>("/auth/login", info).then(({ data }) => {
           if (data.status === "SUCCESS") {
             dispatch(setUser(data.data));
-            navigate("/home");
+            navigate("/home/world");
           } else {
             dispatch(setAlert({ state: "ERROR", message: data.message }));
           }
