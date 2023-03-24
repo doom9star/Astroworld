@@ -1,5 +1,6 @@
 import classNames from "classnames";
 import { useCallback, useEffect, useState } from "react";
+import Back from "../../../components/Back";
 import Spinner from "../../../components/Spinner";
 import { cAxios } from "../../../misc/constants";
 import { TResponse } from "../../../misc/types";
@@ -92,73 +93,78 @@ export default function Edit() {
   }
 
   return (
-    <div className="flex flex-col w-[400px]">
-      {displayAvatar && (
-        <div className="absolute top-0 left-0 w-[100vw] h-[100vh] z-10 bg-awblack opacity-10" />
-      )}
-      <div className="self-center relative">
-        <img
-          src={info.avatar?.url ? info.avatar.url : "/images/noImg.png"}
-          alt="User-Avatar"
-          className="w-24 h-24 cursor-pointer rounded-full border border-gray-200 p-1 hover:opacity-70"
-          onClick={() => setDisplayAvatar(true)}
-        />
+    <>
+      <div className="ml-80 inline-block">
+        <Back />
+      </div>
+      <div className="flex flex-col w-[400px] mx-auto overflow-y-scroll">
         {displayAvatar && (
-          <AvatarPicker
-            avatars={avatars}
-            onChoose={(avatar) => {
-              setInfo((prev) => ({ ...prev, avatar }));
-              setDisplayAvatar(false);
-            }}
-            onClose={() => setDisplayAvatar(false)}
-            selected={info.avatar}
-          />
+          <div className="absolute top-0 left-0 w-[100vw] h-[100vh] z-10 bg-awblack opacity-10" />
         )}
+        <div className="self-center relative">
+          <img
+            src={info.avatar?.url ? info.avatar.url : "/images/noImg.png"}
+            alt="User-Avatar"
+            className="w-24 h-24 cursor-pointer rounded-full border border-gray-200 p-1 hover:opacity-70"
+            onClick={() => setDisplayAvatar(true)}
+          />
+          {displayAvatar && (
+            <AvatarPicker
+              avatars={avatars}
+              onChoose={(avatar) => {
+                setInfo((prev) => ({ ...prev, avatar }));
+                setDisplayAvatar(false);
+              }}
+              onClose={() => setDisplayAvatar(false)}
+              selected={info.avatar}
+            />
+          )}
+        </div>
+        <input
+          type={"text"}
+          placeholder="Name"
+          className={`input ${classNames({
+            "border-red-500": errors.name,
+          })}`}
+          autoFocus
+          name="name"
+          value={info.name}
+          onChange={onChange}
+        />
+        {errors.name && <span className="input-error">{errors.name}</span>}
+        <input
+          type={"date"}
+          placeholder="Birth Date"
+          className={`input ${classNames({
+            "border-red-500": errors.birthDate,
+          })}`}
+          name="birthDate"
+          value={info.birthDate}
+          onChange={onChange}
+        />
+        {errors.birthDate && (
+          <span className="input-error">{errors.birthDate}</span>
+        )}
+        <textarea
+          placeholder="Something about yourself!"
+          className={`input ${classNames({
+            "border-red-500": errors.description,
+          })}`}
+          name="description"
+          value={info.description}
+          onChange={onChange}
+          rows={6}
+        ></textarea>
+        <div className="flex justify-between items-center my-4">
+          <button
+            type={"button"}
+            className={`button ${classNames({ "opacity-60": loading })}`}
+          >
+            {loading && <div className="spinner" />}
+            Save
+          </button>
+        </div>
       </div>
-      <input
-        type={"text"}
-        placeholder="Name"
-        className={`input ${classNames({
-          "border-red-500": errors.name,
-        })}`}
-        autoFocus
-        name="name"
-        value={info.name}
-        onChange={onChange}
-      />
-      {errors.name && <span className="input-error">{errors.name}</span>}
-      <input
-        type={"date"}
-        placeholder="Birth Date"
-        className={`input ${classNames({
-          "border-red-500": errors.birthDate,
-        })}`}
-        name="birthDate"
-        value={info.birthDate}
-        onChange={onChange}
-      />
-      {errors.birthDate && (
-        <span className="input-error">{errors.birthDate}</span>
-      )}
-      <textarea
-        placeholder="Something about yourself!"
-        className={`input ${classNames({
-          "border-red-500": errors.description,
-        })}`}
-        name="description"
-        value={info.description}
-        onChange={onChange}
-        rows={6}
-      ></textarea>
-      <div className="flex justify-between items-center my-4">
-        <button
-          type={"button"}
-          className={`button ${classNames({ "opacity-60": loading })}`}
-        >
-          {loading && <div className="spinner" />}
-          Save
-        </button>
-      </div>
-    </div>
+    </>
   );
 }

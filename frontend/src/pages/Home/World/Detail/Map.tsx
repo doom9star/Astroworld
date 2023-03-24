@@ -35,7 +35,7 @@ function Map({ setHeader, toLand, selected, setSelected }: Props) {
       <div className="fixed top-[23%] right-[10%] z-10">
         <button
           type={"button"}
-          className={`button p-1 w-8 mr-2 ${classNames({
+          className={`button px-1 py-0 w-8 mr-2 text-lg ${classNames({
             "opacity-60": zoom >= 250,
           })}`}
           disabled={zoom >= 250}
@@ -45,7 +45,7 @@ function Map({ setHeader, toLand, selected, setSelected }: Props) {
         </button>
         <button
           type={"button"}
-          className={`button p-1 w-8 ${classNames({
+          className={`button px-1 text-lg py-0 w-8 ${classNames({
             "opacity-60": zoom <= 150,
           })}`}
           onClick={() => setZoom(zoom - 30)}

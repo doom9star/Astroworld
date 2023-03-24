@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { THeader } from "./Detail";
 import { useWorldState } from "../../../../redux/slices/world";
+import { GrLocation } from "react-icons/gr";
 
 type Props = {
   header: THeader;
@@ -48,6 +49,7 @@ function Header({ header, toLand }: Props) {
         </div>
       </div>
       <div className="flex flex-col items-center ml-8">
+        <GrLocation />
         <span className="text-lg font-mono">{header.cname.toUpperCase()}</span>
         <div className="text-sm flex">
           c:&nbsp;&nbsp;

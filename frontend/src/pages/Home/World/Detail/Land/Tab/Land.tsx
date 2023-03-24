@@ -1,4 +1,8 @@
+import { BiCoin } from "react-icons/bi";
+import { FaPlaceOfWorship, FaUserTie } from "react-icons/fa";
+import { GrLocation } from "react-icons/gr";
 import { ILand } from "../../../../../../redux/types";
+import { AiOutlineCalendar } from "react-icons/ai";
 
 type Props = {
   land: ILand;
@@ -13,24 +17,35 @@ function TabLand({ land }: Props) {
           {land.capital ? `CAPITAL` : land.id}
         </span>
         <div className="w-[30vw]">
-          <div className="flex justify-between m-2">
-            <span>continent</span>
+          <div className="flex justify-between m-4">
+            <span className="flex items-center">
+              <FaPlaceOfWorship className="mr-2" /> continent
+            </span>
             <span>{land.continent.name}</span>
           </div>
-          <div className="flex justify-between m-2">
-            <span>position</span>
+          <div className="flex justify-between m-4">
+            <span className="flex items-center">
+              <GrLocation className="mr-2" /> position
+            </span>
             <span>{`(${land.continent.position}) (${land.position})`}</span>
           </div>
-          <div className="flex justify-between m-2">
-            <span>est</span>
+          <div className="flex justify-between m-4">
+            <span className="flex items-center">
+              <AiOutlineCalendar className="mr-2" /> est
+            </span>
             <span>{new Date(land.createdAt).toLocaleDateString()}</span>
           </div>
-          <div className="flex justify-between m-2">
-            <span>admin</span>
+          <div className="flex justify-between m-4">
+            <span className="flex items-center">
+              <FaUserTie className="mr-2" /> admin
+            </span>
             <span>{land.owner.email}</span>
           </div>
-          <div className="flex justify-between m-2">
-            <span>value</span>
+          <div className="flex justify-between m-4">
+            <span className="flex items-center">
+              <BiCoin className="mr-2" />
+              value
+            </span>
             <span>{land.owner.coins}</span>
           </div>
         </div>

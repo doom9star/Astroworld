@@ -1,11 +1,11 @@
-import React, { Fragment, useCallback, useState } from "react";
-import Logo from "./Logo";
-import { setUser, useGlobalState } from "../redux/slices/global";
 import classNames from "classnames";
+import { Fragment, useCallback, useState } from "react";
+import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import { cAxios } from "../misc/constants";
 import { TResponse } from "../misc/types";
-import { useDispatch } from "react-redux";
+import { setUser, useGlobalState } from "../redux/slices/global";
+import Logo from "./Logo";
 
 function Navbar() {
   const [loading, setLoading] = useState(false);
@@ -44,12 +44,9 @@ function Navbar() {
                 <Link to={"/home/user/edit"}>
                   <button
                     type={"button"}
-                    className={`button py-1 mt-1 w-14 ${classNames({
-                      "opacity-60": loading,
-                    })}`}
+                    className={`button py-1 mt-1 w-14`}
                     style={{ fontSize: "0.6rem" }}
                   >
-                    {loading && <div className="spinner" />}
                     Edit
                   </button>
                 </Link>
