@@ -23,6 +23,28 @@ export interface IUser extends ICommon {
   description: string;
 }
 
+export enum EContractType {
+  NONE = "0",
+  PURCHASE = "1",
+}
+
+export enum EContractStatus {
+  PENDING = "0",
+  ACCEPTED = "1",
+  REJECTED = "2",
+}
+
+export interface IContract extends ICommon {
+  from: IUser;
+  to: IUser;
+  coins: number;
+  dueRate: number;
+  expiry: string;
+  info: string;
+  status: EContractStatus;
+  type: EContractType;
+}
+
 export enum ELandType {
   NONE = "0",
   SHELTER = "1",
@@ -47,6 +69,7 @@ export interface ILand extends ICommon {
   available: boolean;
   thumbnail: IFile;
   continent: IContinent;
+  contracts: IContract[];
 }
 
 export interface IContinent extends ICommon {

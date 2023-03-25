@@ -14,10 +14,12 @@ function Alert() {
   }
   return (
     <div
-      className={`flex items-center justify-between p-3 ${classNames({
-        "border border-awred bg-red-200": alert.state === "ERROR",
-        "border border-awgreen bg-green-200": alert.state === "SUCCESS",
-      })}`}
+      className={`flex absolute top-7 w-full z-50 items-center justify-between p-3 ${classNames(
+        {
+          "border border-awred bg-red-200": alert.state === "ERROR",
+          "border border-awgreen bg-green-200": alert.state === "SUCCESS",
+        }
+      )}`}
     >
       <div className="flex">
         <FaCannabis
@@ -26,7 +28,9 @@ function Alert() {
         <span className="text-xs ml-4 font-mono">{alert.message}</span>
       </div>
       <VscChromeClose
-        className={alert.state === "ERROR" ? "text-awred" : "text-awgreen"}
+        className={`cursor-pointer ${
+          alert.state === "ERROR" ? "text-awred" : "text-awgreen"
+        }`}
         onClick={() => dispatch(setAlert({ state: "IDLE", message: "" }))}
       />
     </div>

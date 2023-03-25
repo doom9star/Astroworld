@@ -1,8 +1,17 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from "typeorm";
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  JoinTable,
+  ManyToMany,
+  ManyToOne,
+  OneToOne,
+} from "typeorm";
 import { ELandType } from "../misc/types";
 import Base from "./Base";
 import Capital from "./Capital";
 import Continent from "./Continent";
+import Contract from "./Contract";
 import File from "./File";
 import User from "./User";
 
@@ -38,6 +47,10 @@ export default class Land extends Base {
     onDelete: "CASCADE",
   })
   continent: Continent;
+
+  @ManyToMany(() => Contract)
+  @JoinTable({ name: "land_contracts" })
+  contracts: Contract[];
 
   capital: Capital | null;
 }

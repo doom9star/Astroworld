@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import { useRef } from "react";
+import { useMemo, useRef } from "react";
 import { BiCoin } from "react-icons/bi";
 import { FaPlaceOfWorship, FaUserTie } from "react-icons/fa";
 import { GrLocation, GrStatusGood } from "react-icons/gr";
@@ -18,6 +18,11 @@ function Info({ onClose, selected }: Props) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const { user } = useGlobalState();
   const { pathname } = useLocation();
+
+  const hasContract = useMemo(() => {
+    return !!selected.land.contracts.find((c) => c.from.id === user?.id);
+  }, [selected, user]);
+
   return (
     <div
       ref={containerRef}
@@ -70,7 +75,7 @@ function Info({ onClose, selected }: Props) {
             <span className="text-xs font-bold flex items-center">
               <span className="w-3 h-3 rounded-full bg-yellow-500" />
               &nbsp;
-              {selected.land.value}
+              {selected.land.value.toLocaleString()}
             </span>
           </div>
         )}
@@ -133,8 +138,10 @@ function Info({ onClose, selected }: Props) {
           </Link>
         )}
         {selected.land.available &&
-          user?.email !== selected.land.owner.email && (
-            <Link to={"#"}>
+          user?.email !== selected.land.owner.email &&
+          user!.coins >= selected.land.value &&
+          !hasContract && (
+            <Link to={`${pathname}/${selected.land.id}/buy`}>
               <button
                 type={"button"}
                 className={`button p-1 w-14 ${classNames({
@@ -147,6 +154,20 @@ function Info({ onClose, selected }: Props) {
               </button>
             </Link>
           )}
+        {hasContract && (
+          <Link to={`${pathname}/${selected.land.id}/buy`}>
+            <button
+              type={"button"}
+              className={`button py-1 px-4 ${classNames({
+                "opacity-60": false,
+              })}`}
+              style={{ fontSize: "0.6rem" }}
+            >
+              {false && <div className="spinner" />}
+              View Contract
+            </button>
+          </Link>
+        )}
       </div>
     </div>
   );

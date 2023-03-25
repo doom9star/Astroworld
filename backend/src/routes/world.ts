@@ -5,7 +5,7 @@ import File from "../entities/File";
 import Land from "../entities/Land";
 import World from "../entities/World";
 import isAuth from "../middlewares/isAuth";
-import { ELandType, TAuthRequest } from "../misc/types";
+import { EContractStatus, ELandType, TAuthRequest } from "../misc/types";
 import getResponse from "../utils/getResponse";
 import { v4 } from "uuid";
 
@@ -22,14 +22,16 @@ router.post("/", isAuth, async (req: TAuthRequest, res) => {
   world.continents = [];
   let capital: Capital | null = null;
   const names = [
-    ["tokyo", "rio", "denver"],
-    ["helsinki", "bogota", "nairobi"],
-    ["oslo", "palermo", "berlin"],
+    ["tokyo|1000", "rio|16000", "denver|500"],
+    ["helsinki|8000", "bogota|32000", "nairobi|4000"],
+    ["oslo|250", "palermo|2000", "berlin|125"],
   ];
+
   for (let i = 0; i < 3; i++) {
     for (let j = 0; j < 3; j++) {
+      const [name, value] = names[i][j].split("|");
       const continent = new Continent();
-      continent.name = names[i][j];
+      continent.name = name;
       continent.area = 250 * 25;
       continent.position = `${i} ${j}`;
 
@@ -38,7 +40,7 @@ router.post("/", isAuth, async (req: TAuthRequest, res) => {
         for (let l = 0; l < 5; l++) {
           const land = new Land();
           land.area = 250;
-          land.value = 500;
+          land.value = parseInt(value);
           land.position = `${k} ${l}`;
           land.owner = <any>{ id: req.user?.id };
           land.available = true;
@@ -54,11 +56,6 @@ router.post("/", isAuth, async (req: TAuthRequest, res) => {
             capital.land = land;
             capital.land.type = ELandType.CAPITAL;
             capital.land.available = false;
-            capital.land.thumbnail = capital.land.thumbnail
-              ? capital.land.thumbnail
-              : new File();
-            capital.land.thumbnail.cid = `decoration-${v4()}`;
-            capital.land.thumbnail.url = "/images/decorations/leaves2.png";
           }
 
           continent.lands.push(land);
@@ -121,13 +118,18 @@ router.get("/", isAuth, async (req, res) => {
 
 router.get("/:id", isAuth, async (req, res) => {
   const world = (await World.findOne({
-    where: { id: req.params.id },
+    where: {
+      id: req.params.id,
+      continents: { lands: { contracts: { status: EContractStatus.PENDING } } },
+    },
     relations: [
       "thumbnail",
       "continents",
       "continents.lands",
       "continents.lands.owner",
       "continents.lands.thumbnail",
+      "continents.lands.contracts",
+      "continents.lands.contracts.from",
     ],
     order: { continents: { position: "ASC", lands: { position: "ASC" } } },
   })) as World;

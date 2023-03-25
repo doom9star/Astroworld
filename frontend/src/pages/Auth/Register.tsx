@@ -56,6 +56,7 @@ function Register() {
   return (
     <div className="flex flex-col w-[400px]">
       <input
+        autoFocus
         type={"email"}
         placeholder="Email"
         className={`input ${classNames({ "border-red-500": errors.email })}`}

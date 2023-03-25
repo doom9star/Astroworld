@@ -1,11 +1,13 @@
 import { DataSource } from "typeorm";
 import Capital from "../entities/Capital";
 import Continent from "../entities/Continent";
+import Contract from "../entities/Contract";
 import Conversation from "../entities/Conversation";
 import File from "../entities/File";
 import Land from "../entities/Land";
 import Message from "../entities/Message";
 import Shelter from "../entities/Shelter";
+import Transaction from "../entities/Transaction";
 import User from "../entities/User";
 import World from "../entities/World";
 
@@ -27,6 +29,8 @@ export default function initORM() {
       Capital,
       Conversation,
       Message,
+      Contract,
+      Transaction,
     ],
     synchronize: true,
     logging: true,

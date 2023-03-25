@@ -1,4 +1,4 @@
-import { BiCoin } from "react-icons/bi";
+import { BiCoin, BiCoinStack } from "react-icons/bi";
 import { FaPlaceOfWorship, FaUserTie } from "react-icons/fa";
 import { GrLocation } from "react-icons/gr";
 import { ILand } from "../../../../../../redux/types";
@@ -9,7 +9,6 @@ type Props = {
 };
 
 function TabLand({ land }: Props) {
-  console.log(land);
   return (
     <div className="py-10 flex justify-around items-center">
       <div className="text-xs flex flex-col items-center">
@@ -27,7 +26,7 @@ function TabLand({ land }: Props) {
             <span className="flex items-center">
               <GrLocation className="mr-2" /> position
             </span>
-            <span>{`(${land.continent.position}) (${land.position})`}</span>
+            <span>{`(${land.continent.position} ${land.position})`}</span>
           </div>
           <div className="flex justify-between m-4">
             <span className="flex items-center">
@@ -43,10 +42,17 @@ function TabLand({ land }: Props) {
           </div>
           <div className="flex justify-between m-4">
             <span className="flex items-center">
+              <BiCoinStack className="mr-2" />
+              reserve
+            </span>
+            <span>{land.owner.coins.toLocaleString()}</span>
+          </div>
+          <div className="flex justify-between m-4">
+            <span className="flex items-center">
               <BiCoin className="mr-2" />
               value
             </span>
-            <span>{land.owner.coins}</span>
+            <span>{land.value.toLocaleString()}</span>
           </div>
         </div>
       </div>

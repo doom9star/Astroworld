@@ -8,12 +8,13 @@ import path from "path";
 import "reflect-metadata";
 
 import initORM from "./misc/typeorm";
+import { TAuthRequest } from "./misc/types";
 import MainRouter from "./routes";
 
 const main = async () => {
   dotenv.config({ path: path.join(__dirname, "../.env") });
 
-  await initORM();
+  const db = await initORM();
 
   const app = express();
 
@@ -23,6 +24,10 @@ const main = async () => {
   app.use(morgan("dev"));
   app.use(cookieParser());
   app.use(bodyParser.json());
+  app.use((req: TAuthRequest, _, next) => {
+    req.db = db;
+    next();
+  });
   app.use("/", MainRouter);
 
   app.listen(process.env.PORT, () => {

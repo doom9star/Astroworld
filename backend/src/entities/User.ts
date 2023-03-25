@@ -34,7 +34,7 @@ export default class User extends Base {
   @Column({ nullable: true })
   description: string;
 
-  @Column()
+  @Column({ default: 100 })
   coins: number;
 
   @OneToMany(() => Land, (land) => land.owner)
