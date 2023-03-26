@@ -6,7 +6,7 @@ import { GrLocation, GrStatusGood } from "react-icons/gr";
 import { TiChartAreaOutline } from "react-icons/ti";
 import { Link, useLocation } from "react-router-dom";
 import { useGlobalState } from "../../../../redux/slices/global";
-import { ELandType } from "../../../../redux/types";
+import { EContractStatus, ELandType } from "../../../../redux/types";
 import { TSelected } from "./Detail";
 
 type Props = {
@@ -19,8 +19,11 @@ function Info({ onClose, selected }: Props) {
   const { user } = useGlobalState();
   const { pathname } = useLocation();
 
-  const hasContract = useMemo(() => {
-    return !!selected.land.contracts.find((c) => c.from.id === user?.id);
+  const pendingContract = useMemo(() => {
+    const contract = selected.land.contracts.find(
+      (c) => c.from.id === user?.id && c.status === EContractStatus.PENDING
+    );
+    return contract;
   }, [selected, user]);
 
   return (
@@ -140,7 +143,7 @@ function Info({ onClose, selected }: Props) {
         {selected.land.available &&
           user?.email !== selected.land.owner.email &&
           user!.coins >= selected.land.value &&
-          !hasContract && (
+          !pendingContract && (
             <Link to={`${pathname}/${selected.land.id}/buy`}>
               <button
                 type={"button"}
@@ -154,8 +157,8 @@ function Info({ onClose, selected }: Props) {
               </button>
             </Link>
           )}
-        {hasContract && (
-          <Link to={`${pathname}/${selected.land.id}/buy`}>
+        {pendingContract && (
+          <Link to={`${pathname}/contract/${pendingContract.id}`}>
             <button
               type={"button"}
               className={`button py-1 px-4 ${classNames({

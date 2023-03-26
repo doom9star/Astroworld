@@ -83,8 +83,6 @@ function Detail() {
     return null;
   }
 
-  console.log(world);
-
   return (
     <Fragment>
       <Header header={header} toLand={toLand} />

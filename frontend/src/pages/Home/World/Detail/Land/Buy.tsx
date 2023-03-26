@@ -88,81 +88,64 @@ function Buy() {
 
   return (
     <div>
-      <p className="flex items-center justify-center font-mono text-lg">
-        <TbWallpaper className="mr-2 text-2xl" /> PURCHASE CONTRACT
-      </p>
-      <p className="text-center text-sm">{params.lid}</p>
-      <div className="my-10 flex items-center justify-center">
-        <div className="w-[400px] mr-10">
-          <div className="flex items-center justify-between my-2">
-            <label htmlFor="buyer" className="text-xs">
-              Buyer
-            </label>
-            <input
-              type={"text"}
-              placeholder="Buyer"
-              className={`input opacity-80`}
-              id="buyer"
-              value={info.from}
-              readOnly
-            />
-          </div>
-          <div className="flex items-center justify-between my-2">
-            <label htmlFor="seller" className="text-xs">
-              Seller
-            </label>
-            <input
-              type={"text"}
-              placeholder="Seller"
-              className={`input opacity-80`}
-              id="seller"
-              value={info.to}
-              readOnly
-            />
-          </div>
-          <div className="flex items-center justify-between my-2">
-            <label htmlFor="coins" className="text-xs">
-              Coins
-            </label>
-            <input
-              type={"number"}
-              placeholder="Coins"
-              className={`input`}
-              name="coins"
-              value={info.coins}
-              onChange={onChange}
-              id="coins"
-            />
-          </div>
-          <div className="flex items-center justify-between my-2">
-            <label htmlFor="expiry" className="text-xs">
-              Expiry
-            </label>
-            <input
-              type={"date"}
-              placeholder="Expiry"
-              className={`input`}
-              name="expiry"
-              onChange={onChange}
-              id="expiry"
-            />
-          </div>
-          <div className="flex items-center justify-between my-2">
-            <label htmlFor="info" className="text-xs">
-              Additional Information
-            </label>
-            <textarea
-              placeholder="Additional Information"
-              className={`input`}
-              name="info"
-              value={info.info}
-              onChange={onChange}
-              id="info"
-              rows={4}
-            ></textarea>
-          </div>
+      <div className="w-[500px] mx-auto border p-8">
+        <p className="flex items-center justify-center font-mono text-lg">
+          <TbWallpaper className="mr-2 text-2xl" /> PURCHASE CONTRACT
+        </p>
+        <p className="text-center text-sm mb-10">{params.lid}</p>
+        <div className="flex items-center justify-between my-2">
+          <label htmlFor="buyer" className="text-xs">
+            Buyer
+          </label>
+          <input
+            type={"text"}
+            placeholder="Buyer"
+            className={`input opacity-80`}
+            id="buyer"
+            value={info.from}
+            readOnly
+          />
         </div>
-
+        <div className="flex items-center justify-between my-2">
+          <label htmlFor="seller" className="text-xs">
+            Seller
+          </label>
+          <input
+            type={"text"}
+            placeholder="Seller"
+            className={`input opacity-80`}
+            id="seller"
+            value={info.to}
+            readOnly
+          />
+        </div>
+        <div className="flex items-center justify-between my-2">
+          <label htmlFor="coins" className="text-xs">
+            Coins
+          </label>
+          <input
+            type={"number"}
+            placeholder="Coins"
+            className={`input`}
+            name="coins"
+            value={info.coins}
+            onChange={onChange}
+            id="coins"
+          />
+        </div>
+        <div className="flex items-center justify-between my-2">
+          <label htmlFor="expiry" className="text-xs">
+            Expiry
+          </label>
+          <input
+            type={"date"}
+            placeholder="Expiry"
+            className={`input`}
+            name="expiry"
+            onChange={onChange}
+            id="expiry"
+          />
+        </div>
         <div className="mt-4 flex justify-center">
           <button
             type={"button"}

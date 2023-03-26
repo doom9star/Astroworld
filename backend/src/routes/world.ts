@@ -120,7 +120,6 @@ router.get("/:id", isAuth, async (req, res) => {
   const world = (await World.findOne({
     where: {
       id: req.params.id,
-      continents: { lands: { contracts: { status: EContractStatus.PENDING } } },
     },
     relations: [
       "thumbnail",

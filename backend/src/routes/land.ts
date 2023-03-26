@@ -29,7 +29,7 @@ router.post("/:id/contract", isAuth, async (req: TAuthRequest, res) => {
   contract.to = req.body.to;
   contract.coins = req.body.coins;
   contract.expiry = req.body.expiry;
-  contract.info = req.body.info;
+  contract.info = `land|${req.params.id}`;
   contract.type = EContractType.PURCHASE;
   await contract.save();
 
