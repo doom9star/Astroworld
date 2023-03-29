@@ -4,13 +4,18 @@ import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import { cAxios } from "../misc/constants";
 import { TResponse } from "../misc/types";
-import { setUser, useGlobalState } from "../redux/slices/global";
+import {
+  setNotification,
+  setUser,
+  useGlobalState,
+} from "../redux/slices/global";
+import { IoMdNotificationsOutline } from "react-icons/io";
 import Logo from "./Logo";
 
 function Navbar() {
   const [loading, setLoading] = useState(false);
 
-  const { user } = useGlobalState();
+  const { user, notification } = useGlobalState();
   const dispatch = useDispatch();
 
   const logout = useCallback(() => {
@@ -33,6 +38,12 @@ function Navbar() {
         <Logo className="w-28" />
         {user ? (
           <div className="flex items-center">
+            <button
+              className="button px-2 hover:opacity-70 mr-4"
+              onClick={() => dispatch(setNotification(!notification))}
+            >
+              <IoMdNotificationsOutline className="text-lg " />
+            </button>
             <img
               src="/images/noImg.png"
               alt="User-Avatar"
@@ -44,7 +55,7 @@ function Navbar() {
                 <Link to={"/home/user/edit"}>
                   <button
                     type={"button"}
-                    className={`button py-1 mt-1 w-14`}
+                    className={`trans-button py-1 mt-1 w-14`}
                     style={{ fontSize: "0.6rem" }}
                   >
                     Edit
@@ -59,7 +70,9 @@ function Navbar() {
             </div>
             <button
               type={"button"}
-              className={`button ${classNames({ "opacity-60": loading })}`}
+              className={`trans-button ${classNames({
+                "opacity-60": loading,
+              })}`}
               onClick={logout}
             >
               {loading && <div className="spinner" />}
@@ -71,7 +84,7 @@ function Navbar() {
             <Link to={"/auth/login"}>
               <button
                 type={"button"}
-                className={`button mr-2 ${classNames({
+                className={`trans-button mr-2 ${classNames({
                   "opacity-60": loading,
                 })}`}
               >
@@ -82,7 +95,9 @@ function Navbar() {
             <Link to={"/auth/register"}>
               <button
                 type={"button"}
-                className={`button ${classNames({ "opacity-60": loading })}`}
+                className={`trans-button ${classNames({
+                  "opacity-60": loading,
+                })}`}
               >
                 {loading && <div className="spinner" />}
                 Register

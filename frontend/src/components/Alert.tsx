@@ -14,7 +14,7 @@ function Alert() {
   }
   return (
     <div
-      className={`flex absolute top-7 w-full z-50 items-center justify-between p-3 ${classNames(
+      className={`flex fixed top-0 w-full items-center justify-between p-3 ${classNames(
         {
           "border border-awred bg-red-200": alert.state === "ERROR",
           "border border-awgreen bg-green-200": alert.state === "SUCCESS",

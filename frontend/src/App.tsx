@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { BrowserRouter, Route } from "react-router-dom";
 import Alert from "./components/Alert";
+import Notification from "./components/Notification";
 import { CRouter, PrivateRoute, PublicRoute } from "./components/Route";
 import Spinner from "./components/Spinner";
 import { cAxios } from "./misc/constants";
@@ -35,6 +36,7 @@ function App() {
   return (
     <BrowserRouter>
       <Alert />
+      <Notification />
       <CRouter>
         <Route path="/" element={<Landing />} />
         <Route

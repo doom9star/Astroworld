@@ -123,7 +123,10 @@ function Contract() {
           }}
         >
           <div className="flex flex-col items-start">
-            <span className="font-bold">{contract.from.email}</span>
+            <span className="font-bold">
+              {contract.from.email}
+              &nbsp;{" (Buyer)"}
+            </span>
             <span className="mb-2">{`(${new Date(
               contract.createdAt
             ).toLocaleDateString()})`}</span>
@@ -132,7 +135,10 @@ function Contract() {
             </span>
           </div>
           <div className="flex flex-col items-end">
-            <span className="font-bold">{contract.to.email}</span>
+            <span className="font-bold">
+              {contract.to.email}
+              &nbsp;{" (Seller)"}
+            </span>
             {contract.status === EContractStatus.ACCEPTED && (
               <>
                 <span className="mb-2">{`(${new Date(

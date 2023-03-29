@@ -29,7 +29,7 @@ function Info({ onClose, selected }: Props) {
   return (
     <div
       ref={containerRef}
-      className="slideLeft flex flex-col border fixed right-0 top-[23%] z-50 shadow-lg bg-white w-[30%] h-[70%] p-4 font-mono"
+      className="slideLeft flex flex-col border fixed right-0 top-[23%] shadow-lg bg-white w-[30%] h-[70%] p-4 font-mono"
     >
       <span
         className="border border-gray-200 text-gray-500 self-end cursor-pointer px-2 py-1 text-xs rounded-full"
@@ -37,7 +37,7 @@ function Info({ onClose, selected }: Props) {
           containerRef.current!.classList.add("slideRight");
           setTimeout(() => {
             onClose();
-          }, 290);
+          }, 250);
         }}
       >
         x
@@ -130,7 +130,7 @@ function Info({ onClose, selected }: Props) {
           <Link to={`${pathname}/${selected.land.id}`}>
             <button
               type={"button"}
-              className={`button p-1 mr-4 w-14 ${classNames({
+              className={`trans-button p-1 mr-4 w-14 ${classNames({
                 "opacity-60": false,
               })}`}
               style={{ fontSize: "0.6rem" }}
@@ -147,7 +147,7 @@ function Info({ onClose, selected }: Props) {
             <Link to={`${pathname}/${selected.land.id}/buy`}>
               <button
                 type={"button"}
-                className={`button p-1 w-14 ${classNames({
+                className={`trans-button p-1 w-14 ${classNames({
                   "opacity-60": false,
                 })}`}
                 style={{ fontSize: "0.6rem" }}
@@ -161,7 +161,7 @@ function Info({ onClose, selected }: Props) {
           <Link to={`${pathname}/contract/${pendingContract.id}`}>
             <button
               type={"button"}
-              className={`button py-1 px-4 ${classNames({
+              className={`trans-button py-1 px-4 ${classNames({
                 "opacity-60": false,
               })}`}
               style={{ fontSize: "0.6rem" }}

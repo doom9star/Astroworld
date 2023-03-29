@@ -6,6 +6,7 @@ import Conversation from "../entities/Conversation";
 import File from "../entities/File";
 import Land from "../entities/Land";
 import Message from "../entities/Message";
+import Notification from "../entities/Notification";
 import Shelter from "../entities/Shelter";
 import Transaction from "../entities/Transaction";
 import User from "../entities/User";
@@ -31,6 +32,7 @@ export default function initORM() {
       Message,
       Contract,
       Transaction,
+      Notification,
     ],
     synchronize: true,
     logging: true,

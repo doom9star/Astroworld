@@ -7,6 +7,7 @@ type TGlobalState = {
   loading: boolean;
   user: IUser | null;
   alert: TAlert;
+  notification: boolean;
 };
 
 const globalSlice = createSlice({
@@ -15,6 +16,7 @@ const globalSlice = createSlice({
     loading: true,
     user: null,
     alert: { state: "IDLE", message: "" },
+    notification: false,
   } as TGlobalState,
   reducers: {
     setGlobalLoading: (state, action: PayloadAction<boolean>) => {
@@ -26,10 +28,14 @@ const globalSlice = createSlice({
     setAlert: (state, action: PayloadAction<TAlert>) => {
       state.alert = action.payload;
     },
+    setNotification: (state, action: PayloadAction<boolean>) => {
+      state.notification = action.payload;
+    },
   },
 });
 
 export const useGlobalState = (): TGlobalState =>
   useSelector((state: TRootState) => state.global);
-export const { setGlobalLoading, setUser, setAlert } = globalSlice.actions;
+export const { setGlobalLoading, setUser, setAlert, setNotification } =
+  globalSlice.actions;
 export default globalSlice.reducer;

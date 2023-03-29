@@ -55,7 +55,7 @@ function Buy() {
           dispatch(
             setAlert({
               state: "SUCCESS",
-              message: `PURCHASE CONTRACT has been successfully dispatched to ${land?.owner.email}!`,
+              message: `"PURCHASE" contract has been successfully dispatched to ${land?.owner.email}!`,
             })
           );
           navigate(-1);
@@ -70,8 +70,8 @@ function Buy() {
     if (!landLoading) {
       setInfo((prev) => ({
         ...prev,
-        from: land!.owner.email,
-        to: user!.email,
+        from: user!.email,
+        to: land!.owner.email,
         coins: land!.value,
       }));
     }
@@ -149,7 +149,7 @@ function Buy() {
         <div className="mt-4 flex justify-center">
           <button
             type={"button"}
-            className={`button p-1 mr-4 w-14 ${classNames({
+            className={`trans-button p-1 mr-4 w-14 ${classNames({
               "opacity-60": loading,
             })}`}
             style={{ fontSize: "0.6rem" }}
@@ -160,7 +160,7 @@ function Buy() {
           </button>
           <button
             type={"button"}
-            className={`button p-1 w-14 ${classNames({
+            className={`trans-button p-1 w-14 ${classNames({
               "opacity-60": false,
             })}`}
             style={{ fontSize: "0.6rem" }}

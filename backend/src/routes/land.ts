@@ -1,9 +1,17 @@
 import { Router } from "express";
+import { v4 } from "uuid";
 import Capital from "../entities/Capital";
 import Contract from "../entities/Contract";
+import File from "../entities/File";
 import Land from "../entities/Land";
+import Notification from "../entities/Notification";
 import isAuth from "../middlewares/isAuth";
-import { TAuthRequest, EContractType } from "../misc/types";
+import {
+  TAuthRequest,
+  EContractType,
+  ENotificationHandler,
+  ENotificationType,
+} from "../misc/types";
 import getResponse from "../utils/getResponse";
 
 const router = Router();
@@ -32,6 +40,18 @@ router.post("/:id/contract", isAuth, async (req: TAuthRequest, res) => {
   contract.info = `land|${req.params.id}`;
   contract.type = EContractType.PURCHASE;
   await contract.save();
+
+  const notification = new Notification();
+  notification.handlers = [
+    { type: ENotificationHandler.CONTRACT, info: contract.id },
+    { type: ENotificationHandler.LAND, info: req.params.id },
+    { type: ENotificationHandler.USER, info: req.body.from },
+  ];
+  notification.type = ENotificationType.CONTRACT;
+  notification.thumbnail = new File();
+  notification.thumbnail.cid = `notification-${v4()}`;
+  notification.thumbnail.url = "/images/contract.png";
+  await notification.save();
 
   await req.db
     ?.createQueryBuilder()

@@ -18,6 +18,17 @@ export enum ELandType {
   DECORATION = "3",
 }
 
+export enum ENotificationType {
+  ADMIN = "0",
+  CONTRACT = "1",
+}
+
+export enum ENotificationHandler {
+  USER = "0",
+  LAND = "1",
+  CONTRACT = "2",
+}
+
 export enum EContractType {
   NONE = "0",
   PURCHASE = "1",

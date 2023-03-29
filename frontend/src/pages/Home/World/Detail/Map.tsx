@@ -32,11 +32,11 @@ function Map({ setHeader, toLand, selected, setSelected }: Props) {
         position: "relative",
       }}
     >
-      <div className="fixed top-[23%] right-[10%] z-10">
+      <div className="fixed top-[23%] right-[10%]">
         <button
           type={"button"}
           className={`button px-1 py-0 w-8 mr-2 text-lg ${classNames({
-            "opacity-60": zoom >= 250,
+            "opacity-30": zoom >= 250,
           })}`}
           disabled={zoom >= 250}
           onClick={() => setZoom(zoom + 30)}
@@ -46,7 +46,7 @@ function Map({ setHeader, toLand, selected, setSelected }: Props) {
         <button
           type={"button"}
           className={`button px-1 text-lg py-0 w-8 ${classNames({
-            "opacity-60": zoom <= 150,
+            "opacity-30": zoom <= 150,
           })}`}
           onClick={() => setZoom(zoom - 30)}
           disabled={zoom <= 150}
@@ -71,7 +71,7 @@ function Map({ setHeader, toLand, selected, setSelected }: Props) {
                 id={`${c.position} ${l.position}`}
                 key={`${c.position} ${l.position}`}
                 className={
-                  `relative cursor-pointer hover:bg-gray-100 ` +
+                  `cursor-pointer hover:bg-gray-100 ` +
                   classNames({
                     //   "border-t-0 mt-10": i < 3 && j < 5,
                     //   "border-l-0 ml-10": i % 3 === 0 && j % 5 === 0,

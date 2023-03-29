@@ -20,7 +20,7 @@ function AvatarPicker({
   selected,
 }: AvatarPickerProps) {
   return (
-    <div className="absolute z-20 top-1/2 left-1/2 flex flex-col w-[300px] h-[300px] border border-gray-200 p-2 bg-white shadow-md">
+    <div className="absolute -20 top-1/2 left-1/2 flex flex-col w-[300px] h-[300px] border border-gray-200 p-2 bg-white shadow-md">
       <span
         className="border border-gray-200 text-gray-500 self-end cursor-pointer px-2 py-1 text-xs rounded-full"
         onClick={onClose}
@@ -99,7 +99,7 @@ export default function Edit() {
       </div>
       <div className="flex flex-col w-[400px] mx-auto overflow-y-scroll">
         {displayAvatar && (
-          <div className="absolute top-0 left-0 w-[100vw] h-[100vh] z-10 bg-awblack opacity-10" />
+          <div className="absolute top-0 left-0 w-[100vw] h-[100vh] bg-awblack opacity-10" />
         )}
         <div className="self-center relative">
           <img
@@ -158,7 +158,7 @@ export default function Edit() {
         <div className="flex justify-between items-center my-4">
           <button
             type={"button"}
-            className={`button ${classNames({ "opacity-60": loading })}`}
+            className={`trans-button ${classNames({ "opacity-60": loading })}`}
           >
             {loading && <div className="spinner" />}
             Save

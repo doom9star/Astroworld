@@ -94,7 +94,7 @@ function Register() {
       <div className="flex justify-between items-center my-4">
         <button
           type={"button"}
-          className={`button ${classNames({ "opacity-60": loading })}`}
+          className={`trans-button ${classNames({ "opacity-60": loading })}`}
           onClick={onRegister}
         >
           {loading && <div className="spinner" />}
