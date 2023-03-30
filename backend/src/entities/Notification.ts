@@ -9,6 +9,9 @@ export default class Notification extends Base {
   read: boolean;
 
   @Column("simple-json")
+  info: { [k: string]: string };
+
+  @Column("simple-json")
   handlers: { type: ENotificationHandler; info: string }[];
 
   @OneToOne(() => File, { cascade: true })

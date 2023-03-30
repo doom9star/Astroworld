@@ -1,7 +1,9 @@
 import classNames from "classnames";
 import React, { useCallback, useState } from "react";
+import { MdJoinFull } from "react-icons/md";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import Button from "../../components/Button";
 import { cAxios } from "../../misc/constants";
 import { TResponse } from "../../misc/types";
 import { setAlert, setUser } from "../../redux/slices/global";
@@ -92,14 +94,14 @@ function Register() {
         <span className="input-error">{errors.confirmPassword}</span>
       )}
       <div className="flex justify-between items-center my-4">
-        <button
-          type={"button"}
-          className={`trans-button ${classNames({ "opacity-60": loading })}`}
-          onClick={onRegister}
-        >
-          {loading && <div className="spinner" />}
-          Register
-        </button>
+        <Button
+          label="Register"
+          icon={<MdJoinFull />}
+          btnProps={{
+            onClick: onRegister,
+          }}
+          loading={loading}
+        />
         <span className="text-xs font-mono">
           Already registered? &nbsp;
           <span

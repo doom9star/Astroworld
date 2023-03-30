@@ -1,7 +1,8 @@
-import classNames from "classnames";
 import { Fragment, useCallback, useState } from "react";
+import { HiLogin, HiLogout } from "react-icons/hi";
+import { IoMdNotificationsOutline } from "react-icons/io";
+import { MdJoinFull, MdModeEditOutline } from "react-icons/md";
 import { useDispatch } from "react-redux";
-import { Link } from "react-router-dom";
 import { cAxios } from "../misc/constants";
 import { TResponse } from "../misc/types";
 import {
@@ -9,13 +10,13 @@ import {
   setUser,
   useGlobalState,
 } from "../redux/slices/global";
-import { IoMdNotificationsOutline } from "react-icons/io";
+import Button from "./Button";
 import Logo from "./Logo";
 
 function Navbar() {
   const [loading, setLoading] = useState(false);
 
-  const { user, notification } = useGlobalState();
+  const { user } = useGlobalState();
   const dispatch = useDispatch();
 
   const logout = useCallback(() => {
@@ -38,71 +39,61 @@ function Navbar() {
         <Logo className="w-28" />
         {user ? (
           <div className="flex items-center">
-            <button
-              className="button px-2 hover:opacity-70 mr-4"
-              onClick={() => dispatch(setNotification(!notification))}
-            >
-              <IoMdNotificationsOutline className="text-lg " />
-            </button>
+            <Button
+              btnProps={{
+                onClick: () => dispatch(setNotification(true)),
+                className: "text-lg",
+              }}
+              icon={<IoMdNotificationsOutline />}
+              contStyles="mr-4"
+            />
             <img
               src="/images/noImg.png"
               alt="User-Avatar"
               className="w-14 rounded-full border border-gray-200 p-1"
             />
             <div className="flex flex-col mr-4 ml-2">
-              <span style={{ fontSize: "0.6rem" }}>{user.email}</span>
-              <div className="flex items-center">
-                <Link to={"/home/user/edit"}>
-                  <button
-                    type={"button"}
-                    className={`trans-button py-1 mt-1 w-14`}
-                    style={{ fontSize: "0.6rem" }}
-                  >
-                    Edit
-                  </button>
-                </Link>
-                <div className="text-xs ml-3 flex items-center">
-                  <div className="w-3 h-3 rounded-full bg-yellow-500" />
+              <div
+                className="flex items-center mb-1"
+                style={{
+                  fontSize: "0.6rem",
+                }}
+              >
+                <span>{user.email}</span>
+                <div className="ml-3 flex items-center">
+                  <div className="w-2 h-2 rounded-full bg-yellow-500" />
                   &nbsp;
                   <span>{user.coins}</span>
                 </div>
               </div>
+              <Button
+                label="Edit"
+                icon={<MdModeEditOutline />}
+                link={"/home/user/edit"}
+              />
             </div>
-            <button
-              type={"button"}
-              className={`trans-button ${classNames({
-                "opacity-60": loading,
-              })}`}
-              onClick={logout}
-            >
-              {loading && <div className="spinner" />}
-              Logout
-            </button>
+            <Button
+              label="Logout"
+              icon={<HiLogout />}
+              loading={loading}
+              btnProps={{
+                onClick: logout,
+              }}
+            />
           </div>
         ) : (
-          <div>
-            <Link to={"/auth/login"}>
-              <button
-                type={"button"}
-                className={`trans-button mr-2 ${classNames({
-                  "opacity-60": loading,
-                })}`}
-              >
-                {loading && <div className="spinner" />}
-                Login
-              </button>
-            </Link>
-            <Link to={"/auth/register"}>
-              <button
-                type={"button"}
-                className={`trans-button ${classNames({
-                  "opacity-60": loading,
-                })}`}
-              >
-                {loading && <div className="spinner" />}
-                Register
-              </button>
-            </Link>
+          <div className="flex">
+            <Button
+              label="Login"
+              icon={<HiLogin />}
+              link={"/auth/login"}
+              contStyles="mr-2"
+            />
+            <Button
+              label="Register"
+              icon={<MdJoinFull />}
+              link={"/auth/register"}
+            />
           </div>
         )}
       </div>

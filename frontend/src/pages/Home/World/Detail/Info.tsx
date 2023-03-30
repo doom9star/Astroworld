@@ -1,10 +1,14 @@
 import classNames from "classnames";
 import { useMemo, useRef } from "react";
+import { AiOutlineAlignCenter } from "react-icons/ai";
 import { BiCoin } from "react-icons/bi";
 import { FaPlaceOfWorship, FaUserTie } from "react-icons/fa";
+import { GiBuyCard } from "react-icons/gi";
 import { GrLocation, GrStatusGood } from "react-icons/gr";
+import { ImFileText } from "react-icons/im";
 import { TiChartAreaOutline } from "react-icons/ti";
-import { Link, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
+import Button from "../../../../components/Button";
 import { useGlobalState } from "../../../../redux/slices/global";
 import { EContractStatus, ELandType } from "../../../../redux/types";
 import { TSelected } from "./Detail";
@@ -23,6 +27,11 @@ function Info({ onClose, selected }: Props) {
     const contract = selected.land.contracts.find(
       (c) => c.from.id === user?.id && c.status === EContractStatus.PENDING
     );
+    return contract;
+  }, [selected, user]);
+
+  const viewContract = useMemo(() => {
+    const contract = selected.land.contracts.find((c) => c.to.id === user?.id);
     return contract;
   }, [selected, user]);
 
@@ -127,49 +136,30 @@ function Info({ onClose, selected }: Props) {
         {![ELandType.NONE, ELandType.DECORATION].includes(
           selected.land.type
         ) && (
-          <Link to={`${pathname}/${selected.land.id}`}>
-            <button
-              type={"button"}
-              className={`trans-button p-1 mr-4 w-14 ${classNames({
-                "opacity-60": false,
-              })}`}
-              style={{ fontSize: "0.6rem" }}
-            >
-              {false && <div className="spinner" />}
-              Visit
-            </button>
-          </Link>
+          <Button
+            label="Visit"
+            icon={<AiOutlineAlignCenter />}
+            link={`${pathname}/${selected.land.id}`}
+          />
         )}
         {selected.land.available &&
           user?.email !== selected.land.owner.email &&
           user!.coins >= selected.land.value &&
           !pendingContract && (
-            <Link to={`${pathname}/${selected.land.id}/buy`}>
-              <button
-                type={"button"}
-                className={`trans-button p-1 w-14 ${classNames({
-                  "opacity-60": false,
-                })}`}
-                style={{ fontSize: "0.6rem" }}
-              >
-                {false && <div className="spinner" />}
-                Buy
-              </button>
-            </Link>
+            <Button
+              label="Buy"
+              icon={<GiBuyCard />}
+              link={`${pathname}/${selected.land.id}/buy`}
+            />
           )}
-        {pendingContract && (
-          <Link to={`${pathname}/contract/${pendingContract.id}`}>
-            <button
-              type={"button"}
-              className={`trans-button py-1 px-4 ${classNames({
-                "opacity-60": false,
-              })}`}
-              style={{ fontSize: "0.6rem" }}
-            >
-              {false && <div className="spinner" />}
-              View Contract
-            </button>
-          </Link>
+        {(pendingContract || viewContract) && (
+          <Button
+            label="View"
+            icon={<ImFileText />}
+            link={`${pathname}/${selected.land.id}/contract/${
+              pendingContract ? pendingContract.id : ""
+            }`}
+          />
         )}
       </div>
     </div>

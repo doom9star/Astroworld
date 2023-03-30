@@ -48,6 +48,7 @@ router.post("/:id/contract", isAuth, async (req: TAuthRequest, res) => {
     { type: ENotificationHandler.USER, info: req.body.from },
   ];
   notification.type = ENotificationType.CONTRACT;
+  notification.info = { world: req.body.wid, user: req.body.to };
   notification.thumbnail = new File();
   notification.thumbnail.cid = `notification-${v4()}`;
   notification.thumbnail.url = "/images/contract.png";

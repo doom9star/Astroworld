@@ -1,20 +1,24 @@
 import { Fragment, useEffect, useMemo, useState } from "react";
+import { FaSignature } from "react-icons/fa";
 import { TbWallpaper } from "react-icons/tb";
 import { TiTick } from "react-icons/ti";
 import { useNavigate, useParams } from "react-router-dom";
-import Back from "../../../../components/Back";
-import Spinner from "../../../../components/Spinner";
-import { cAxios } from "../../../../misc/constants";
-import { TResponse } from "../../../../misc/types";
+import Back from "../../../../../../components/Back";
+import Button from "../../../../../../components/Button";
+import Spinner from "../../../../../../components/Spinner";
+import { cAxios } from "../../../../../../misc/constants";
+import { TResponse } from "../../../../../../misc/types";
+import { useGlobalState } from "../../../../../../redux/slices/global";
 import {
   EContractStatus,
   EContractType,
   IContract,
-} from "../../../../redux/types";
+} from "../../../../../../redux/types";
 
-function Contract() {
+function Detail() {
   const params = useParams();
   const navigate = useNavigate();
+  const { user } = useGlobalState();
 
   const [contract, setContract] = useState<IContract | null>(null);
   const [loading, setLoading] = useState(true);
@@ -130,25 +134,41 @@ function Contract() {
             <span className="mb-2">{`(${new Date(
               contract.createdAt
             ).toLocaleDateString()})`}</span>
-            <span className="flex items-center text-green-600 border border-green-600 rounded-lg py-1 px-2">
-              <TiTick /> signed
-            </span>
+            <Button
+              label="Signed"
+              icon={<TiTick />}
+              btnProps={{
+                className: "text-green-600 border border-green-600",
+              }}
+            />
           </div>
           <div className="flex flex-col items-end">
             <span className="font-bold">
               {contract.to.email}
               &nbsp;{" (Seller)"}
             </span>
-            {contract.status === EContractStatus.ACCEPTED && (
+            {contract.status === EContractStatus.ACCEPTED ? (
               <>
                 <span className="mb-2">{`(${new Date(
                   contract.updatedAt
                 ).toLocaleDateString()})`}</span>
-                <span className="flex items-center text-green-600 border border-green-600 rounded-lg py-1 px-2">
-                  <TiTick /> signed
-                </span>
+                <Button
+                  label="Signed"
+                  icon={<TiTick />}
+                  btnProps={{
+                    className: "text-green-600 border border-green-600",
+                  }}
+                />
               </>
-            )}
+            ) : user?.id === contract.to.id ? (
+              <Button
+                label="Sign"
+                icon={<FaSignature />}
+                btnProps={{
+                  className: "text-orange-600 border border-orange-600 mt-2",
+                }}
+              />
+            ) : null}
           </div>
         </div>
       </div>
@@ -156,4 +176,4 @@ function Contract() {
   );
 }
 
-export default Contract;
+export default Detail;

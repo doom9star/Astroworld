@@ -1,5 +1,8 @@
 import classNames from "classnames";
 import { useEffect, useRef, useState } from "react";
+import { AiOutlineMinus } from "react-icons/ai";
+import { GrAdd } from "react-icons/gr";
+import Button from "../../../../components/Button";
 import { useWorldState } from "../../../../redux/slices/world";
 import { THeader, TSelected } from "./Detail";
 import LandDetail from "./Info";
@@ -32,27 +35,28 @@ function Map({ setHeader, toLand, selected, setSelected }: Props) {
         position: "relative",
       }}
     >
-      <div className="fixed top-[23%] right-[10%]">
-        <button
-          type={"button"}
-          className={`button px-1 py-0 w-8 mr-2 text-lg ${classNames({
-            "opacity-30": zoom >= 250,
-          })}`}
-          disabled={zoom >= 250}
-          onClick={() => setZoom(zoom + 30)}
-        >
-          {false && <div className="spinner" />}+
-        </button>
-        <button
-          type={"button"}
-          className={`button px-1 text-lg py-0 w-8 ${classNames({
-            "opacity-30": zoom <= 150,
-          })}`}
-          onClick={() => setZoom(zoom - 30)}
-          disabled={zoom <= 150}
-        >
-          {false && <div className="spinner" />}-
-        </button>
+      <div className="fixed top-[23%] right-[10%] flex">
+        <Button
+          icon={<GrAdd />}
+          contStyles="mr-2"
+          btnProps={{
+            onClick: () => setZoom(zoom + 30),
+            disabled: zoom >= 250,
+            className: `${classNames({
+              "opacity-30": zoom >= 250,
+            })}`,
+          }}
+        />
+        <Button
+          icon={<AiOutlineMinus />}
+          btnProps={{
+            onClick: () => setZoom(zoom - 30),
+            disabled: zoom <= 150,
+            className: `${classNames({
+              "opacity-30": zoom <= 150,
+            })}`,
+          }}
+        />
       </div>
       {selected && (
         <LandDetail selected={selected} onClose={() => setSelected(null)} />

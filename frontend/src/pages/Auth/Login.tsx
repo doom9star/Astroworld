@@ -1,7 +1,9 @@
 import classNames from "classnames";
 import React, { useCallback, useState } from "react";
+import { HiLogin } from "react-icons/hi";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import Button from "../../components/Button";
 import { cAxios } from "../../misc/constants";
 import { TResponse } from "../../misc/types";
 import { setAlert, setUser } from "../../redux/slices/global";
@@ -79,14 +81,14 @@ function Register() {
         <span className="input-error">{errors.password}</span>
       )}
       <div className="flex justify-between items-center my-4">
-        <button
-          type={"button"}
-          className={`trans-button ${classNames({ "opacity-60": loading })}`}
-          onClick={onLogin}
-        >
-          {loading && <div className="spinner" />}
-          Login
-        </button>
+        <Button
+          label="Login"
+          icon={<HiLogin />}
+          btnProps={{
+            onClick: onLogin,
+          }}
+          loading={loading}
+        />
         <span className="text-xs font-mono">
           New here? &nbsp;
           <span

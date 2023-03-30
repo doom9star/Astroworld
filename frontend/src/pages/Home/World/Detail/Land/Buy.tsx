@@ -1,14 +1,15 @@
-import classNames from "classnames";
 import { useCallback, useEffect, useState } from "react";
+import { FaSignature } from "react-icons/fa";
+import { RxCross1 } from "react-icons/rx";
 import { TbWallpaper } from "react-icons/tb";
 import { useDispatch } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
+import Button from "../../../../../components/Button";
 import Spinner from "../../../../../components/Spinner";
 import { useLand } from "../../../../../hooks/useLand";
 import { cAxios } from "../../../../../misc/constants";
 import { TResponse } from "../../../../../misc/types";
-import { useGlobalState } from "../../../../../redux/slices/global";
-import { setAlert } from "../../../../../redux/slices/global";
+import { setAlert, useGlobalState } from "../../../../../redux/slices/global";
 
 type TInfo = {
   from: string;
@@ -49,6 +50,7 @@ function Buy() {
         from: user!.id,
         to: land!.owner.id,
         expiry: new Date(info.expiry),
+        wid: params.wid,
       })
       .then((res) => {
         if (res.data.status === "SUCCESS") {
@@ -64,7 +66,7 @@ function Buy() {
       .finally(() => {
         setLoading(false);
       });
-  }, [info, user, land, dispatch, navigate]);
+  }, [info, user, land, params, dispatch, navigate]);
 
   useEffect(() => {
     if (!landLoading) {
@@ -147,28 +149,22 @@ function Buy() {
           />
         </div>
         <div className="mt-4 flex justify-center">
-          <button
-            type={"button"}
-            className={`trans-button p-1 mr-4 w-14 ${classNames({
-              "opacity-60": loading,
-            })}`}
-            style={{ fontSize: "0.6rem" }}
-            onClick={onSign}
-          >
-            {loading && <div className="spinner" />}
-            Sign
-          </button>
-          <button
-            type={"button"}
-            className={`trans-button p-1 w-14 ${classNames({
-              "opacity-60": false,
-            })}`}
-            style={{ fontSize: "0.6rem" }}
-            onClick={() => navigate(-1)}
-          >
-            {false && <div className="spinner" />}
-            Cancel
-          </button>
+          <Button
+            label="Sign"
+            icon={<FaSignature />}
+            loading={loading}
+            contStyles="mr-2"
+            btnProps={{
+              onClick: onSign,
+            }}
+          />
+          <Button
+            label="Cancel"
+            icon={<RxCross1 />}
+            btnProps={{
+              onClick: () => navigate(-1),
+            }}
+          />
         </div>
       </div>
     </div>

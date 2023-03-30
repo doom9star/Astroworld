@@ -17,7 +17,7 @@ import {
 } from "./redux/slices/global";
 
 function App() {
-  const { loading } = useGlobalState();
+  const { loading, notification } = useGlobalState();
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -36,7 +36,7 @@ function App() {
   return (
     <BrowserRouter>
       <Alert />
-      <Notification />
+      {notification && <Notification />}
       <CRouter>
         <Route path="/" element={<Landing />} />
         <Route

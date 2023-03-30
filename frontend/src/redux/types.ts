@@ -85,3 +85,22 @@ export interface IWorld extends ICommon {
   thumbnail: IFile;
   continents: IContinent[];
 }
+
+export enum ENotificationType {
+  ADMIN = "0",
+  CONTRACT = "1",
+}
+
+export enum ENotificationHandler {
+  USER = "0",
+  LAND = "1",
+  CONTRACT = "2",
+}
+
+export interface INotification extends ICommon {
+  info: { [k: string]: string };
+  read: boolean;
+  handlers: { type: ENotificationHandler; info: string }[];
+  thumbnail: IFile;
+  type: ENotificationType;
+}

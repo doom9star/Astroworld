@@ -1,6 +1,8 @@
 import classNames from "classnames";
 import { useCallback, useEffect, useState } from "react";
+import { AiOutlineSave } from "react-icons/ai";
 import Back from "../../../components/Back";
+import Button from "../../../components/Button";
 import Spinner from "../../../components/Spinner";
 import { cAxios } from "../../../misc/constants";
 import { TResponse } from "../../../misc/types";
@@ -156,13 +158,7 @@ export default function Edit() {
           rows={6}
         ></textarea>
         <div className="flex justify-between items-center my-4">
-          <button
-            type={"button"}
-            className={`trans-button ${classNames({ "opacity-60": loading })}`}
-          >
-            {loading && <div className="spinner" />}
-            Save
-          </button>
+          <Button label="Save" icon={<AiOutlineSave />} loading={loading} />
         </div>
       </div>
     </>

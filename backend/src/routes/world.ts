@@ -129,6 +129,7 @@ router.get("/:id", isAuth, async (req, res) => {
       "continents.lands.thumbnail",
       "continents.lands.contracts",
       "continents.lands.contracts.from",
+      "continents.lands.contracts.to",
     ],
     order: { continents: { position: "ASC", lands: { position: "ASC" } } },
   })) as World;

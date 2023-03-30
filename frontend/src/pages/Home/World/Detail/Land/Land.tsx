@@ -49,7 +49,7 @@ function Land() {
         <Back />
         <button
           className={
-            "mr-10 text-xs flex items-center" +
+            "mx-10 text-xs flex items-center" +
             classNames({
               " font-bold underline": tab === ETab.LAND,
             })
