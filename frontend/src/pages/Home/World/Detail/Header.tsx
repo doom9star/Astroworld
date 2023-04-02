@@ -5,7 +5,7 @@ import { GrLocation } from "react-icons/gr";
 
 type Props = {
   header: THeader;
-  toLand: (position: string) => void;
+  toLand: (position?: string, id?: string) => void;
 };
 
 function Header({ header, toLand }: Props) {

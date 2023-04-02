@@ -1,22 +1,21 @@
 import classNames from "classnames";
 import { ReactNode } from "react";
-import { Link } from "react-router-dom";
+import { Link, LinkProps, To } from "react-router-dom";
 
 type Props = {
   label?: string;
-  link?: string;
   icon?: ReactNode;
   loading?: boolean;
-  contStyles?: string;
   btnProps?: React.DetailedHTMLProps<
     React.ButtonHTMLAttributes<HTMLButtonElement>,
     HTMLButtonElement
   >;
+  linkProps?: Omit<LinkProps, "to"> & { to?: To };
 };
 
-function Button({ link, label, icon, loading, contStyles, btnProps }: Props) {
+function Button({ label, icon, loading, btnProps, linkProps }: Props) {
   return (
-    <Link to={link ? link : "#"} className={contStyles}>
+    <Link to="#" {...linkProps}>
       <button
         {...btnProps}
         type={"button"}

@@ -35,14 +35,18 @@ function Detail() {
   const navigate = useNavigate();
 
   const toLand = useCallback(
-    (position: string) => {
-      const landBox = document.getElementById(position);
+    (position?: string, id?: string) => {
+      if (!position && !id) return;
+      const landBox = position
+        ? document.querySelector(`[data-position="${position}"]`)
+        : document.getElementById(id!);
       if (landBox) {
         landBox.scrollIntoView({
           block: "center",
           inline: "center",
           behavior: "smooth",
         });
+        if (!position) position = (landBox as any).dataset.position as string;
         const cpos = position.substring(0, 3);
         const lpos = position.substring(4);
         const continent = world!.continents.find((c) => c.position === cpos)!;
@@ -51,7 +55,7 @@ function Detail() {
           cpos: position.substring(0, 3),
           lpos: position.substring(4),
         });
-        if (selected) {
+        if (selected || id) {
           const land = continent.lands.find((l) => l.position === lpos)!;
           setSelected({ continent, land });
         }

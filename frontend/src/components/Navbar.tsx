@@ -44,8 +44,10 @@ function Navbar() {
                 onClick: () => dispatch(setNotification(true)),
                 className: "text-lg",
               }}
+              linkProps={{
+                className: "mr-4",
+              }}
               icon={<IoMdNotificationsOutline />}
-              contStyles="mr-4"
             />
             <img
               src="/images/noImg.png"
@@ -69,7 +71,9 @@ function Navbar() {
               <Button
                 label="Edit"
                 icon={<MdModeEditOutline />}
-                link={"/home/user/edit"}
+                linkProps={{
+                  to: "/home/user/edit",
+                }}
               />
             </div>
             <Button
@@ -86,13 +90,17 @@ function Navbar() {
             <Button
               label="Login"
               icon={<HiLogin />}
-              link={"/auth/login"}
-              contStyles="mr-2"
+              linkProps={{
+                className: "mr-2",
+                to: "/auth/login",
+              }}
             />
             <Button
               label="Register"
               icon={<MdJoinFull />}
-              link={"/auth/register"}
+              linkProps={{
+                to: "/auth/register",
+              }}
             />
           </div>
         )}

@@ -139,7 +139,9 @@ function Info({ onClose, selected }: Props) {
           <Button
             label="Visit"
             icon={<AiOutlineAlignCenter />}
-            link={`${pathname}/${selected.land.id}`}
+            linkProps={{
+              to: `${pathname}/${selected.land.id}`,
+            }}
           />
         )}
         {selected.land.available &&
@@ -149,16 +151,20 @@ function Info({ onClose, selected }: Props) {
             <Button
               label="Buy"
               icon={<GiBuyCard />}
-              link={`${pathname}/${selected.land.id}/buy`}
+              linkProps={{
+                to: `${pathname}/${selected.land.id}/buy`,
+              }}
             />
           )}
         {(pendingContract || viewContract) && (
           <Button
             label="View"
             icon={<ImFileText />}
-            link={`${pathname}/${selected.land.id}/contract/${
-              pendingContract ? pendingContract.id : ""
-            }`}
+            linkProps={{
+              to: `${pathname}/${selected.land.id}/contract/${
+                pendingContract ? pendingContract.id : ""
+              }`,
+            }}
           />
         )}
       </div>

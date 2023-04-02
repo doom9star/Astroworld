@@ -2,14 +2,15 @@ import classNames from "classnames";
 import { useEffect, useRef, useState } from "react";
 import { AiOutlineMinus } from "react-icons/ai";
 import { GrAdd } from "react-icons/gr";
+import { useLocation } from "react-router-dom";
 import Button from "../../../../components/Button";
 import { useWorldState } from "../../../../redux/slices/world";
 import { THeader, TSelected } from "./Detail";
-import LandDetail from "./Info";
+import Info from "./Info";
 
 type Props = {
   setHeader: React.Dispatch<React.SetStateAction<THeader>>;
-  toLand: (position: string) => void;
+  toLand: (position?: string, id?: string) => void;
   selected: TSelected;
   setSelected: React.Dispatch<React.SetStateAction<TSelected>>;
 };
@@ -19,10 +20,15 @@ function Map({ setHeader, toLand, selected, setSelected }: Props) {
 
   const { world } = useWorldState();
   const toLandRef = useRef(toLand);
+  const { state } = useLocation();
 
   useEffect(() => {
-    toLandRef.current("1 1 2 2");
-  }, []);
+    if (state) {
+      toLandRef.current(undefined, state as string);
+    } else {
+      toLandRef.current("1 1 2 2");
+    }
+  }, [state]);
 
   return (
     <div
@@ -38,7 +44,9 @@ function Map({ setHeader, toLand, selected, setSelected }: Props) {
       <div className="fixed top-[23%] right-[10%] flex">
         <Button
           icon={<GrAdd />}
-          contStyles="mr-2"
+          linkProps={{
+            className: "mr-2",
+          }}
           btnProps={{
             onClick: () => setZoom(zoom + 30),
             disabled: zoom >= 250,
@@ -59,7 +67,7 @@ function Map({ setHeader, toLand, selected, setSelected }: Props) {
         />
       </div>
       {selected && (
-        <LandDetail selected={selected} onClose={() => setSelected(null)} />
+        <Info selected={selected} onClose={() => setSelected(null)} />
       )}
       {world?.continents.map((c) => {
         return (
@@ -72,7 +80,8 @@ function Map({ setHeader, toLand, selected, setSelected }: Props) {
           >
             {c.lands.map((l) => (
               <div
-                id={`${c.position} ${l.position}`}
+                id={l.id}
+                data-position={`${c.position} ${l.position}`}
                 key={`${c.position} ${l.position}`}
                 className={
                   `cursor-pointer hover:bg-gray-100 ` +

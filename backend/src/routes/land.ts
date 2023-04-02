@@ -64,4 +64,15 @@ router.post("/:id/contract", isAuth, async (req: TAuthRequest, res) => {
   );
 });
 
+router.get("/:id/contract/:type", isAuth, async (req, res) => {
+  const land = await Land.findOne({
+    where: { id: req.params.id },
+    relations: ["contracts", "contracts.from"],
+  });
+  const contracts = land?.contracts.filter((c) => c.type === req.params.type);
+  return res.json(
+    getResponse("SUCCESS", "Contracts retreived successfully!", contracts)
+  );
+});
+
 export default router;

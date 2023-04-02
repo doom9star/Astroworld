@@ -153,7 +153,9 @@ function Buy() {
             label="Sign"
             icon={<FaSignature />}
             loading={loading}
-            contStyles="mr-2"
+            linkProps={{
+              className: "mr-2",
+            }}
             btnProps={{
               onClick: onSign,
             }}

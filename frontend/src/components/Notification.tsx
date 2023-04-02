@@ -55,8 +55,10 @@ function NotificationDetail({ n }: Props) {
             {contract && (
               <Button
                 icon={<ImFileText />}
-                contStyles="mr-2"
-                link={`/home/world/${n.info["world"]}/${land?.info}/contract/${contract.info}`}
+                linkProps={{
+                  className: "mr-2",
+                  to: `/home/world/${n.info["world"]}/${land?.info}/contract/${contract.info}`,
+                }}
                 btnProps={{
                   onClick: () => dispatch(setNotification(false)),
                 }}
@@ -65,15 +67,26 @@ function NotificationDetail({ n }: Props) {
             {land && (
               <Button
                 icon={<RiLandscapeLine />}
-                contStyles="mr-2"
-                link={`/home/world/${n.info["world"]}`}
+                linkProps={{
+                  className: "mr-2",
+                  to: `/home/world/${n.info["world"]}`,
+                  state: land.info,
+                }}
+                btnProps={{
+                  onClick: () => dispatch(setNotification(false)),
+                }}
               />
             )}
             {user && (
               <Button
                 icon={<AiOutlineUser />}
-                contStyles="mr-2"
-                link={`/home/user/${user.info}`}
+                linkProps={{
+                  className: "mr-2",
+                  to: `/home/user/${user.info}`,
+                }}
+                btnProps={{
+                  onClick: () => dispatch(setNotification(false)),
+                }}
               />
             )}
           </div>
@@ -120,7 +133,7 @@ function Notification() {
         ) : (
           <div className="my-4">
             {notifications.map((n) => (
-              <NotificationDetail n={n} />
+              <NotificationDetail n={n} key={n.id} />
             ))}
           </div>
         )}
