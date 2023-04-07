@@ -5,10 +5,10 @@ import User from "./User";
 
 @Entity("contract")
 export default class Contract extends Base {
-  @ManyToOne(() => User)
+  @ManyToOne(() => User, { cascade: true })
   from: User;
 
-  @ManyToOne(() => User)
+  @ManyToOne(() => User, { cascade: true })
   to: User;
 
   @Column({ default: 0 })

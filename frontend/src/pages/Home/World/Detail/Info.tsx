@@ -31,8 +31,9 @@ function Info({ onClose, selected }: Props) {
   }, [selected, user]);
 
   const viewContract = useMemo(() => {
-    const contract = selected.land.contracts.find((c) => c.to.id === user?.id);
-    return contract;
+    return (
+      selected.land.owner.id === user?.id && selected.land.contracts.length > 0
+    );
   }, [selected, user]);
 
   return (

@@ -8,7 +8,11 @@ import TimeAgo from "react-timeago";
 import { cAxios } from "../misc/constants";
 import { TResponse } from "../misc/types";
 import { setNotification } from "../redux/slices/global";
-import { ENotificationHandler, INotification } from "../redux/types";
+import {
+  ENotificationHandler,
+  ENotificationType,
+  INotification,
+} from "../redux/types";
 import Button from "./Button";
 import Spinner from "./Spinner";
 
@@ -40,11 +44,24 @@ function NotificationDetail({ n }: Props) {
     >
       <img src={n.thumbnail.url} alt={n.id} className="w-16 h-16" />
       <div className="px-2">
-        <p className="text-xs leading-5">
-          <span className="font-bold" style={{ fontSize: "0.6rem" }}>
-            {user?.info}{" "}
-          </span>
-          has extended a contract to buy the land{" "}
+        <p className="leading-5 font-mono" style={{ fontSize: "0.6rem" }}>
+          <span className="font-bold">{user?.info} </span>
+          {n.type === ENotificationType.CONTRACT_PENDING ? (
+            <span>
+              has <span className="text-yellow-600 font-bold">extended </span>a
+              contract to buy the land{" "}
+            </span>
+          ) : n.type === ENotificationType.CONTRACT_REJECTED ? (
+            <span>
+              has <span className="text-red-600 font-bold">rejected </span>your
+              contract to buy the land{" "}
+            </span>
+          ) : (
+            <span>
+              has <span className="text-green-600 font-bold">accepted </span>
+              your contract to buy the land{" "}
+            </span>
+          )}
           <span className="font-bold" style={{ fontSize: "0.6rem" }}>
             {land?.info}
           </span>

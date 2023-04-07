@@ -1,14 +1,16 @@
-import { Fragment, useEffect, useMemo, useState } from "react";
+import { Fragment, useCallback, useEffect, useMemo, useState } from "react";
 import { FaSignature } from "react-icons/fa";
+import { RxCross2 } from "react-icons/rx";
 import { TbWallpaper } from "react-icons/tb";
 import { TiTick } from "react-icons/ti";
+import { useDispatch } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import Back from "../../../../../../components/Back";
 import Button from "../../../../../../components/Button";
 import Spinner from "../../../../../../components/Spinner";
 import { cAxios } from "../../../../../../misc/constants";
 import { TResponse } from "../../../../../../misc/types";
-import { useGlobalState } from "../../../../../../redux/slices/global";
+import { setUser, useGlobalState } from "../../../../../../redux/slices/global";
 import {
   EContractStatus,
   EContractType,
@@ -18,10 +20,15 @@ import {
 function Detail() {
   const params = useParams();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { user } = useGlobalState();
 
   const [contract, setContract] = useState<IContract | null>(null);
   const [loading, setLoading] = useState(true);
+  const [signLoading, setSignLoading] = useState({
+    accepted: false,
+    rejected: false,
+  });
 
   useEffect(() => {
     cAxios
@@ -42,6 +49,43 @@ function Detail() {
       return { entity, id };
     }
   }, [contract]);
+
+  const signContract = useCallback(
+    (sign: EContractStatus) => {
+      setSignLoading((prev) => ({
+        ...prev,
+        [sign === EContractStatus.ACCEPTED ? "accepted" : "rejected"]: true,
+      }));
+      cAxios
+        .post<TResponse>(`/contract/${contract?.id}/sign`, {
+          sign,
+          wid: params.wid,
+          from: contract?.to.id,
+          to: contract?.from.id,
+        })
+        .then((res) => {
+          if (res.data.status === "SUCCESS") {
+            setContract(res.data.data);
+            if (
+              contract?.type === EContractType.LAND_BUY &&
+              sign === EContractStatus.ACCEPTED
+            ) {
+              dispatch(
+                setUser({ ...user!, coins: user!.coins + contract!.coins })
+              );
+            }
+          }
+        })
+        .finally(() => {
+          setSignLoading((prev) => ({
+            ...prev,
+            [sign === EContractStatus.ACCEPTED ? "accepted" : "rejected"]:
+              false,
+          }));
+        });
+    },
+    [contract, params, dispatch, user]
+  );
 
   if (loading) {
     return <Spinner size="medium" />;
@@ -114,12 +158,6 @@ function Detail() {
             {new Date(contract.expiry).toLocaleDateString()}
           </span>
         </div>
-        <div className="flex justify-between text-xs my-4">
-          <span>type</span>
-          <span className="font-bold">
-            {contract.type === EContractType.PURCHASE ? "PURCHASE" : ""}
-          </span>
-        </div>
         <div
           className="flex justify-between around items-center mt-10"
           style={{
@@ -134,13 +172,14 @@ function Detail() {
             <span className="mb-2">{`(${new Date(
               contract.createdAt
             ).toLocaleDateString()})`}</span>
-            <Button
-              label="Signed"
-              icon={<TiTick />}
-              btnProps={{
-                className: "text-green-600 border border-green-600",
+            <span
+              className="flex items-center font-bold text-white py-1 px-2 rounded-lg bg-green-600"
+              style={{
+                fontSize: "0.6rem",
               }}
-            />
+            >
+              <TiTick /> <span>SIGNED</span>
+            </span>
           </div>
           <div className="flex flex-col items-end">
             <span className="font-bold">
@@ -152,22 +191,51 @@ function Detail() {
                 <span className="mb-2">{`(${new Date(
                   contract.updatedAt
                 ).toLocaleDateString()})`}</span>
-                <Button
-                  label="Signed"
-                  icon={<TiTick />}
-                  btnProps={{
-                    className: "text-green-600 border border-green-600",
+                <span
+                  className="flex items-center font-bold text-white py-1 px-2 rounded-lg bg-green-600"
+                  style={{
+                    fontSize: "0.6rem",
                   }}
-                />
+                >
+                  <TiTick /> <span>SIGNED</span>
+                </span>
+              </>
+            ) : contract.status === EContractStatus.REJECTED ? (
+              <>
+                <span className="mb-2">{`(${new Date(
+                  contract.updatedAt
+                ).toLocaleDateString()})`}</span>
+                <span
+                  className="flex items-center font-bold text-white py-1 px-2 rounded-lg bg-red-600"
+                  style={{
+                    fontSize: "0.6rem",
+                  }}
+                >
+                  <RxCross2 /> &nbsp;<span>REJECTED</span>
+                </span>
               </>
             ) : user?.id === contract.to.id ? (
-              <Button
-                label="Sign"
-                icon={<FaSignature />}
-                btnProps={{
-                  className: "text-orange-600 border border-orange-600 mt-2",
-                }}
-              />
+              <div className="flex">
+                <Button
+                  label="Accept"
+                  icon={<FaSignature />}
+                  loading={signLoading.accepted}
+                  btnProps={{
+                    className:
+                      "text-green-600 border border-green-600 mt-2 mr-2",
+                    onClick: () => signContract(EContractStatus.ACCEPTED),
+                  }}
+                />
+                <Button
+                  label="Reject"
+                  icon={<RxCross2 />}
+                  loading={signLoading.rejected}
+                  btnProps={{
+                    className: "text-red-600 border border-red-600 mt-2",
+                    onClick: () => signContract(EContractStatus.REJECTED),
+                  }}
+                />
+              </div>
             ) : null}
           </div>
         </div>

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
+import Timeago from "react-timeago";
 import Back from "../../../../../../components/Back";
 import Spinner from "../../../../../../components/Spinner";
 import { cAxios } from "../../../../../../misc/constants";
@@ -19,7 +20,7 @@ function Contract() {
 
   useEffect(() => {
     cAxios
-      .get<TResponse>(`/land/${params.lid}/contract/${EContractType.PURCHASE}`)
+      .get<TResponse>(`/land/${params.lid}/contract/${EContractType.LAND_BUY}`)
       .then((res) => {
         if (res.data.status === "SUCCESS") {
           setContracts(res.data.data);
@@ -43,7 +44,7 @@ function Contract() {
           <span className="font-mono text-lg">&nbsp;| CONTRACTS</span>
         </span>
       </div>
-      <div className="py-10 px-20">
+      <div className="py-10 px-20 font-mono">
         {contracts.map((c) => (
           <Link to={`${pathname}${c.id}`}>
             <div
@@ -76,6 +77,9 @@ function Contract() {
                     REJECTED
                   </span>
                 )}
+              </span>
+              <span style={{ fontSize: "0.6rem" }}>
+                <Timeago date={c.createdAt} />
               </span>
             </div>
           </Link>

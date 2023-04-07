@@ -38,7 +38,7 @@ router.post("/:id/contract", isAuth, async (req: TAuthRequest, res) => {
   contract.coins = req.body.coins;
   contract.expiry = req.body.expiry;
   contract.info = `land|${req.params.id}`;
-  contract.type = EContractType.PURCHASE;
+  contract.type = EContractType.LAND_BUY;
   await contract.save();
 
   const notification = new Notification();
@@ -47,7 +47,7 @@ router.post("/:id/contract", isAuth, async (req: TAuthRequest, res) => {
     { type: ENotificationHandler.LAND, info: req.params.id },
     { type: ENotificationHandler.USER, info: req.body.from },
   ];
-  notification.type = ENotificationType.CONTRACT;
+  notification.type = ENotificationType.CONTRACT_PENDING;
   notification.info = { world: req.body.wid, user: req.body.to };
   notification.thumbnail = new File();
   notification.thumbnail.cid = `notification-${v4()}`;

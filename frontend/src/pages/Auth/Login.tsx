@@ -54,7 +54,7 @@ function Register() {
   return (
     <div className="flex flex-col w-[400px]">
       <input
-        type={"text"}
+        type={"email"}
         placeholder="Name/Email"
         className={`input ${classNames({
           "border-red-500": errors.nameOrEmail,

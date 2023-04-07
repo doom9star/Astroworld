@@ -9,6 +9,7 @@ import Spinner from "../../../../../components/Spinner";
 import { useLand } from "../../../../../hooks/useLand";
 import { cAxios } from "../../../../../misc/constants";
 import { TResponse } from "../../../../../misc/types";
+import { getExpiryDate } from "../../../../../misc/utils";
 import { setAlert, useGlobalState } from "../../../../../redux/slices/global";
 
 type TInfo = {
@@ -30,7 +31,7 @@ function Buy() {
     from: "",
     to: "",
     coins: 0,
-    expiry: "",
+    expiry: getExpiryDate(2),
     info: "",
   });
   const [loading, setLoading] = useState(false);
@@ -57,7 +58,7 @@ function Buy() {
           dispatch(
             setAlert({
               state: "SUCCESS",
-              message: `"PURCHASE" contract has been successfully dispatched to ${land?.owner.email}!`,
+              message: `"LAND PURCHASE" contract has been successfully dispatched to ${land?.owner.email}!`,
             })
           );
           navigate(-1);
@@ -146,6 +147,8 @@ function Buy() {
             name="expiry"
             onChange={onChange}
             id="expiry"
+            min={getExpiryDate(2)}
+            value={info.expiry}
           />
         </div>
         <div className="mt-4 flex justify-center">

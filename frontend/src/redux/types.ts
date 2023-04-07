@@ -25,7 +25,8 @@ export interface IUser extends ICommon {
 
 export enum EContractType {
   NONE = "0",
-  PURCHASE = "1",
+  LAND_BUY = "1",
+  LAND_SALE = "2",
 }
 
 export enum EContractStatus {
@@ -88,7 +89,9 @@ export interface IWorld extends ICommon {
 
 export enum ENotificationType {
   ADMIN = "0",
-  CONTRACT = "1",
+  CONTRACT_PENDING = "1",
+  CONTRACT_ACCEPTED = "2",
+  CONTRACT_REJECTED = "3",
 }
 
 export enum ENotificationHandler {
@@ -103,4 +106,8 @@ export interface INotification extends ICommon {
   handlers: { type: ENotificationHandler; info: string }[];
   thumbnail: IFile;
   type: ENotificationType;
+}
+
+export interface ITransaction extends ICommon {
+  contract: IContract;
 }

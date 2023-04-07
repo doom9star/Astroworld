@@ -22,7 +22,7 @@ function Button({ label, icon, loading, btnProps, linkProps }: Props) {
         className={
           `button flex items-center ${classNames({
             "opacity-60": !!loading,
-          })}` + btnProps?.className
+          })} ` + btnProps?.className
         }
         style={label && icon ? { fontSize: "0.6rem" } : {}}
       >

@@ -20,7 +20,9 @@ export enum ELandType {
 
 export enum ENotificationType {
   ADMIN = "0",
-  CONTRACT = "1",
+  CONTRACT_PENDING = "1",
+  CONTRACT_ACCEPTED = "2",
+  CONTRACT_REJECTED = "3",
 }
 
 export enum ENotificationHandler {
@@ -31,7 +33,8 @@ export enum ENotificationHandler {
 
 export enum EContractType {
   NONE = "0",
-  PURCHASE = "1",
+  LAND_BUY = "1",
+  LAND_SALE = "2",
 }
 
 export enum EContractStatus {
@@ -44,4 +47,9 @@ export enum EGender {
   NONE = "0",
   MALE = "1",
   FEMALE = "2",
+}
+
+export enum ETransactionType {
+  NONE = "0",
+  LAND = "1",
 }

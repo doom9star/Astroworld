@@ -20,10 +20,10 @@ body {
     @apply bg-awblack text-transparent px-4 py-2 text-xs font-bold bg-gradient-to-r from-red-500 to-green-500 bg-clip-text border border-gray-300 rounded-lg;
   }
   .button {
-    @apply bg-white text-black px-4 py-2 text-xs font-bold border border-gray-300 rounded-lg;
+    @apply bg-white text-black px-4 py-2 text-xs font-bold border border-gray-300 rounded-lg relative;
   }
   .spinner {
-    @apply w-5 h-5 border-2 border-gray-50 border-b-0 rounded-full animate-spin absolute top-1.5 left-7;
+    @apply w-5 h-5 border-2 border-black border-b-0 rounded-full animate-spin absolute top-1.5 left-7;
   }
 }
 
