@@ -1,6 +1,7 @@
 import { Column, Entity, ManyToOne } from "typeorm";
 import { EContractStatus, EContractType } from "../misc/types";
 import Base from "./Base";
+import Land from "./Land";
 import User from "./User";
 
 @Entity("contract")
@@ -27,8 +28,14 @@ export default class Contract extends Base {
   })
   status: EContractStatus;
 
-  @Column("text")
+  @Column()
   info: string;
+
+  @Column("text")
+  comment: string;
+
+  @Column()
+  negotiable: boolean;
 
   @Column({
     type: "enum",
@@ -36,4 +43,7 @@ export default class Contract extends Base {
     default: EContractType.NONE,
   })
   type: EContractType;
+
+  @ManyToOne(() => Land, (land) => land.contracts)
+  land: Land;
 }

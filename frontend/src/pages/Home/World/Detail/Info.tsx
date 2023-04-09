@@ -6,6 +6,7 @@ import { FaPlaceOfWorship, FaUserTie } from "react-icons/fa";
 import { GiBuyCard } from "react-icons/gi";
 import { GrLocation, GrStatusGood } from "react-icons/gr";
 import { ImFileText } from "react-icons/im";
+import { MdOutlineSell } from "react-icons/md";
 import { TiChartAreaOutline } from "react-icons/ti";
 import { useLocation } from "react-router-dom";
 import Button from "../../../../components/Button";
@@ -30,11 +31,13 @@ function Info({ onClose, selected }: Props) {
     return contract;
   }, [selected, user]);
 
+  const isOwner = useMemo(() => {
+    return user?.id === selected.land.owner.id;
+  }, [user, selected.land]);
+
   const viewContract = useMemo(() => {
-    return (
-      selected.land.owner.id === user?.id && selected.land.contracts.length > 0
-    );
-  }, [selected, user]);
+    return isOwner && selected.land.contracts.length > 0;
+  }, [selected, isOwner]);
 
   return (
     <div
@@ -142,11 +145,12 @@ function Info({ onClose, selected }: Props) {
             icon={<AiOutlineAlignCenter />}
             linkProps={{
               to: `${pathname}/${selected.land.id}`,
+              className: "mr-2",
             }}
           />
         )}
         {selected.land.available &&
-          user?.email !== selected.land.owner.email &&
+          !isOwner &&
           user!.coins >= selected.land.value &&
           !pendingContract && (
             <Button
@@ -154,6 +158,7 @@ function Info({ onClose, selected }: Props) {
               icon={<GiBuyCard />}
               linkProps={{
                 to: `${pathname}/${selected.land.id}/buy`,
+                className: "mr-2",
               }}
             />
           )}
@@ -165,6 +170,17 @@ function Info({ onClose, selected }: Props) {
               to: `${pathname}/${selected.land.id}/contract/${
                 pendingContract ? pendingContract.id : ""
               }`,
+              className: "mr-2",
+            }}
+          />
+        )}
+        {isOwner && (
+          <Button
+            label="Sell"
+            icon={<MdOutlineSell />}
+            linkProps={{
+              to: `${pathname}/${selected.land.id}/sell`,
+              className: "mr-2",
             }}
           />
         )}

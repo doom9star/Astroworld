@@ -26,7 +26,16 @@ function Button({ label, icon, loading, btnProps, linkProps }: Props) {
         }
         style={label && icon ? { fontSize: "0.6rem" } : {}}
       >
-        {loading && <div className="spinner" />}
+        {loading && (
+          <div
+            className={`spinner ${
+              !btnProps?.className?.includes("text-")
+                ? "border-black"
+                : "border" +
+                  btnProps.className.match(/text-[a-z]+-\d+/)?.[0].substring(4)
+            }`}
+          />
+        )}
         {icon}
         {label && <span className="ml-2">{label}</span>}
       </button>

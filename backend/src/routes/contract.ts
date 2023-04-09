@@ -14,6 +14,7 @@ import Notification from "../entities/Notification";
 import { v4 } from "uuid";
 import File from "../entities/File";
 import Land from "../entities/Land";
+import { Not } from "typeorm";
 
 const router = Router();
 
@@ -41,8 +42,20 @@ router.post("/:id/sign", isAuth, async (req: TAuthRequest, res) => {
       if (contract.type === EContractType.LAND_BUY) {
         contract.from.coins -= contract.coins;
         contract.to.coins += contract.coins;
-        await Land.update({ id: lid }, { owner: contract.from });
+        await Land.update(
+          { id: lid },
+          { owner: contract.from, value: contract.coins }
+        );
       }
+
+      await Contract.update(
+        {
+          id: Not(contract.id),
+          status: EContractStatus.PENDING,
+          land: { id: lid },
+        },
+        { status: EContractStatus.REJECTED }
+      );
 
       const transaction = new Transaction();
       transaction.contract = contract;
@@ -56,7 +69,7 @@ router.post("/:id/sign", isAuth, async (req: TAuthRequest, res) => {
       { type: ENotificationHandler.USER, info: req.body.from },
     ];
     notification.type =
-      req.params.sign === EContractStatus.ACCEPTED
+      req.body.sign === EContractStatus.ACCEPTED
         ? ENotificationType.CONTRACT_ACCEPTED
         : ENotificationType.CONTRACT_REJECTED;
     notification.info = { world: req.body.wid, user: req.body.to };

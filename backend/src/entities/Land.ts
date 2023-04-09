@@ -5,6 +5,7 @@ import {
   JoinTable,
   ManyToMany,
   ManyToOne,
+  OneToMany,
   OneToOne,
 } from "typeorm";
 import { ELandType } from "../misc/types";
@@ -48,8 +49,7 @@ export default class Land extends Base {
   })
   continent: Continent;
 
-  @ManyToMany(() => Contract)
-  @JoinTable({ name: "land_contracts" })
+  @OneToMany(() => Contract, (contract) => contract.land)
   contracts: Contract[];
 
   capital: Capital | null;

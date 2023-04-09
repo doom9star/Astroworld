@@ -10,6 +10,7 @@ import Button from "../../../../../../components/Button";
 import Spinner from "../../../../../../components/Spinner";
 import { cAxios } from "../../../../../../misc/constants";
 import { TResponse } from "../../../../../../misc/types";
+import { getDate } from "../../../../../../misc/utils";
 import { setUser, useGlobalState } from "../../../../../../redux/slices/global";
 import {
   EContractStatus,
@@ -154,9 +155,7 @@ function Detail() {
         </div>
         <div className="flex justify-between text-xs my-4">
           <span>expiry</span>
-          <span className="font-bold">
-            {new Date(contract.expiry).toLocaleDateString()}
-          </span>
+          <span className="font-bold">{getDate(contract.expiry)}</span>
         </div>
         <div
           className="flex justify-between around items-center mt-10"
@@ -169,9 +168,7 @@ function Detail() {
               {contract.from.email}
               &nbsp;{" (Buyer)"}
             </span>
-            <span className="mb-2">{`(${new Date(
-              contract.createdAt
-            ).toLocaleDateString()})`}</span>
+            <span className="mb-2">{`(${getDate(contract.createdAt)})`}</span>
             <span
               className="flex items-center font-bold text-white py-1 px-2 rounded-lg bg-green-600"
               style={{
@@ -188,9 +185,9 @@ function Detail() {
             </span>
             {contract.status === EContractStatus.ACCEPTED ? (
               <>
-                <span className="mb-2">{`(${new Date(
+                <span className="mb-2">{`(${getDate(
                   contract.updatedAt
-                ).toLocaleDateString()})`}</span>
+                )})`}</span>
                 <span
                   className="flex items-center font-bold text-white py-1 px-2 rounded-lg bg-green-600"
                   style={{

@@ -3,6 +3,7 @@ import { FaPlaceOfWorship, FaUserTie } from "react-icons/fa";
 import { GrLocation } from "react-icons/gr";
 import { ILand } from "../../../../../../redux/types";
 import { AiOutlineCalendar } from "react-icons/ai";
+import { getDate } from "../../../../../../misc/utils";
 
 type Props = {
   land: ILand;
@@ -32,7 +33,7 @@ function TabLand({ land }: Props) {
             <span className="flex items-center">
               <AiOutlineCalendar className="mr-2" /> est
             </span>
-            <span>{new Date(land.createdAt).toLocaleDateString()}</span>
+            <span>{getDate(land.createdAt)}</span>
           </div>
           <div className="flex justify-between m-4">
             <span className="flex items-center">

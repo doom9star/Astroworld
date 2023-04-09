@@ -6,6 +6,7 @@ import Button from "../../../components/Button";
 import Spinner from "../../../components/Spinner";
 import { cAxios } from "../../../misc/constants";
 import { TResponse } from "../../../misc/types";
+import { getExpiryDate } from "../../../misc/utils";
 import { IFile } from "../../../redux/types";
 
 type AvatarPickerProps = {
@@ -64,7 +65,7 @@ export default function Edit() {
   const [info, setInfo] = useState<TInfo>({
     name: "",
     avatar: {} as IFile,
-    birthDate: new Date().toISOString(),
+    birthDate: getExpiryDate(-(365 * 10)),
     description: "",
   });
   const [avatars, setAvatars] = useState<IFile[]>([]);
@@ -136,6 +137,7 @@ export default function Edit() {
         {errors.name && <span className="input-error">{errors.name}</span>}
         <input
           type={"date"}
+          max={getExpiryDate(-(365 * 10))}
           placeholder="Birth Date"
           className={`input ${classNames({
             "border-red-500": errors.birthDate,

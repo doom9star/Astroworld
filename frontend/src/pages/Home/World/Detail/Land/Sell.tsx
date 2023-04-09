@@ -14,8 +14,6 @@ import { setAlert, useGlobalState } from "../../../../../redux/slices/global";
 import { EContractType } from "../../../../../redux/types";
 
 type TInfo = {
-  from: string;
-  to: string;
   coins: number;
   expiry: string;
   comment: string;
@@ -30,10 +28,8 @@ function Buy() {
   const { user } = useGlobalState();
 
   const [info, setInfo] = useState<TInfo>({
-    from: "",
-    to: "",
     coins: 0,
-    expiry: getExpiryDate(2),
+    expiry: getExpiryDate(10),
     comment: "",
     negotiable: false,
   });
@@ -52,9 +48,8 @@ function Buy() {
       .post<TResponse>(`/land/${land?.id}/contract`, {
         ...info,
         from: user!.id,
-        to: land!.owner.id,
         expiry: new Date(info.expiry),
-        type: EContractType.LAND_BUY,
+        type: EContractType.LAND_SALE,
         wid: params.wid,
       })
       .then((res) => {
@@ -62,7 +57,7 @@ function Buy() {
           dispatch(
             setAlert({
               state: "SUCCESS",
-              message: `"LAND_BUY" contract has been successfully dispatched to ${land?.owner.email}!`,
+              message: `"LAND_SALE" contract has been successfully created!`,
             })
           );
           navigate(-1);
@@ -77,8 +72,6 @@ function Buy() {
     if (!landLoading) {
       setInfo((prev) => ({
         ...prev,
-        from: user!.email,
-        to: land!.owner.email,
         coins: land!.value,
       }));
     }
@@ -94,38 +87,12 @@ function Buy() {
   }
 
   return (
-    <div style={{ overflow: "scroll", maxHeight: "80vh" }}>
+    <div>
       <div className="w-[500px] mx-auto border p-8">
         <p className="flex items-center justify-center font-mono text-lg">
-          <TbWallpaper className="mr-2 text-2xl" /> PURCHASE CONTRACT
+          <TbWallpaper className="mr-2 text-2xl" /> SALE CONTRACT
         </p>
         <p className="text-center text-sm mb-10">{params.lid}</p>
-        <div className="flex items-center justify-between my-2">
-          <label htmlFor="buyer" className="text-xs">
-            Buyer
-          </label>
-          <input
-            type={"text"}
-            placeholder="Buyer"
-            className={`input opacity-80`}
-            id="buyer"
-            value={info.from}
-            readOnly
-          />
-        </div>
-        <div className="flex items-center justify-between my-2">
-          <label htmlFor="seller" className="text-xs">
-            Seller
-          </label>
-          <input
-            type={"text"}
-            placeholder="Seller"
-            className={`input opacity-80`}
-            id="seller"
-            value={info.to}
-            readOnly
-          />
-        </div>
         <div className="flex items-center justify-between my-2">
           <label htmlFor="coins" className="text-xs">
             Coins
@@ -201,7 +168,6 @@ function Buy() {
           />
         </div>
       </div>
-      <div className="p-10" />
     </div>
   );
 }

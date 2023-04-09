@@ -34,31 +34,33 @@ router.get("/:id", isAuth, async (req, res) => {
 router.post("/:id/contract", isAuth, async (req: TAuthRequest, res) => {
   const contract = new Contract();
   contract.from = req.body.from;
-  contract.to = req.body.to;
   contract.coins = req.body.coins;
   contract.expiry = req.body.expiry;
   contract.info = `land|${req.params.id}`;
-  contract.type = EContractType.LAND_BUY;
+  contract.comment = req.body.comment;
+  contract.negotiable = req.body.negotiable;
+  contract.type = req.body.type;
+  contract.land = <any>{ id: req.params.id };
+  if (contract.type === EContractType.LAND_BUY) {
+    contract.to = req.body.to;
+  }
   await contract.save();
 
-  const notification = new Notification();
-  notification.handlers = [
-    { type: ENotificationHandler.CONTRACT, info: contract.id },
-    { type: ENotificationHandler.LAND, info: req.params.id },
-    { type: ENotificationHandler.USER, info: req.body.from },
-  ];
-  notification.type = ENotificationType.CONTRACT_PENDING;
-  notification.info = { world: req.body.wid, user: req.body.to };
-  notification.thumbnail = new File();
-  notification.thumbnail.cid = `notification-${v4()}`;
-  notification.thumbnail.url = "/images/contract.png";
-  await notification.save();
+  if (contract.type === EContractType.LAND_BUY) {
+    const notification = new Notification();
+    notification.handlers = [
+      { type: ENotificationHandler.CONTRACT, info: contract.id },
+      { type: ENotificationHandler.LAND, info: req.params.id },
+      { type: ENotificationHandler.USER, info: req.body.from },
+    ];
+    notification.type = ENotificationType.CONTRACT_PENDING;
+    notification.info = { world: req.body.wid, user: req.body.to };
+    notification.thumbnail = new File();
+    notification.thumbnail.cid = `notification-${v4()}`;
+    notification.thumbnail.url = "/images/contract.png";
+    await notification.save();
+  }
 
-  await req.db
-    ?.createQueryBuilder()
-    .relation(Land, "contracts")
-    .of(req.params.id)
-    .add(contract);
   return res.json(
     getResponse("SUCCESS", "Contract created successfully!", contract)
   );
