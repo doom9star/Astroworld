@@ -33,7 +33,7 @@ router.get("/:id", isAuth, async (req, res) => {
 
 router.post("/:id/contract", isAuth, async (req: TAuthRequest, res) => {
   const contract = new Contract();
-  contract.from = req.body.from;
+  contract.to = req.body.to;
   contract.coins = req.body.coins;
   contract.expiry = req.body.expiry;
   contract.info = `land|${req.params.id}`;
@@ -42,7 +42,7 @@ router.post("/:id/contract", isAuth, async (req: TAuthRequest, res) => {
   contract.type = req.body.type;
   contract.land = <any>{ id: req.params.id };
   if (contract.type === EContractType.LAND_BUY) {
-    contract.to = req.body.to;
+    contract.from = req.body.from;
   }
   await contract.save();
 
@@ -67,11 +67,14 @@ router.post("/:id/contract", isAuth, async (req: TAuthRequest, res) => {
 });
 
 router.get("/:id/contract/:type", isAuth, async (req, res) => {
-  const land = await Land.findOne({
-    where: { id: req.params.id },
-    relations: ["contracts", "contracts.from"],
+  const contracts = await Contract.find({
+    where: {
+      land: { id: req.params.id },
+      type: req.params.type as EContractType,
+    },
+    relations: ["from"],
+    order: { createdAt: "DESC" },
   });
-  const contracts = land?.contracts.filter((c) => c.type === req.params.type);
   return res.json(
     getResponse("SUCCESS", "Contracts retreived successfully!", contracts)
   );

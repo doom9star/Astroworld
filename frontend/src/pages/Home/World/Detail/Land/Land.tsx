@@ -1,5 +1,6 @@
 import classNames from "classnames";
 import { useState } from "react";
+import { AiOutlineLock } from "react-icons/ai";
 import { BiNews, BiVideo } from "react-icons/bi";
 import { BsChatDots, BsMusicNote } from "react-icons/bs";
 import { GrLocation } from "react-icons/gr";
@@ -15,6 +16,7 @@ import TabFiles from "./Tab/Files";
 import TabLand from "./Tab/Land";
 import TabMusic from "./Tab/Music";
 import TabNews from "./Tab/News";
+import TabVault from "./Tab/Vault";
 import TabVideo from "./Tab/Video";
 
 enum ETab {
@@ -25,6 +27,7 @@ enum ETab {
   FILES,
   MUSIC,
   VIDEO,
+  VAULT,
 }
 
 function Land() {
@@ -124,6 +127,17 @@ function Land() {
         >
           <BiVideo className="mr-1" /> Video
         </button>
+        <button
+          className={
+            "mr-10 text-xs flex items-center" +
+            classNames({
+              " font-bold underline": tab === ETab.VAULT,
+            })
+          }
+          onClick={() => setTab(ETab.VAULT)}
+        >
+          <AiOutlineLock className="mr-1" /> Vault
+        </button>
       </div>
       {tab === ETab.LAND ? (
         <TabLand land={land} />
@@ -137,8 +151,10 @@ function Land() {
         <TabFiles land={land} />
       ) : tab === ETab.MUSIC ? (
         <TabMusic land={land} />
-      ) : (
+      ) : tab === ETab.VIDEO ? (
         <TabVideo land={land} />
+      ) : (
+        <TabVault land={land} />
       )}
     </div>
   );

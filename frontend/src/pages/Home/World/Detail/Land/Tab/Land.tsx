@@ -46,14 +46,22 @@ function TabLand({ land }: Props) {
               <BiCoinStack className="mr-2" />
               reserve
             </span>
-            <span>{land.owner.coins.toLocaleString()}</span>
+            <div className="ml-3 flex items-center">
+              <div className="w-2 h-2 rounded-full bg-yellow-500" />
+              &nbsp;
+              <span>{land.owner.coins.toLocaleString()}</span>
+            </div>
           </div>
           <div className="flex justify-between m-4">
             <span className="flex items-center">
               <BiCoin className="mr-2" />
               value
             </span>
-            <span>{land.value.toLocaleString()}</span>
+            <div className="ml-3 flex items-center">
+              <div className="w-2 h-2 rounded-full bg-yellow-500" />
+              &nbsp;
+              <span>{land.value.toLocaleString()}</span>
+            </div>
           </div>
         </div>
       </div>

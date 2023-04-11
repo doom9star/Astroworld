@@ -47,7 +47,7 @@ function Buy() {
     cAxios
       .post<TResponse>(`/land/${land?.id}/contract`, {
         ...info,
-        from: user!.id,
+        to: user!.id,
         expiry: new Date(info.expiry),
         type: EContractType.LAND_SALE,
         wid: params.wid,

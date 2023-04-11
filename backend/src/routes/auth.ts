@@ -39,9 +39,9 @@ router.post("/register", isNotAuth, async (req, res) => {
 
 router.post("/login", isNotAuth, async (req, res) => {
   try {
-    const { nameOrEmail, password } = req.body;
+    const { email, password } = req.body;
     const user = await User.findOne({
-      where: { [nameOrEmail.includes("@") ? "email" : "name"]: nameOrEmail },
+      where: { [email.includes("@") ? "email" : "name"]: email },
     });
 
     if (!user) return res.json(getResponse("ERROR", "User does not exist!"));

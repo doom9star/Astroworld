@@ -5,7 +5,6 @@ import Transaction from "../entities/Transaction";
 import getResponse from "../utils/getResponse";
 import {
   EContractStatus,
-  EContractType,
   ENotificationHandler,
   ENotificationType,
   TAuthRequest,
@@ -39,14 +38,12 @@ router.post("/:id/sign", isAuth, async (req: TAuthRequest, res) => {
     const lid = contract.info.split("|")[1];
 
     if (req.body.sign === EContractStatus.ACCEPTED) {
-      if (contract.type === EContractType.LAND_BUY) {
-        contract.from.coins -= contract.coins;
-        contract.to.coins += contract.coins;
-        await Land.update(
-          { id: lid },
-          { owner: contract.from, value: contract.coins }
-        );
-      }
+      contract.from.coins -= contract.coins;
+      contract.to.coins += contract.coins;
+      await Land.update(
+        { id: lid },
+        { owner: contract.from, value: contract.coins }
+      );
 
       await Contract.update(
         {

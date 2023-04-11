@@ -11,7 +11,11 @@ import { TiChartAreaOutline } from "react-icons/ti";
 import { useLocation } from "react-router-dom";
 import Button from "../../../../components/Button";
 import { useGlobalState } from "../../../../redux/slices/global";
-import { EContractStatus, ELandType } from "../../../../redux/types";
+import {
+  EContractStatus,
+  EContractType,
+  ELandType,
+} from "../../../../redux/types";
 import { TSelected } from "./Detail";
 
 type Props = {
@@ -26,7 +30,10 @@ function Info({ onClose, selected }: Props) {
 
   const pendingContract = useMemo(() => {
     const contract = selected.land.contracts.find(
-      (c) => c.from.id === user?.id && c.status === EContractStatus.PENDING
+      (c) =>
+        ((c.from || c.to).id === user?.id ||
+          c.type === EContractType.LAND_SALE) &&
+        c.status === EContractStatus.PENDING
     );
     return contract;
   }, [selected, user]);
@@ -165,7 +172,18 @@ function Info({ onClose, selected }: Props) {
         {(pendingContract || viewContract) && (
           <Button
             label="View"
-            icon={<ImFileText />}
+            icon={
+              <span className="flex">
+                {pendingContract ? (
+                  pendingContract.type === EContractType.LAND_BUY ? (
+                    <GiBuyCard className="mr-1" />
+                  ) : (
+                    <MdOutlineSell className="mr-1" />
+                  )
+                ) : null}
+                <ImFileText />
+              </span>
+            }
             linkProps={{
               to: `${pathname}/${selected.land.id}/contract/${
                 pendingContract ? pendingContract.id : ""

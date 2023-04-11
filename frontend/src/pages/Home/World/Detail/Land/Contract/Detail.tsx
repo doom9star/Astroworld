@@ -97,6 +97,33 @@ function Detail() {
     return null;
   }
 
+  const Footer = () => {
+    return (
+      <div className="flex">
+        <Button
+          label="Accept"
+          icon={<FaSignature />}
+          loading={signLoading.accepted}
+          btnProps={{
+            className: "text-green-600 border border-green-600 mt-2 mr-2",
+            onClick: () => signContract(EContractStatus.ACCEPTED),
+          }}
+        />
+        {contract.type !== EContractType.LAND_SALE && (
+          <Button
+            label="Reject"
+            icon={<RxCross2 />}
+            loading={signLoading.rejected}
+            btnProps={{
+              className: "text-red-600 border border-red-600 mt-2",
+              onClick: () => signContract(EContractStatus.REJECTED),
+            }}
+          />
+        )}
+      </div>
+    );
+  };
+
   return (
     <Fragment>
       <div className="ml-60 float-left">
@@ -112,7 +139,13 @@ function Detail() {
         </div>
         <div className="flex justify-between text-xs my-4">
           <span>buyer</span>
-          <span className="font-bold">{contract.from.email}</span>
+          <span className="font-bold">
+            {contract.from
+              ? contract.from.email
+              : contract.to.id !== user?.id
+              ? user?.email
+              : "-"}
+          </span>
         </div>
         <div className="flex justify-between text-xs my-4">
           <span>seller</span>
@@ -157,6 +190,12 @@ function Detail() {
           <span>expiry</span>
           <span className="font-bold">{getDate(contract.expiry)}</span>
         </div>
+        <div className="flex justify-between text-xs my-4">
+          <span>type</span>
+          <span className="font-bold">
+            {contract.type === EContractType.LAND_BUY ? "PURCHASE" : "SALE"}
+          </span>
+        </div>
         <div
           className="flex justify-between around items-center mt-10"
           style={{
@@ -164,29 +203,48 @@ function Detail() {
           }}
         >
           <div className="flex flex-col items-start">
-            <span className="font-bold">
-              {contract.from.email}
-              &nbsp;{" (Buyer)"}
-            </span>
-            <span className="mb-2">{`(${getDate(contract.createdAt)})`}</span>
-            <span
-              className="flex items-center font-bold text-white py-1 px-2 rounded-lg bg-green-600"
-              style={{
-                fontSize: "0.6rem",
-              }}
-            >
-              <TiTick /> <span>SIGNED</span>
-            </span>
+            {contract.from ? (
+              <>
+                <span className="font-bold whitespace-nowrap">
+                  {contract.from.email}
+                  &nbsp;{" (Buyer)"}
+                </span>
+                <span className="mb-2">{`(${getDate(
+                  contract.type === EContractType.LAND_SALE
+                    ? contract.updatedAt
+                    : contract.createdAt
+                )})`}</span>
+                <span
+                  className="flex items-center font-bold text-white py-1 px-2 rounded-lg bg-green-600"
+                  style={{
+                    fontSize: "0.6rem",
+                  }}
+                >
+                  <TiTick /> <span>SIGNED</span>
+                </span>
+              </>
+            ) : contract.to.id !== user?.id ? (
+              <>
+                <span className="font-bold whitespace-nowrap">
+                  {user?.email}
+                  &nbsp;{" (Buyer)"}
+                </span>
+                <Footer />
+              </>
+            ) : null}
           </div>
           <div className="flex flex-col items-end">
-            <span className="font-bold">
+            <span className="font-bold whitespace-nowrap">
               {contract.to.email}
               &nbsp;{" (Seller)"}
             </span>
-            {contract.status === EContractStatus.ACCEPTED ? (
+            {contract.type === EContractType.LAND_SALE ||
+            contract.status === EContractStatus.ACCEPTED ? (
               <>
                 <span className="mb-2">{`(${getDate(
-                  contract.updatedAt
+                  contract.type === EContractType.LAND_SALE
+                    ? contract.createdAt
+                    : contract.updatedAt
                 )})`}</span>
                 <span
                   className="flex items-center font-bold text-white py-1 px-2 rounded-lg bg-green-600"
@@ -199,9 +257,9 @@ function Detail() {
               </>
             ) : contract.status === EContractStatus.REJECTED ? (
               <>
-                <span className="mb-2">{`(${new Date(
+                <span className="mb-2">{`(${getDate(
                   contract.updatedAt
-                ).toLocaleDateString()})`}</span>
+                )})`}</span>
                 <span
                   className="flex items-center font-bold text-white py-1 px-2 rounded-lg bg-red-600"
                   style={{
@@ -211,29 +269,9 @@ function Detail() {
                   <RxCross2 /> &nbsp;<span>REJECTED</span>
                 </span>
               </>
-            ) : user?.id === contract.to.id ? (
-              <div className="flex">
-                <Button
-                  label="Accept"
-                  icon={<FaSignature />}
-                  loading={signLoading.accepted}
-                  btnProps={{
-                    className:
-                      "text-green-600 border border-green-600 mt-2 mr-2",
-                    onClick: () => signContract(EContractStatus.ACCEPTED),
-                  }}
-                />
-                <Button
-                  label="Reject"
-                  icon={<RxCross2 />}
-                  loading={signLoading.rejected}
-                  btnProps={{
-                    className: "text-red-600 border border-red-600 mt-2",
-                    onClick: () => signContract(EContractStatus.REJECTED),
-                  }}
-                />
-              </div>
-            ) : null}
+            ) : (
+              <Footer />
+            )}
           </div>
         </div>
       </div>

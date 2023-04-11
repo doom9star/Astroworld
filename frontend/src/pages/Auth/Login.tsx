@@ -9,13 +9,13 @@ import { TResponse } from "../../misc/types";
 import { setAlert, setUser } from "../../redux/slices/global";
 
 type TInfo = {
-  nameOrEmail: string;
+  email: string;
   password: string;
 };
 
 function Register() {
   const [info, setInfo] = useState<TInfo>({
-    nameOrEmail: "",
+    email: "",
     password: "",
   });
   const [errors, setErrors] = useState<TInfo>({} as TInfo);
@@ -31,8 +31,8 @@ function Register() {
   const onLogin = useCallback(() => {
     if (!loading) {
       const errors = {} as TInfo;
-      if (info.nameOrEmail.trim().length === 0)
-        errors.nameOrEmail = "Name/Email must not be empty!";
+      if (info.email.trim().length === 0)
+        errors.email = "Name/Email must not be empty!";
       if (info.password.trim().length < 4)
         errors.password = "Password length must be >= 4!";
       if (JSON.stringify(errors) === "{}") {
@@ -57,16 +57,14 @@ function Register() {
         type={"email"}
         placeholder="Name/Email"
         className={`input ${classNames({
-          "border-red-500": errors.nameOrEmail,
+          "border-red-500": errors.email,
         })}`}
         autoFocus
-        name="nameOrEmail"
-        value={info.nameOrEmail}
+        name="email"
+        value={info.email}
         onChange={onChange}
       />
-      {errors.nameOrEmail && (
-        <span className="input-error">{errors.nameOrEmail}</span>
-      )}
+      {errors.email && <span className="input-error">{errors.email}</span>}
       <input
         type={"password"}
         placeholder="Password"
