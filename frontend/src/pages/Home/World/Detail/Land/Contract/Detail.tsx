@@ -7,6 +7,7 @@ import { useDispatch } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import Back from "../../../../../../components/Back";
 import Button from "../../../../../../components/Button";
+import Info from "../../../../../../components/Info";
 import Spinner from "../../../../../../components/Spinner";
 import { cAxios } from "../../../../../../misc/constants";
 import { TResponse } from "../../../../../../misc/types";
@@ -61,19 +62,20 @@ function Detail() {
         .post<TResponse>(`/contract/${contract?.id}/sign`, {
           sign,
           wid: params.wid,
-          from: contract?.to.id,
-          to: contract?.from.id,
         })
         .then((res) => {
           if (res.data.status === "SUCCESS") {
             setContract(res.data.data);
-            if (
-              contract?.type === EContractType.LAND_BUY &&
-              sign === EContractStatus.ACCEPTED
-            ) {
-              dispatch(
-                setUser({ ...user!, coins: user!.coins + contract!.coins })
-              );
+            if (sign === EContractStatus.ACCEPTED) {
+              if (contract?.type === EContractType.LAND_BUY) {
+                dispatch(
+                  setUser({ ...user!, coins: user!.coins + contract!.coins })
+                );
+              } else {
+                dispatch(
+                  setUser({ ...user!, coins: user!.coins - contract!.coins })
+                );
+              }
             }
           }
         })
@@ -126,6 +128,7 @@ function Detail() {
 
   return (
     <Fragment>
+      {contract.comment && <Info body={contract.comment} top={40} left={80} />}
       <div className="ml-60 float-left">
         <Back />
       </div>
@@ -269,9 +272,9 @@ function Detail() {
                   <RxCross2 /> &nbsp;<span>REJECTED</span>
                 </span>
               </>
-            ) : (
+            ) : contract.to.id === user?.id ? (
               <Footer />
-            )}
+            ) : null}
           </div>
         </div>
       </div>

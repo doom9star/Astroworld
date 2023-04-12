@@ -50,7 +50,7 @@ function Navbar() {
               icon={<IoMdNotificationsOutline />}
             />
             <img
-              src="/images/noImg.png"
+              src={user.avatar ? user.avatar.url : "/images/noImg.png"}
               alt="User-Avatar"
               className="w-14 rounded-full border border-gray-200 p-1"
             />

@@ -4,6 +4,7 @@ import Spinner from "../../../../../../components/Spinner";
 import { cAxios } from "../../../../../../misc/constants";
 import { TResponse } from "../../../../../../misc/types";
 import { ILand, ITransaction } from "../../../../../../redux/types";
+import TimeAgo from "react-timeago";
 
 type Props = {
   land: ILand;
@@ -43,22 +44,26 @@ function TabVault({ land }: Props) {
           <th className="p-2">
             <div className="ml-3 flex items-center justify-center">
               <div className="w-2 h-2 rounded-full bg-yellow-500" />
-              &nbsp;
+              &nbsp;&nbsp;
               <span>Coins</span>
             </div>
           </th>
+          <th className="p-2">time</th>
         </tr>
         {transactions.map((t) => (
           <tr key={t.id} className="text-xs">
-            <td className="border p-4 w-[30%] text-center">{t.id}</td>
-            <td className="border p-4 w-[23%] text-center">
+            <td className="border p-4 w-[32%] text-center">{t.id}</td>
+            <td className="border p-4 w-[17%] text-center">
               {t.contract.from.email}
             </td>
-            <td className="border p-4 w-[23%] text-center">
+            <td className="border p-4 w-[17%] text-center">
               {t.contract.to.email}
             </td>
-            <td className="border p-4 w-[23%] text-center">
+            <td className="border p-4 w-[17%] text-center">
               {t.contract.coins}
+            </td>
+            <td className="border p-4 w-[17%] text-center">
+              <TimeAgo date={t.contract.createdAt} />
             </td>
           </tr>
         ))}

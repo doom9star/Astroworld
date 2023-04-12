@@ -5,6 +5,7 @@ import Transaction from "../entities/Transaction";
 import getResponse from "../utils/getResponse";
 import {
   EContractStatus,
+  EContractType,
   ENotificationHandler,
   ENotificationType,
   TAuthRequest,
@@ -14,6 +15,7 @@ import { v4 } from "uuid";
 import File from "../entities/File";
 import Land from "../entities/Land";
 import { Not } from "typeorm";
+import User from "../entities/User";
 
 const router = Router();
 
@@ -36,6 +38,10 @@ router.post("/:id/sign", isAuth, async (req: TAuthRequest, res) => {
   if (contract) {
     contract.status = req.body.sign;
     const lid = contract.info.split("|")[1];
+
+    if (contract.type === EContractType.LAND_SALE) {
+      contract.from = <any>await User.findOne({ where: { id: req.user?.id } });
+    }
 
     if (req.body.sign === EContractStatus.ACCEPTED) {
       contract.from.coins -= contract.coins;
@@ -61,15 +67,24 @@ router.post("/:id/sign", isAuth, async (req: TAuthRequest, res) => {
 
     const notification = new Notification();
     notification.handlers = [
-      { type: ENotificationHandler.CONTRACT, info: contract.id },
+      {
+        type: ENotificationHandler.CONTRACT,
+        info: `${contract.type}|${contract.id}`,
+      },
       { type: ENotificationHandler.LAND, info: lid },
-      { type: ENotificationHandler.USER, info: req.body.from },
+      { type: ENotificationHandler.USER, info: req.user!.id },
     ];
     notification.type =
       req.body.sign === EContractStatus.ACCEPTED
         ? ENotificationType.CONTRACT_ACCEPTED
         : ENotificationType.CONTRACT_REJECTED;
-    notification.info = { world: req.body.wid, user: req.body.to };
+    notification.info = {
+      world: req.body.wid,
+      user:
+        contract.type === EContractType.LAND_BUY
+          ? contract.from.id
+          : contract.to.id,
+    };
     notification.thumbnail = new File();
     notification.thumbnail.cid = `notification-${v4()}`;
     notification.thumbnail.url = "/images/contract.png";

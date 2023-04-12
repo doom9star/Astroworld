@@ -18,7 +18,7 @@ export default class User extends Base {
   @Column()
   password: string;
 
-  @ManyToOne(() => File)
+  @ManyToOne(() => File, { cascade: true })
   avatar: File;
 
   @Column({ nullable: true })
@@ -27,7 +27,7 @@ export default class User extends Base {
   @Column({
     type: "enum",
     enum: EGender,
-    default: EGender.NONE,
+    default: EGender.MALE,
   })
   gender: EGender;
 

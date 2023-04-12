@@ -33,7 +33,7 @@ router.get("/:id", isAuth, async (req, res) => {
 
 router.post("/:id/contract", isAuth, async (req: TAuthRequest, res) => {
   const contract = new Contract();
-  contract.to = req.body.to;
+  contract.to = <any>{ id: req.body.to };
   contract.coins = req.body.coins;
   contract.expiry = req.body.expiry;
   contract.info = `land|${req.params.id}`;
@@ -42,14 +42,17 @@ router.post("/:id/contract", isAuth, async (req: TAuthRequest, res) => {
   contract.type = req.body.type;
   contract.land = <any>{ id: req.params.id };
   if (contract.type === EContractType.LAND_BUY) {
-    contract.from = req.body.from;
+    contract.from = <any>{ id: req.body.from };
   }
   await contract.save();
 
   if (contract.type === EContractType.LAND_BUY) {
     const notification = new Notification();
     notification.handlers = [
-      { type: ENotificationHandler.CONTRACT, info: contract.id },
+      {
+        type: ENotificationHandler.CONTRACT,
+        info: `${contract.type}|${contract.id}`,
+      },
       { type: ENotificationHandler.LAND, info: req.params.id },
       { type: ENotificationHandler.USER, info: req.body.from },
     ];

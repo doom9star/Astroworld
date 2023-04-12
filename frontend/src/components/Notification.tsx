@@ -9,6 +9,7 @@ import { cAxios } from "../misc/constants";
 import { TResponse } from "../misc/types";
 import { setNotification } from "../redux/slices/global";
 import {
+  EContractType,
   ENotificationHandler,
   ENotificationType,
   INotification,
@@ -59,7 +60,11 @@ function NotificationDetail({ n }: Props) {
           ) : (
             <span>
               has <span className="text-green-600 font-bold">accepted </span>
-              your contract to buy the land{" "}
+              your contract to{" "}
+              {contract?.info.split("|")[1] === EContractType.LAND_BUY
+                ? "buy"
+                : "sell"}{" "}
+              the land{" "}
             </span>
           )}
           <span className="font-bold" style={{ fontSize: "0.6rem" }}>
@@ -74,7 +79,9 @@ function NotificationDetail({ n }: Props) {
                 icon={<ImFileText />}
                 linkProps={{
                   className: "mr-2",
-                  to: `/home/world/${n.info["world"]}/${land?.info}/contract/${contract.info}`,
+                  to: `/home/world/${n.info["world"]}/${land?.info}/contract/${
+                    contract.info.split("|")[1]
+                  }`,
                 }}
                 btnProps={{
                   onClick: () => dispatch(setNotification(false)),
@@ -137,7 +144,10 @@ function Notification() {
 
   return (
     <Fragment>
-      <div className="w-[100vw] h-[110vh] bg-awblack absolute z-40 opacity-20" />
+      <div
+        onClick={() => dispatch(setNotification(false))}
+        className="w-[100vw] h-[110vh] bg-awblack absolute z-40 opacity-20"
+      />
       <div className="w-96 h-96 top-36 rounded-lg right-32 bg-gray-100 border absolute z-50 flex flex-col p-4">
         <span
           className="border border-gray-200 text-gray-500 self-end cursor-pointer px-2 py-1 text-xs rounded-full"

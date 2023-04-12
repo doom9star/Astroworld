@@ -14,10 +14,18 @@ export interface IFile extends ICommon {
   cid: string;
 }
 
+export enum EGender {
+  NONE = "0",
+  MALE = "1",
+  FEMALE = "2",
+  OTHER = "3",
+}
+
 export interface IUser extends ICommon {
   name: string;
   email: string;
   avatar: IFile;
+  gender: EGender;
   coins: number;
   birthDate: string;
   description: string;
@@ -44,6 +52,7 @@ export interface IContract extends ICommon {
   info: string;
   status: EContractStatus;
   type: EContractType;
+  comment: string;
 }
 
 export enum ELandType {
