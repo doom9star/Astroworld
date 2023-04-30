@@ -37,6 +37,7 @@ function Register() {
         errors.password = "Password length must be >= 4!";
       if (JSON.stringify(errors) === "{}") {
         setLoading(true);
+        dispatch(setAlert({ state: "IDLE", message: "" }));
         cAxios.post<TResponse>("/auth/login", info).then(({ data }) => {
           if (data.status === "SUCCESS") {
             dispatch(setUser(data.data));

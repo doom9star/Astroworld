@@ -14,8 +14,7 @@ function Info({ title, body, top, left }: Props) {
       style={{
         top: `${top}%`,
         left: `${left}%`,
-        letterSpacing: "1px",
-        wordSpacing: "6px",
+        wordSpacing: "4px",
       }}
     >
       <span className="flex items-center justify-center text-blue-600 text-center py-2 text-xs font-bold">

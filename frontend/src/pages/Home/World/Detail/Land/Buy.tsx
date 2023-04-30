@@ -34,7 +34,7 @@ function Buy() {
     to: "",
     coins: 0,
     expiry: getExpiryDate(2),
-    comment: "",
+    comment: "Hi, I would like to purchase this land.",
     negotiable: false,
   });
   const [loading, setLoading] = useState(false);

@@ -41,6 +41,7 @@ function Register() {
         errors.confirmPassword = "Password must match!";
       if (JSON.stringify(errors) === "{}") {
         setLoading(true);
+        dispatch(setAlert({ state: "IDLE", message: "" }));
         cAxios.post<TResponse>("/auth/register", info).then(({ data }) => {
           if (data.status === "SUCCESS") {
             dispatch(setUser(data.data));

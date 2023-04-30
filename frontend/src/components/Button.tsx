@@ -24,7 +24,11 @@ function Button({ label, icon, loading, btnProps, linkProps }: Props) {
             "opacity-60": !!loading,
           })} ` + btnProps?.className
         }
-        style={label && icon ? { fontSize: "0.6rem" } : {}}
+        style={
+          label && icon
+            ? { fontSize: "0.6rem", ...btnProps?.style }
+            : { ...btnProps?.style }
+        }
       >
         {loading && (
           <div

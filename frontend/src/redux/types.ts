@@ -46,13 +46,14 @@ export enum EContractStatus {
 export interface IContract extends ICommon {
   from: IUser;
   to: IUser;
-  coins: number;
+  coins: number[];
   dueRate: number;
   expiry: string;
   info: string;
   status: EContractStatus;
   type: EContractType;
-  comment: string;
+  negotiation: { uid: string; coins: number; comment: string }[];
+  negotiable: boolean;
 }
 
 export enum ELandType {
@@ -101,6 +102,7 @@ export enum ENotificationType {
   CONTRACT_PENDING = "1",
   CONTRACT_ACCEPTED = "2",
   CONTRACT_REJECTED = "3",
+  CONTRACT_NEGOTIATION = "4",
 }
 
 export enum ENotificationHandler {
@@ -119,4 +121,9 @@ export interface INotification extends ICommon {
 
 export interface ITransaction extends ICommon {
   contract: IContract;
+}
+
+export interface IComment extends ICommon {
+  from: IUser;
+  body: string;
 }

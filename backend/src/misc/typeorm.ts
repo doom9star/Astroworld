@@ -1,5 +1,6 @@
 import { DataSource } from "typeorm";
 import Capital from "../entities/Capital";
+import Comment from "../entities/Comment";
 import Continent from "../entities/Continent";
 import Contract from "../entities/Contract";
 import Conversation from "../entities/Conversation";
@@ -33,6 +34,7 @@ export default function initORM() {
       Contract,
       Transaction,
       Notification,
+      Comment,
     ],
     synchronize: true,
     logging: true,

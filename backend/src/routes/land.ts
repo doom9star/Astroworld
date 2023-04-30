@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { v4 } from "uuid";
 import Capital from "../entities/Capital";
+import Comment from "../entities/Comment";
 import Contract from "../entities/Contract";
 import File from "../entities/File";
 import Land from "../entities/Land";
@@ -11,8 +12,10 @@ import {
   EContractType,
   ENotificationHandler,
   ENotificationType,
+  EContractStatus,
 } from "../misc/types";
 import getResponse from "../utils/getResponse";
+import { Not } from "typeorm";
 
 const router = Router();
 
@@ -34,10 +37,16 @@ router.get("/:id", isAuth, async (req, res) => {
 router.post("/:id/contract", isAuth, async (req: TAuthRequest, res) => {
   const contract = new Contract();
   contract.to = <any>{ id: req.body.to };
-  contract.coins = req.body.coins;
+  contract.coins = [req.body.coins];
   contract.expiry = req.body.expiry;
   contract.info = `land|${req.params.id}`;
-  contract.comment = req.body.comment;
+  contract.negotiation = [
+    {
+      uid: req.user?.id as any,
+      coins: req.body.coins,
+      comment: req.body.comment,
+    },
+  ];
   contract.negotiable = req.body.negotiable;
   contract.type = req.body.type;
   contract.land = <any>{ id: req.params.id };
@@ -62,6 +71,15 @@ router.post("/:id/contract", isAuth, async (req: TAuthRequest, res) => {
     notification.thumbnail.cid = `notification-${v4()}`;
     notification.thumbnail.url = "/images/contract.png";
     await notification.save();
+  } else {
+    await Contract.update(
+      {
+        id: Not(contract.id),
+        status: EContractStatus.PENDING,
+        land: { id: req.params.id },
+      },
+      { status: EContractStatus.REJECTED }
+    );
   }
 
   return res.json(

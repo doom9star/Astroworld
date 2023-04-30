@@ -25,7 +25,9 @@ function Alert() {
         <FaCannabis
           className={alert.state === "ERROR" ? "text-awred" : "text-awgreen"}
         />
-        <span className="text-xs ml-4 font-mono">{alert.message}</span>
+        <span className="ml-4 font-mono" style={{ fontSize: "0.6rem" }}>
+          {alert.message}
+        </span>
       </div>
       <VscChromeClose
         className={`cursor-pointer ${

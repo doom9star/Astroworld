@@ -23,6 +23,7 @@ export enum ENotificationType {
   CONTRACT_PENDING = "1",
   CONTRACT_ACCEPTED = "2",
   CONTRACT_REJECTED = "3",
+  CONTRACT_NEGOTIATION = "4",
 }
 
 export enum ENotificationHandler {

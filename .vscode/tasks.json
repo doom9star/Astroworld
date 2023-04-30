@@ -1,0 +1,44 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "backend",
+      "type": "process",
+      "command": "./.vscode/setup.sh",
+      "args": ["backend"],
+      "group": "test",
+      "presentation": {
+        "reveal": "always"
+      },
+      "hide": true
+    },
+    {
+      "label": "frontend",
+      "type": "process",
+      "command": "./.vscode/setup.sh",
+      "args": ["frontend"],
+      "group": "test",
+      "presentation": {
+        "reveal": "always"
+      },
+      "hide": true
+    },
+    {
+      "label": "mysql",
+      "type": "process",
+      "command": "./.vscode/setup.sh",
+      "args": ["mysql"],
+      "group": "test",
+      "presentation": {
+        "reveal": "always"
+      },
+      "hide": true
+    },
+    {
+      "label": "setup",
+      "group": "test",
+      "dependsOn": ["backend", "frontend", "mysql"],
+      "dependsOrder": "parallel"
+    }
+  ]
+}

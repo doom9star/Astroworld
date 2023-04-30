@@ -44,12 +44,10 @@ router.post("/:id/sign", isAuth, async (req: TAuthRequest, res) => {
     }
 
     if (req.body.sign === EContractStatus.ACCEPTED) {
-      contract.from.coins -= contract.coins;
-      contract.to.coins += contract.coins;
-      await Land.update(
-        { id: lid },
-        { owner: contract.from, value: contract.coins }
-      );
+      const coins = contract.coins.slice(-1)[0];
+      contract.from.coins -= coins;
+      contract.to.coins += coins;
+      await Land.update({ id: lid }, { owner: contract.from, value: coins });
 
       await Contract.update(
         {
@@ -95,6 +93,44 @@ router.post("/:id/sign", isAuth, async (req: TAuthRequest, res) => {
 
   return res.json(
     getResponse("SUCCESS", "Contract status updated successfully!", contract)
+  );
+});
+
+router.post("/:id/negotiate", isAuth, async (req: TAuthRequest, res) => {
+  const contract = await Contract.findOne({ where: { id: req.params.id } });
+  if (contract) {
+    contract.negotiation = [
+      {
+        uid: req.user?.id as any,
+        coins: req.body.coins,
+        comment: req.body.comment,
+      },
+      ...contract.negotiation,
+    ];
+    contract.coins = req.body.coins;
+    await contract.save();
+
+    const notification = new Notification();
+    notification.handlers = [
+      {
+        type: ENotificationHandler.CONTRACT,
+        info: `${contract.type}|${contract.id}`,
+      },
+      { type: ENotificationHandler.LAND, info: contract.info.split("|")[1] },
+      { type: ENotificationHandler.USER, info: req.user!.id },
+    ];
+    notification.type = ENotificationType.CONTRACT_NEGOTIATION;
+    notification.info = {
+      world: req.body.wid,
+      user: req.body.to,
+    };
+    notification.thumbnail = new File();
+    notification.thumbnail.cid = `notification-${v4()}`;
+    notification.thumbnail.url = "/images/contract.png";
+    await notification.save();
+  }
+  return res.json(
+    getResponse("SUCCESS", "Contract negotiation added!", contract?.negotiation)
   );
 });
 

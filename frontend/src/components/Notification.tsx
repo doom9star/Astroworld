@@ -1,13 +1,11 @@
 import classNames from "classnames";
-import { Fragment, useEffect, useMemo, useState } from "react";
+import { Fragment, useMemo } from "react";
 import { AiOutlineUser } from "react-icons/ai";
 import { ImFileText } from "react-icons/im";
 import { RiLandscapeLine } from "react-icons/ri";
 import { useDispatch } from "react-redux";
 import TimeAgo from "react-timeago";
-import { cAxios } from "../misc/constants";
-import { TResponse } from "../misc/types";
-import { setNotification } from "../redux/slices/global";
+import { setShowNotification, useGlobalState } from "../redux/slices/global";
 import {
   EContractType,
   ENotificationHandler,
@@ -15,7 +13,6 @@ import {
   INotification,
 } from "../redux/types";
 import Button from "./Button";
-import Spinner from "./Spinner";
 
 type Props = {
   n: INotification;
@@ -57,7 +54,7 @@ function NotificationDetail({ n }: Props) {
               has <span className="text-red-600 font-bold">rejected </span>your
               contract to buy the land{" "}
             </span>
-          ) : (
+          ) : n.type === ENotificationType.CONTRACT_ACCEPTED ? (
             <span>
               has <span className="text-green-600 font-bold">accepted </span>
               your contract to{" "}
@@ -66,6 +63,8 @@ function NotificationDetail({ n }: Props) {
                 : "sell"}{" "}
               the land{" "}
             </span>
+          ) : (
+            <span>has a counter negotiation to a contract on the land </span>
           )}
           <span className="font-bold" style={{ fontSize: "0.6rem" }}>
             {land?.info}
@@ -84,7 +83,7 @@ function NotificationDetail({ n }: Props) {
                   }`,
                 }}
                 btnProps={{
-                  onClick: () => dispatch(setNotification(false)),
+                  onClick: () => dispatch(setShowNotification(false)),
                 }}
               />
             )}
@@ -97,7 +96,7 @@ function NotificationDetail({ n }: Props) {
                   state: land.info,
                 }}
                 btnProps={{
-                  onClick: () => dispatch(setNotification(false)),
+                  onClick: () => dispatch(setShowNotification(false)),
                 }}
               />
             )}
@@ -109,7 +108,7 @@ function NotificationDetail({ n }: Props) {
                   to: `/home/user/${user.info}`,
                 }}
                 btnProps={{
-                  onClick: () => dispatch(setNotification(false)),
+                  onClick: () => dispatch(setShowNotification(false)),
                 }}
               />
             )}
@@ -124,46 +123,27 @@ function NotificationDetail({ n }: Props) {
 }
 
 function Notification() {
-  const [notifications, setNotifications] = useState<INotification[]>([]);
-  const [loading, setLoading] = useState(true);
-
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    cAxios
-      .get<TResponse>("/notification")
-      .then((res) => {
-        if (res.data.status === "SUCCESS") {
-          setNotifications(res.data.data);
-        }
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  }, []);
+  const { notifications } = useGlobalState();
 
   return (
     <Fragment>
       <div
-        onClick={() => dispatch(setNotification(false))}
+        onClick={() => dispatch(setShowNotification(false))}
         className="w-[100vw] h-[110vh] bg-awblack absolute z-40 opacity-20"
       />
       <div className="w-96 h-96 top-36 rounded-lg right-32 bg-gray-100 border absolute z-50 flex flex-col p-4">
         <span
           className="border border-gray-200 text-gray-500 self-end cursor-pointer px-2 py-1 text-xs rounded-full"
-          onClick={() => dispatch(setNotification(false))}
+          onClick={() => dispatch(setShowNotification(false))}
         >
           x
         </span>
-        {loading ? (
-          <Spinner size="small" />
-        ) : (
-          <div className="my-4">
-            {notifications.map((n) => (
-              <NotificationDetail n={n} key={n.id} />
-            ))}
-          </div>
-        )}
+        <div className="my-4">
+          {notifications.map((n) => (
+            <NotificationDetail n={n} key={n.id} />
+          ))}
+        </div>
       </div>
     </Fragment>
   );
