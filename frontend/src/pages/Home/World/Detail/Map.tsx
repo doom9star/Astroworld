@@ -1,12 +1,25 @@
 import classNames from "classnames";
-import { useEffect, useRef, useState } from "react";
-import { AiOutlineMinus } from "react-icons/ai";
+import { useEffect, useMemo, useRef, useState } from "react";
+import {
+  AiOutlineCaretLeft,
+  AiOutlineCaretRight,
+  AiOutlineMinus,
+  AiOutlineNumber,
+} from "react-icons/ai";
 import { GrAdd } from "react-icons/gr";
 import { useLocation } from "react-router-dom";
 import Button from "../../../../components/Button";
+import { useGlobalState } from "../../../../redux/slices/global";
 import { useWorldState } from "../../../../redux/slices/world";
+import {
+  EContractStatus,
+  EContractType,
+  EMapFilterType,
+} from "../../../../redux/types";
 import { THeader, TSelected } from "./Detail";
 import Info from "./Info";
+
+const ZoomMap = { 250: 100, 220: 75, 190: 50, 160: 25 };
 
 type Props = {
   setHeader: React.Dispatch<React.SetStateAction<THeader>>;
@@ -17,10 +30,65 @@ type Props = {
 
 function Map({ setHeader, toLand, selected, setSelected }: Props) {
   const [zoom, setZoom] = useState(250);
+  const [mapFilter, setMapFilter] = useState<EMapFilterType>(
+    EMapFilterType.ALL
+  );
+  const [currentFilteredLand, setCurrentFilteredLand] = useState(-1);
 
   const { world } = useWorldState();
+  const { user } = useGlobalState();
   const toLandRef = useRef(toLand);
   const { state } = useLocation();
+
+  const filteredLands = useMemo(() => {
+    let lands: string[] = [];
+    if (world) {
+      if (mapFilter === EMapFilterType.TERRITORY) {
+        world.continents.forEach((c) => {
+          lands = [
+            ...lands,
+            ...c.lands
+              .filter((l) => l.owner.id === user?.id)
+              .map((l) => `${c.position} ${l.position}`),
+          ];
+        });
+      } else if (mapFilter === EMapFilterType.BUY) {
+        world.continents.forEach((c) => {
+          lands = [
+            ...lands,
+            ...c.lands
+              .filter((l) =>
+                l.contracts.some(
+                  (_c) =>
+                    _c.type === EContractType.LAND_BUY &&
+                    _c.status === EContractStatus.PENDING &&
+                    _c.from.id === user?.id
+                )
+              )
+              .map((l) => `${c.position} ${l.position}`),
+          ];
+        });
+      } else if (mapFilter === EMapFilterType.SALE) {
+        world.continents.forEach((c) => {
+          lands = [
+            ...lands,
+            ...c.lands
+              .filter((l) =>
+                l.contracts.some(
+                  (_c) =>
+                    _c.type === EContractType.LAND_SALE &&
+                    _c.status === EContractStatus.PENDING &&
+                    _c.to.id === user?.id
+                )
+              )
+              .map((l) => `${c.position} ${l.position}`),
+          ];
+        });
+      }
+    }
+    setCurrentFilteredLand(mapFilter === EMapFilterType.ALL ? -1 : 0);
+    return lands;
+  }, [mapFilter, world, user]);
 
   useEffect(() => {
     if (state) {
@@ -29,6 +97,12 @@ function Map({ setHeader, toLand, selected, setSelected }: Props) {
       toLandRef.current("1 1 2 2");
     }
   }, [state]);
+
+  useEffect(() => {
+    if (currentFilteredLand !== -1) {
+      toLandRef.current(filteredLands[currentFilteredLand]);
+    }
+  }, [filteredLands, currentFilteredLand]);
 
   return (
     <div
@@ -41,30 +115,77 @@ function Map({ setHeader, toLand, selected, setSelected }: Props) {
         position: "relative",
       }}
     >
-      <div className="fixed top-[23%] right-[10%] flex">
-        <Button
-          icon={<GrAdd />}
-          linkProps={{
-            className: "mr-2",
-          }}
-          btnProps={{
-            onClick: () => setZoom(zoom + 30),
-            disabled: zoom >= 250,
-            className: `${classNames({
-              "opacity-30": zoom >= 250,
-            })}`,
-          }}
-        />
-        <Button
-          icon={<AiOutlineMinus />}
-          btnProps={{
-            onClick: () => setZoom(zoom - 30),
-            disabled: zoom <= 150,
-            className: `${classNames({
-              "opacity-30": zoom <= 150,
-            })}`,
-          }}
-        />
+      <div className="fixed top-[23%] right-[10%] flex flex-col items-center">
+        <div className="flex items-center">
+          <Button
+            icon={<GrAdd />}
+            linkProps={{
+              className: "mr-2",
+            }}
+            btnProps={{
+              onClick: () => setZoom(zoom + 30),
+              disabled: zoom >= 250,
+              className: `${classNames({
+                "opacity-30": zoom >= 250,
+              })}`,
+            }}
+          />
+          <Button
+            icon={<AiOutlineMinus />}
+            btnProps={{
+              onClick: () => setZoom(zoom - 30),
+              disabled: zoom <= 160,
+              className: `mr-2 ${classNames({
+                "opacity-30": zoom <= 160,
+              })}`,
+            }}
+          />
+          <span className="text-xs">{(ZoomMap as any)[zoom]}%</span>
+        </div>
+        <div className="flex items-center">
+          <select
+            name="mapFilter"
+            className="w-full p-2 mr-2 text-xs bg-white border my-2"
+            onChange={(e) => setMapFilter(e.target.value as EMapFilterType)}
+          >
+            <option value={EMapFilterType.ALL}>All</option>
+            <option value={EMapFilterType.TERRITORY}>Territory</option>
+            <option value={EMapFilterType.BUY}>Buy</option>
+            <option value={EMapFilterType.SALE}>Sale</option>
+          </select>
+          <div className="flex items-center cursor-pointer">
+            <Button
+              icon={<AiOutlineCaretLeft />}
+              btnProps={{
+                onClick: () => setCurrentFilteredLand(currentFilteredLand - 1),
+                disabled: currentFilteredLand < 1,
+                className: `mr-1 ${classNames({
+                  "text-gray-400": currentFilteredLand < 1,
+                })}`,
+              }}
+            />
+            <Button
+              icon={<AiOutlineCaretRight />}
+              btnProps={{
+                onClick: () => setCurrentFilteredLand(currentFilteredLand + 1),
+                disabled: currentFilteredLand === filteredLands.length - 1,
+                className: `${classNames({
+                  "text-gray-400":
+                    currentFilteredLand === filteredLands.length - 1,
+                })}`,
+              }}
+            />
+          </div>
+        </div>
+        {filteredLands.length > 0 && (
+          <span
+            className="text-xs flex items-center cursor-pointer"
+            onClick={() => toLand(filteredLands[currentFilteredLand])}
+          >
+            <AiOutlineNumber className="mr-2" /> {currentFilteredLand + 1} /{" "}
+            {filteredLands.length}
+          </span>
+        )}
       </div>
       {selected && (
         <Info selected={selected} onClose={() => setSelected(null)} />
@@ -86,11 +207,13 @@ function Map({ setHeader, toLand, selected, setSelected }: Props) {
                 className={
                   `cursor-pointer hover:bg-gray-100 ` +
                   classNames({
-                    //   "border-t-0 mt-10": i < 3 && j < 5,
-                    //   "border-l-0 ml-10": i % 3 === 0 && j % 5 === 0,
-                    //   "border-b-0 mb-10": i > 5 && j > 19,
-                    //   "border-r-0 mr-10": (i + 1) % 3 === 0 && (j + 1) % 5 === 0,
-                    "bg-gray-100": selected?.land.id === l.id,
+                    "bg-gray-100":
+                      selected?.land.id === l.id ||
+                      filteredLands.includes(`${c.position} ${l.position}`),
+                    " bg-gray-50":
+                      currentFilteredLand !== -1 &&
+                      filteredLands[currentFilteredLand] ===
+                        `${c.position} ${l.position}`,
                   })
                 }
                 style={{

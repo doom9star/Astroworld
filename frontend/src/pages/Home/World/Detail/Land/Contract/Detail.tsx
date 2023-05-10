@@ -242,7 +242,8 @@ function Detail() {
             }}
           >
             <div className="flex flex-col items-start">
-              {contract.negotiation[0].uid === contract.from.id ? (
+              {contract.status === EContractStatus.ACCEPTED ||
+              contract.negotiation[0].uid === contract.from?.id ? (
                 <>
                   <span className="font-bold whitespace-nowrap">
                     {contract.from.email}
@@ -262,13 +263,19 @@ function Detail() {
                     <TiTick /> <span>SIGNED</span>
                   </span>
                 </>
-              ) : (
+              ) : contract.to.id !== user?.id ? (
                 <>
                   <span className="font-bold whitespace-nowrap">
                     {user?.email}
                     &nbsp;{" (Buyer)"}
                   </span>
                   <Footer />
+                </>
+              ) : (
+                <>
+                  <span className="font-bold whitespace-nowrap">
+                    - &nbsp;{" (Buyer)"}
+                  </span>
                 </>
               )}
             </div>
@@ -277,8 +284,8 @@ function Detail() {
                 {contract.to.email}
                 &nbsp;{" (Seller)"}
               </span>
-              {contract.negotiation[0].uid === contract.to.id ||
-              contract.status === EContractStatus.ACCEPTED ? (
+              {contract.status === EContractStatus.ACCEPTED ||
+              contract.negotiation[0].uid === contract.to.id ? (
                 <>
                   <span className="mb-2">{`(${getDate(
                     contract.type === EContractType.LAND_SALE
@@ -342,7 +349,7 @@ function Detail() {
                 Comment
               </label>
               <textarea
-                placeholder="Additional Information..."
+                placeholder="Write about your counter offer..."
                 className={`input`}
                 name="comment"
                 onChange={(e) => setInfo({ ...info, comment: e.target.value })}
@@ -374,7 +381,7 @@ function Detail() {
               <div
                 key={n.coins}
                 className={
-                  "flex flex-col border p-4 font-mono my-2 w-3/4" +
+                  "flex flex-col border p-4 font-mono my-2 w-full" +
                   classNames({
                     " opacity-50": idx > 0,
                     " ml-auto": n.uid === user?.id,

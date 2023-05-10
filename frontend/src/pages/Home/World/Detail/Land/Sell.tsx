@@ -30,7 +30,7 @@ function Buy() {
   const [info, setInfo] = useState<TInfo>({
     coins: 0,
     expiry: getExpiryDate(10),
-    comment: "",
+    comment: "This land is up for sale!",
     negotiable: false,
   });
   const [loading, setLoading] = useState(false);

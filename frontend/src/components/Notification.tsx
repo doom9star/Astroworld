@@ -64,7 +64,13 @@ function NotificationDetail({ n }: Props) {
               the land{" "}
             </span>
           ) : (
-            <span>has a counter negotiation to a contract on the land </span>
+            <span>
+              has a{" "}
+              <span className="text-blue-600 font-bold">
+                counter negotiation
+              </span>{" "}
+              to a contract on the land{" "}
+            </span>
           )}
           <span className="font-bold" style={{ fontSize: "0.6rem" }}>
             {land?.info}

@@ -127,3 +127,10 @@ export interface IComment extends ICommon {
   from: IUser;
   body: string;
 }
+
+export enum EMapFilterType {
+  ALL = "ALL",
+  TERRITORY = "TERRITORY",
+  BUY = "BUY",
+  SALE = "SALE",
+}

@@ -15,7 +15,7 @@ import Button from "./Button";
 import Logo from "./Logo";
 import Spinner from "./Spinner";
 
-function Navbar() {
+function Header() {
   const [loading, setLoading] = useState(false);
   const [nloading, setNLoading] = useState(true);
 
@@ -144,4 +144,4 @@ function Navbar() {
   );
 }
 
-export default Navbar;
+export default Header;
