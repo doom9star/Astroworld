@@ -44,7 +44,7 @@ router.post("/:id/sign", isAuth, async (req: TAuthRequest, res) => {
     }
 
     if (req.body.sign === EContractStatus.ACCEPTED) {
-      const coins = contract.coins.slice(-1)[0];
+      const coins = +contract.coins.slice(-1)[0];
       contract.from.coins -= coins;
       contract.to.coins += coins;
       await Land.update({ id: lid }, { owner: contract.from, value: coins });

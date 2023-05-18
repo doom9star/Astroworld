@@ -63,6 +63,10 @@ export enum ELandType {
   DECORATION = "3",
 }
 
+export enum EBuildable {
+  SHELTER = "1",
+}
+
 export interface ICapital extends ICommon {
   area: number;
   locked: boolean;

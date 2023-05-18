@@ -4,6 +4,7 @@ import Buy from "./Buy";
 import ContractRouter from "./Contract";
 import Land from "./Land";
 import Sell from "./Sell";
+import Build from "./Build";
 
 function LandRouter() {
   return (
@@ -11,6 +12,7 @@ function LandRouter() {
       <Route path="" element={<Land />} />
       <Route path="buy" element={<Buy />} />
       <Route path="sell" element={<Sell />} />
+      <Route path="build" element={<Build />} />
       <Route path="contract/*" element={<ContractRouter />} />
     </CRouter>
   );

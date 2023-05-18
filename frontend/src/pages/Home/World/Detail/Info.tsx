@@ -2,7 +2,7 @@ import classNames from "classnames";
 import { useMemo, useRef } from "react";
 import { AiOutlineAlignCenter } from "react-icons/ai";
 import { BiCoin } from "react-icons/bi";
-import { FaPlaceOfWorship, FaUserTie } from "react-icons/fa";
+import { FaPlaceOfWorship, FaUserTie, FaWrench } from "react-icons/fa";
 import { GiBuyCard } from "react-icons/gi";
 import { GrLocation, GrStatusGood } from "react-icons/gr";
 import { ImFileText } from "react-icons/im";
@@ -152,6 +152,16 @@ function Info({ onClose, selected }: Props) {
             icon={<AiOutlineAlignCenter />}
             linkProps={{
               to: `${pathname}/${selected.land.id}`,
+              className: "mr-2",
+            }}
+          />
+        )}
+        {isOwner && selected.land.type === ELandType.NONE && (
+          <Button
+            label="Build"
+            icon={<FaWrench />}
+            linkProps={{
+              to: `${pathname}/${selected.land.id}/build`,
               className: "mr-2",
             }}
           />

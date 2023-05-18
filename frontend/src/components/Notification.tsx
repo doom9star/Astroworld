@@ -145,7 +145,7 @@ function Notification() {
         >
           x
         </span>
-        <div className="my-4">
+        <div className="my-4 overflow-y-scroll">
           {notifications.map((n) => (
             <NotificationDetail n={n} key={n.id} />
           ))}

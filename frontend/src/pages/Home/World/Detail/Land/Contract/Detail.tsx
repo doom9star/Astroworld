@@ -322,7 +322,14 @@ function Detail() {
           </div>
         </div>
       </div>
-      <div className="m-10">
+      <div
+        className={
+          "m-10" +
+          classNames({
+            " opacity-50": contract.status === EContractStatus.ACCEPTED,
+          })
+        }
+      >
         <p className="flex justify-center items-center font-mono mb-4">
           <TiBusinessCard className="mr-2" /> Negotiation
         </p>
@@ -365,7 +372,9 @@ function Detail() {
                 style: {
                   opacity: contract.negotiation[0].uid === user?.id ? 0.5 : 1,
                 },
-                disabled: contract.negotiation[0].uid === user?.id,
+                disabled:
+                  contract.negotiation[0].uid === user?.id ||
+                  contract.status === EContractStatus.ACCEPTED,
                 onClick: negotiateContract,
               }}
               loading={negotiating}

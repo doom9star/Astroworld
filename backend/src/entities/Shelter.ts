@@ -10,6 +10,18 @@ export default class Shelter extends Base {
   name: string;
 
   @Column()
+  value: number;
+
+  @Column()
+  paint: string;
+
+  @Column()
+  type: number;
+
+  @Column()
+  built: Date;
+
+  @Column()
   locked: boolean;
 
   @OneToOne(() => File, { cascade: true })
