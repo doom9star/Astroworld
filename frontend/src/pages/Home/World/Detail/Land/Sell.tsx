@@ -12,6 +12,7 @@ import { TResponse } from "../../../../../misc/types";
 import { getExpiryDate } from "../../../../../misc/utils";
 import { setAlert, useGlobalState } from "../../../../../redux/slices/global";
 import { EContractType } from "../../../../../redux/types";
+import { useWorldState } from "../../../../../redux/slices/world";
 
 type TInfo = {
   coins: number;
@@ -26,6 +27,7 @@ function Buy() {
   const navigate = useNavigate();
   const { land, loading: landLoading } = useLand(params.lid);
   const { user } = useGlobalState();
+  const { world } = useWorldState();
 
   const [info, setInfo] = useState<TInfo>({
     coins: 0,
@@ -61,12 +63,15 @@ function Buy() {
             })
           );
           navigate(-1);
+          navigate(`/home/world/${world?.id}`, {
+            state: land?.id,
+          });
         }
       })
       .finally(() => {
         setLoading(false);
       });
-  }, [info, user, land, params, dispatch, navigate]);
+  }, [info, user, world, land, params, dispatch, navigate]);
 
   useEffect(() => {
     if (!landLoading) {

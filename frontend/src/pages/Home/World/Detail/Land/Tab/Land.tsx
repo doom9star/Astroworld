@@ -49,7 +49,11 @@ function TabLand({ land }: Props) {
             <div className="ml-3 flex items-center">
               <div className="w-2 h-2 rounded-full bg-yellow-500" />
               &nbsp;
-              <span>{land.owner.coins.toLocaleString()}</span>
+              <span>
+                {land.capital
+                  ? land.capital.reserve.toLocaleString()
+                  : land.owner.coins.toLocaleString()}
+              </span>
             </div>
           </div>
           <div className="flex justify-between m-4">

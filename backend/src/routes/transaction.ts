@@ -7,7 +7,7 @@ const router = Router();
 
 router.get("/", isAuth, async (req, res) => {
   const transactions = await Transaction.find({
-    relations: ["contract", "contract.from", "contract.to"],
+    relations: ["from", "to"],
     order: { createdAt: "DESC" },
   });
   return res.json(

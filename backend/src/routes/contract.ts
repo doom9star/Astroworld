@@ -8,6 +8,7 @@ import {
   EContractType,
   ENotificationHandler,
   ENotificationType,
+  ETransactionType,
   TAuthRequest,
 } from "../misc/types";
 import Notification from "../entities/Notification";
@@ -59,7 +60,10 @@ router.post("/:id/sign", isAuth, async (req: TAuthRequest, res) => {
       );
 
       const transaction = new Transaction();
-      transaction.contract = contract;
+      transaction.from = contract.from;
+      transaction.to = contract.to;
+      transaction.coins = coins;
+      transaction.type = contract.type as unknown as ETransactionType;
       await transaction.save();
     }
 

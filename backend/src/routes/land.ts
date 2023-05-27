@@ -1,36 +1,40 @@
 import { Router } from "express";
+import { Not } from "typeorm";
 import { v4 } from "uuid";
-import Capital from "../entities/Capital";
-import Comment from "../entities/Comment";
 import Contract from "../entities/Contract";
 import File from "../entities/File";
 import Land from "../entities/Land";
 import Notification from "../entities/Notification";
+import Shelter from "../entities/Shelter";
+import User from "../entities/User";
 import isAuth from "../middlewares/isAuth";
 import {
-  TAuthRequest,
+  EContractStatus,
   EContractType,
+  ELandType,
   ENotificationHandler,
   ENotificationType,
-  EContractStatus,
+  ETransactionType,
+  TAuthRequest,
 } from "../misc/types";
 import getResponse from "../utils/getResponse";
-import { Not } from "typeorm";
+import Transaction from "../entities/Transaction";
 
 const router = Router();
 
 router.get("/:id", isAuth, async (req, res) => {
   const land = await Land.findOne({
     where: { id: req.params.id },
-    relations: ["owner", "thumbnail", "continent"],
+    relations: [
+      "owner",
+      "thumbnail",
+      "continent",
+      "capital",
+      "capital.thumbnail",
+      "shelter",
+      "shelter.thumbnail",
+    ],
   });
-  if (land) {
-    const capital = await Capital.findOne({
-      where: { land: { id: req.params.id } },
-      relations: ["thumbnail"],
-    });
-    land.capital = capital;
-  }
   return res.json(getResponse("SUCCESS", "Land retrieved successfully!", land));
 });
 
@@ -99,6 +103,39 @@ router.get("/:id/contract/:type", isAuth, async (req, res) => {
   return res.json(
     getResponse("SUCCESS", "Contracts retreived successfully!", contracts)
   );
+});
+
+router.post("/:id/build/:type", isAuth, async (req: TAuthRequest, res) => {
+  const type = req.params.type as ELandType;
+  if (type === ELandType.SHELTER) {
+    const shelter = new Shelter();
+    shelter.value = req.body.value;
+    shelter.paint = req.body.paint;
+    shelter.built = req.body.built;
+    shelter.locked = true;
+    shelter.thumbnail = new File();
+    shelter.thumbnail.cid = `shelter-${v4()}`;
+    shelter.thumbnail.url = `/images/houses/${req.body.type}/${req.body.paint}.png`;
+    shelter.land = <any>{ id: req.params.id };
+    await shelter.save();
+
+    await User.getRepository().decrement(
+      { id: req.user?.id },
+      "coins",
+      shelter.value
+    );
+
+    const transaction = new Transaction();
+    transaction.from = <any>{ id: req.user?.id };
+    transaction.coins = shelter.value;
+    transaction.type = ETransactionType.LAND_BUILD;
+    await transaction.save();
+
+    return res.json(
+      getResponse("SUCCESS", "Shelter created successfully!", shelter)
+    );
+  }
+  return res.json(getResponse("ERROR", "Build failed!"));
 });
 
 export default router;

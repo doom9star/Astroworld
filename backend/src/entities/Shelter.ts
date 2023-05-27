@@ -7,16 +7,10 @@ import Land from "./Land";
 @Entity("shelter")
 export default class Shelter extends Base {
   @Column()
-  name: string;
-
-  @Column()
   value: number;
 
   @Column()
   paint: string;
-
-  @Column()
-  type: number;
 
   @Column()
   built: Date;
@@ -28,8 +22,7 @@ export default class Shelter extends Base {
   @JoinColumn()
   thumbnail: File;
 
-  @OneToOne(() => Land, { onDelete: "CASCADE" })
-  @JoinColumn()
+  @OneToOne(() => Land, (l) => l.shelter, { onDelete: "CASCADE" })
   land: Land;
 
   @OneToOne(() => Conversation)

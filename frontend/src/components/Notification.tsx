@@ -43,39 +43,52 @@ function NotificationDetail({ n }: Props) {
       <img src={n.thumbnail.url} alt={n.id} className="w-16 h-16" />
       <div className="px-2">
         <p className="leading-5 font-mono" style={{ fontSize: "0.6rem" }}>
-          <span className="font-bold">{user?.info} </span>
-          {n.type === ENotificationType.CONTRACT_PENDING ? (
+          {n.type === ENotificationType.USER_JOIN ? (
             <span>
-              has <span className="text-yellow-600 font-bold">extended </span>a
-              contract to buy the land{" "}
-            </span>
-          ) : n.type === ENotificationType.CONTRACT_REJECTED ? (
-            <span>
-              has <span className="text-red-600 font-bold">rejected </span>your
-              contract to buy the land{" "}
-            </span>
-          ) : n.type === ENotificationType.CONTRACT_ACCEPTED ? (
-            <span>
-              has <span className="text-green-600 font-bold">accepted </span>
-              your contract to{" "}
-              {contract?.info.split("|")[1] === EContractType.LAND_BUY
-                ? "buy"
-                : "sell"}{" "}
-              the land{" "}
+              Welcome to <span className="font-bold">ASTROWORLD</span>, the
+              worlds have gifted you{" "}
+              <span className="text-yellow-600 font-bold">{n.info.coins}</span>{" "}
+              coins to begin your journey!
             </span>
           ) : (
-            <span>
-              has a{" "}
-              <span className="text-blue-600 font-bold">
-                counter negotiation
-              </span>{" "}
-              to a contract on the land{" "}
-            </span>
+            <>
+              <span className="font-bold">{user?.info} </span>
+              {n.type === ENotificationType.CONTRACT_PENDING ? (
+                <span>
+                  has{" "}
+                  <span className="text-yellow-600 font-bold">extended </span>a
+                  contract to buy the land{" "}
+                </span>
+              ) : n.type === ENotificationType.CONTRACT_REJECTED ? (
+                <span>
+                  has <span className="text-red-600 font-bold">rejected </span>
+                  your contract to buy the land{" "}
+                </span>
+              ) : n.type === ENotificationType.CONTRACT_ACCEPTED ? (
+                <span>
+                  has{" "}
+                  <span className="text-green-600 font-bold">accepted </span>
+                  your contract to{" "}
+                  {contract?.info.split("|")[1] === EContractType.LAND_BUY
+                    ? "buy"
+                    : "sell"}{" "}
+                  the land{" "}
+                </span>
+              ) : (
+                <span>
+                  has a{" "}
+                  <span className="text-blue-600 font-bold">
+                    counter negotiation
+                  </span>{" "}
+                  to a contract on the land{" "}
+                </span>
+              )}
+              <span className="font-bold" style={{ fontSize: "0.6rem" }}>
+                {land?.info}
+              </span>
+              !
+            </>
           )}
-          <span className="font-bold" style={{ fontSize: "0.6rem" }}>
-            {land?.info}
-          </span>
-          !
         </p>
         <div className="flex my-2 items-center justify-between">
           <div className="flex">

@@ -326,7 +326,10 @@ function Detail() {
         className={
           "m-10" +
           classNames({
-            " opacity-50": contract.status === EContractStatus.ACCEPTED,
+            " opacity-50":
+              contract.status === EContractStatus.ACCEPTED ||
+              (contract.status === EContractStatus.REJECTED &&
+                contract.type === EContractType.LAND_BUY),
           })
         }
       >
@@ -349,6 +352,11 @@ function Detail() {
                   setInfo({ ...info, coins: parseInt(e.target.value) })
                 }
                 id="coins"
+                disabled={
+                  contract.status === EContractStatus.ACCEPTED ||
+                  (contract.status === EContractStatus.REJECTED &&
+                    contract.type === EContractType.LAND_BUY)
+                }
               />
             </div>
             <div className="flex items-center justify-between">
@@ -362,6 +370,11 @@ function Detail() {
                 onChange={(e) => setInfo({ ...info, comment: e.target.value })}
                 id="comment`"
                 value={info.comment}
+                disabled={
+                  contract.status === EContractStatus.ACCEPTED ||
+                  (contract.status === EContractStatus.REJECTED &&
+                    contract.type === EContractType.LAND_BUY)
+                }
               ></textarea>
             </div>
             <Button

@@ -15,6 +15,7 @@ import Continent from "./Continent";
 import Contract from "./Contract";
 import File from "./File";
 import User from "./User";
+import Shelter from "./Shelter";
 
 @Entity("land")
 export default class Land extends Base {
@@ -52,5 +53,11 @@ export default class Land extends Base {
   @OneToMany(() => Contract, (contract) => contract.land)
   contracts: Contract[];
 
-  capital: Capital | null;
+  @OneToOne(() => Capital, { cascade: true })
+  @JoinColumn()
+  capital: Capital;
+
+  @OneToOne(() => Shelter, { cascade: true })
+  @JoinColumn()
+  shelter: Shelter;
 }

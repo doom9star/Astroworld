@@ -9,7 +9,7 @@ export default class Notification extends Base {
   read: boolean;
 
   @Column("simple-json")
-  info: { [k: string]: string };
+  info: { [k: string]: any };
 
   @Column("simple-json")
   handlers: { type: ENotificationHandler; info: string }[];

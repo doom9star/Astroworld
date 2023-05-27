@@ -61,16 +61,27 @@ export enum ELandType {
   SHELTER = "1",
   CAPITAL = "2",
   DECORATION = "3",
+  WAREHOUSE = "4",
 }
 
 export enum EBuildable {
   SHELTER = "1",
+  WAREHOUSE = "4",
 }
 
 export interface ICapital extends ICommon {
   area: number;
   locked: boolean;
+  reserve: number;
   operating: boolean;
+  thumbnail: IFile;
+}
+
+export interface IShelter extends ICommon {
+  value: number;
+  paint: string;
+  built: string;
+  locked: boolean;
   thumbnail: IFile;
 }
 
@@ -80,7 +91,8 @@ export interface ILand extends ICommon {
   position: string;
   type: ELandType;
   owner: IUser;
-  capital: ICapital | null;
+  capital: ICapital;
+  shelter: IShelter;
   available: boolean;
   thumbnail: IFile;
   continent: IContinent;
@@ -107,6 +119,15 @@ export enum ENotificationType {
   CONTRACT_ACCEPTED = "2",
   CONTRACT_REJECTED = "3",
   CONTRACT_NEGOTIATION = "4",
+  USER_JOIN = "5",
+}
+
+export enum ETransactionType {
+  NONE = "0",
+  LAND_BUY = "1",
+  LAND_SALE = "2",
+  LAND_BUILD = "3",
+  USER_JOIN = "4",
 }
 
 export enum ENotificationHandler {
@@ -116,7 +137,7 @@ export enum ENotificationHandler {
 }
 
 export interface INotification extends ICommon {
-  info: { [k: string]: string };
+  info: { [k: string]: any };
   read: boolean;
   handlers: { type: ENotificationHandler; info: string }[];
   thumbnail: IFile;
@@ -124,7 +145,10 @@ export interface INotification extends ICommon {
 }
 
 export interface ITransaction extends ICommon {
-  contract: IContract;
+  from?: IUser;
+  to?: IUser;
+  coins: number;
+  type: ETransactionType;
 }
 
 export interface IComment extends ICommon {

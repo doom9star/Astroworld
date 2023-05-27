@@ -24,6 +24,7 @@ export enum ENotificationType {
   CONTRACT_ACCEPTED = "2",
   CONTRACT_REJECTED = "3",
   CONTRACT_NEGOTIATION = "4",
+  USER_JOIN = "5",
 }
 
 export enum ENotificationHandler {
@@ -53,5 +54,8 @@ export enum EGender {
 
 export enum ETransactionType {
   NONE = "0",
-  LAND = "1",
+  LAND_BUY = "1",
+  LAND_SALE = "2",
+  LAND_BUILD = "3",
+  USER_JOIN = "4",
 }

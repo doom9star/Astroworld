@@ -3,10 +3,19 @@ import { Router } from "express";
 import User from "../entities/User";
 import isAuth from "../middlewares/isAuth";
 import isNotAuth from "../middlewares/isNotAuth";
-import { COOKIE_NAME } from "../misc/constants";
-import { TAuthRequest } from "../misc/types";
+import { COOKIE_NAME, WEEK } from "../misc/constants";
+import {
+  ENotificationType,
+  ETransactionType,
+  TAuthRequest,
+} from "../misc/types";
 import getResponse from "../utils/getResponse";
 import getToken from "../utils/getToken";
+import Capital from "../entities/Capital";
+import Transaction from "../entities/Transaction";
+import Notification from "../entities/Notification";
+import File from "../entities/File";
+import { v4 } from "uuid";
 
 const router = Router();
 
@@ -25,9 +34,38 @@ router.get("/", isAuth, async (req: TAuthRequest, res) => {
 router.post("/register", isNotAuth, async (req, res) => {
   try {
     const { email, password } = req.body;
-    const user = await User.create({ email, password }).save();
+    console.log(email, password);
 
-    res.cookie(COOKIE_NAME, getToken({ id: user.id }));
+    const coins = (await Capital.getRepository().count()) * 100;
+    const user = await User.create({
+      email,
+      password,
+      coins,
+    }).save();
+
+    await Capital.getRepository().decrement({}, "reserve", 100);
+
+    const transaction = new Transaction();
+    transaction.to = <any>{ id: user.id };
+    transaction.coins = coins;
+    transaction.type = ETransactionType.USER_JOIN;
+    await transaction.save();
+
+    const notification = new Notification();
+    notification.handlers = [];
+    notification.info = {
+      user: user.id,
+      coins,
+    };
+    notification.type = ENotificationType.USER_JOIN;
+    notification.thumbnail = new File();
+    notification.thumbnail.cid = `notification-${v4()}`;
+    notification.thumbnail.url = "/images/coins.png";
+    await notification.save();
+
+    res.cookie(COOKIE_NAME, getToken({ id: user.id }), {
+      maxAge: WEEK,
+    });
     return res.json(
       getResponse("SUCCESS", `User has registered successfully!`, user)
     );
@@ -48,7 +86,7 @@ router.post("/login", isNotAuth, async (req, res) => {
     if (!(await user.checkPassword(password)))
       return res.json(getResponse("ERROR", "Wrong credentials!"));
 
-    res.cookie(COOKIE_NAME, getToken({ id: user.id }));
+    res.cookie(COOKIE_NAME, getToken({ id: user.id }), { maxAge: WEEK });
     return res.json(
       getResponse("SUCCESS", `User has logged in successfully!`, user)
     );

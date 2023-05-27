@@ -1,13 +1,13 @@
 import { Router } from "express";
+import { v4 } from "uuid";
 import Capital from "../entities/Capital";
 import Continent from "../entities/Continent";
 import File from "../entities/File";
 import Land from "../entities/Land";
 import World from "../entities/World";
 import isAuth from "../middlewares/isAuth";
-import { EContractStatus, ELandType, TAuthRequest } from "../misc/types";
+import { ELandType, TAuthRequest } from "../misc/types";
 import getResponse from "../utils/getResponse";
-import { v4 } from "uuid";
 
 const router = Router();
 
@@ -20,7 +20,6 @@ router.post("/", isAuth, async (req: TAuthRequest, res) => {
   world.thumbnail.cid = "world-oasis";
 
   world.continents = [];
-  let capital: Capital | null = null;
   const names = [
     ["tokyo|1000", "rio|16000", "denver|500"],
     ["helsinki|8000", "bogota|32000", "nairobi|4000"],
@@ -47,15 +46,15 @@ router.post("/", isAuth, async (req: TAuthRequest, res) => {
 
           if (continent.position === "1 1" && land.position === "2 2") {
             land.value = 100000;
-            capital = new Capital();
-            capital.locked = false;
-            capital.operating = true;
-            capital.thumbnail = new File();
-            capital.thumbnail.url = "/images/houses/House v3/house 3 blue.png";
-            capital.thumbnail.cid = "capital-oasis";
-            capital.land = land;
-            capital.land.type = ELandType.CAPITAL;
-            capital.land.available = false;
+            land.capital = new Capital();
+            land.capital.reserve = 100 * 25 * 9;
+            land.capital.locked = false;
+            land.capital.operating = true;
+            land.capital.thumbnail = new File();
+            land.capital.thumbnail.url = "/images/houses/3/blue.png";
+            land.capital.thumbnail.cid = "capital-oasis";
+            land.type = ELandType.CAPITAL;
+            land.available = false;
           }
 
           continent.lands.push(land);
@@ -102,12 +101,11 @@ router.post("/", isAuth, async (req: TAuthRequest, res) => {
   }
 
   await world.save();
-  await capital!.save();
 
   return res.json(getResponse("SUCCESS", "World created successfully!", world));
 });
 
-router.get("/", isAuth, async (req, res) => {
+router.get("/", isAuth, async (_, res) => {
   const worlds = await World.find({
     relations: ["thumbnail"],
   });
@@ -130,19 +128,13 @@ router.get("/:id", isAuth, async (req, res) => {
       "continents.lands.contracts",
       "continents.lands.contracts.from",
       "continents.lands.contracts.to",
+      "continents.lands.capital",
+      "continents.lands.capital.thumbnail",
+      "continents.lands.shelter",
+      "continents.lands.shelter.thumbnail",
     ],
     order: { continents: { position: "ASC", lands: { position: "ASC" } } },
   })) as World;
-  if (world) {
-    const land = world.continents[4].lands.find(
-      (l) => l.position === "2 2"
-    ) as Land;
-    const capital = await Capital.findOne({
-      where: { land: { id: land.id } },
-      relations: ["thumbnail"],
-    });
-    land.capital = capital;
-  }
   return res.json(
     getResponse("SUCCESS", "World retrieved successfully!", world)
   );

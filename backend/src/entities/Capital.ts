@@ -10,14 +10,16 @@ export default class Capital extends Base {
   locked: boolean;
 
   @Column()
+  reserve: number;
+
+  @Column()
   operating: boolean;
 
   @OneToOne(() => File, { cascade: true })
   @JoinColumn()
   thumbnail: File;
 
-  @OneToOne(() => Land, { onDelete: "CASCADE" })
-  @JoinColumn()
+  @OneToOne(() => Land, (l) => l.capital, { onDelete: "CASCADE" })
   land: Land;
 
   @OneToOne(() => Conversation)

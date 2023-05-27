@@ -54,16 +54,14 @@ function TabVault({ land }: Props) {
           <tr key={t.id} className="text-xs">
             <td className="border p-4 w-[32%] text-center">{t.id}</td>
             <td className="border p-4 w-[17%] text-center">
-              {t.contract.from.email}
+              {t.from ? t.from.email : "astroworld@gmail.com"}
             </td>
             <td className="border p-4 w-[17%] text-center">
-              {t.contract.to.email}
+              {t.to ? t.to.email : "astroworld@gmail.com"}
             </td>
+            <td className="border p-4 w-[17%] text-center">{t.coins}</td>
             <td className="border p-4 w-[17%] text-center">
-              {t.contract.coins}
-            </td>
-            <td className="border p-4 w-[17%] text-center">
-              <TimeAgo date={t.contract.createdAt} />
+              <TimeAgo date={t.createdAt} />
             </td>
           </tr>
         ))}
