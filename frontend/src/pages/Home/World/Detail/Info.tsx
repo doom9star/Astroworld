@@ -17,6 +17,7 @@ import {
   ELandType,
 } from "../../../../redux/types";
 import { TSelected } from "./Detail";
+import { BsCircleFill } from "react-icons/bs";
 
 type Props = {
   selected: Exclude<TSelected, null>;
@@ -45,6 +46,13 @@ function Info({ onClose, selected }: Props) {
   const viewContract = useMemo(() => {
     return isOwner && selected.land.contracts.length > 0;
   }, [selected, isOwner]);
+
+  const underConstruction = useMemo(() => {
+    return (
+      selected.land.shelter &&
+      new Date().getTime() <= new Date(selected.land.shelter.built).getTime()
+    );
+  }, [selected]);
 
   return (
     <div
@@ -142,6 +150,14 @@ function Info({ onClose, selected }: Props) {
             )}
           </div>
         )}
+        {underConstruction && (
+          <div className="flex justify-between mb-2 text-xs">
+            <span className="flex">
+              <FaWrench className="mr-2" /> construction
+            </span>
+            <BsCircleFill className="text-green-500" />
+          </div>
+        )}
       </div>
       <div className="mt-4 flex justify-center">
         {![ELandType.NONE, ELandType.DECORATION].includes(
@@ -156,16 +172,18 @@ function Info({ onClose, selected }: Props) {
             }}
           />
         )}
-        {isOwner && selected.land.type === ELandType.NONE && (
-          <Button
-            label="Build"
-            icon={<FaWrench />}
-            linkProps={{
-              to: `${pathname}/${selected.land.id}/build`,
-              className: "mr-2",
-            }}
-          />
-        )}
+        {isOwner &&
+          selected.land.type === ELandType.NONE &&
+          !underConstruction && (
+            <Button
+              label="Build"
+              icon={<FaWrench />}
+              linkProps={{
+                to: `${pathname}/${selected.land.id}/build`,
+                className: "mr-2",
+              }}
+            />
+          )}
         {selected.land.available &&
           !isOwner &&
           user!.coins >= selected.land.value &&

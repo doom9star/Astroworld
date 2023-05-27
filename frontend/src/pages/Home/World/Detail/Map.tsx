@@ -1,12 +1,15 @@
 import classNames from "classnames";
 import { useEffect, useMemo, useRef, useState } from "react";
+import Countdown from "react-countdown";
 import {
   AiOutlineCaretLeft,
   AiOutlineCaretRight,
   AiOutlineMinus,
   AiOutlineNumber,
 } from "react-icons/ai";
+import { FaBuilding } from "react-icons/fa";
 import { GrAdd } from "react-icons/gr";
+import { IoMdSettings } from "react-icons/io";
 import { useLocation } from "react-router-dom";
 import Button from "../../../../components/Button";
 import { useGlobalState } from "../../../../redux/slices/global";
@@ -18,6 +21,7 @@ import {
 } from "../../../../redux/types";
 import { THeader, TSelected } from "./Detail";
 import Info from "./Info";
+import { TiCancel } from "react-icons/ti";
 
 const ZoomMap = { 250: 100, 220: 75, 190: 50, 160: 25 };
 
@@ -210,7 +214,7 @@ function Map({ setHeader, toLand, selected, setSelected }: Props) {
                     "bg-gray-100":
                       selected?.land.id === l.id ||
                       filteredLands.includes(`${c.position} ${l.position}`),
-                    " bg-gray-50":
+                    " bg-gray-200":
                       currentFilteredLand !== -1 &&
                       filteredLands[currentFilteredLand] ===
                         `${c.position} ${l.position}`,
@@ -247,6 +251,35 @@ function Map({ setHeader, toLand, selected, setSelected }: Props) {
                     className="pt-8"
                   />
                 )}
+                {l.shelter &&
+                  (new Date().getTime() <=
+                  new Date(l.shelter.built).getTime() ? (
+                    <div className="flex flex-col justify-center items-center h-full text-awblack">
+                      <div className="flex items-center">
+                        <FaBuilding className="text-4xl mr-1" />
+                        <IoMdSettings className="animate-spin text-2xl" />
+                      </div>
+                      <Countdown
+                        date={new Date(l.shelter.built)}
+                        renderer={({ days, hours, minutes, seconds }) => {
+                          return (
+                            <span className="text-xs my-4 font-mono">
+                              {days}d : {hours}h : {minutes}m : {seconds}s
+                            </span>
+                          );
+                        }}
+                      />
+                      {user?.id === l.owner.id && (
+                        <Button label="Cancel" icon={<TiCancel />} />
+                      )}
+                    </div>
+                  ) : (
+                    <img
+                      src={l.shelter.thumbnail.url}
+                      alt="Shelter"
+                      className="w-full h-full"
+                    />
+                  ))}
               </div>
             ))}
           </div>

@@ -16,7 +16,11 @@ import { EBuildable } from "../../../../../redux/types";
 import { cAxios } from "../../../../../misc/constants";
 import { TResponse } from "../../../../../misc/types";
 import { useDispatch } from "react-redux";
-import { setAlert } from "../../../../../redux/slices/global";
+import {
+  setAlert,
+  setUser,
+  useGlobalState,
+} from "../../../../../redux/slices/global";
 import { useWorldState } from "../../../../../redux/slices/world";
 
 const paint = ["blue", "green", "orange", "purple", "red", "yellow"] as const;
@@ -46,17 +50,20 @@ function Build() {
     sub: "info",
   });
   const [loading, setLoading] = useState(false);
+
   const params = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { land, loading: landLoading } = useLand(params.lid);
   const { world } = useWorldState();
+  const { user } = useGlobalState();
 
   const buildProperty = useCallback(() => {
+    const value = land!.value + shelterInfo.type * 100;
     setLoading(true);
     cAxios
       .post<TResponse>(`/land/${land!.id}/build/${EBuildable[tabInfo.main]}`, {
-        value: land!.value + shelterInfo.type * 100,
+        value,
         paint: shelterInfo.paint,
         built: new Date(getExpiryDate(shelterInfo.type * 20)),
         type: shelterInfo.type,
@@ -71,6 +78,7 @@ function Build() {
               }!`,
             })
           );
+          dispatch(setUser({ ...user!, coins: user!.coins - value }));
           navigate(`/home/world/${world?.id}`, {
             state: land?.id,
           });
@@ -79,7 +87,7 @@ function Build() {
       .finally(() => {
         setLoading(false);
       });
-  }, [land, world, tabInfo, shelterInfo, dispatch, navigate]);
+  }, [land, world, tabInfo, shelterInfo, dispatch, navigate, user]);
 
   if (landLoading) {
     return <Spinner size="medium" />;
@@ -214,7 +222,7 @@ function Build() {
                       {shelterInfo.type * 20}d
                     </span>
                   </div>
-                  <span className="flex justify-center items-center whitespace-nowrap my-4">
+                  <span className="flex justify-center items-center whitespace-nowrap my-4 text-xs">
                     <CgSandClock className="text-xl" /> &nbsp;
                     {new Date(
                       getExpiryDate(shelterInfo.type * 20)
@@ -230,7 +238,15 @@ function Build() {
                     icon={<FaWrench />}
                     btnProps={{
                       className: "mx-auto",
+                      style: {
+                        opacity:
+                          user!.coins < land.value + shelterInfo.type * 100
+                            ? 0.5
+                            : 1,
+                      },
                       onClick: buildProperty,
+                      disabled:
+                        user!.coins < land.value + shelterInfo.type * 100,
                     }}
                   />
                 </div>
