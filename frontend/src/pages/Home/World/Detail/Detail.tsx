@@ -3,9 +3,8 @@ import { useDispatch } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import Spinner from "../../../../components/Spinner";
 import { cAxios } from "../../../../misc/constants";
-import { TResponse } from "../../../../misc/types";
 import { setWorld, useWorldState } from "../../../../redux/slices/world";
-import { IContinent, ILand } from "../../../../redux/types";
+import { IContinent, ILand, TResponse } from "../../../../redux/types";
 import Header from "./Header";
 import Map from "./Map";
 

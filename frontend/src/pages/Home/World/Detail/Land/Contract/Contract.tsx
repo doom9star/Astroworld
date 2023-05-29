@@ -4,11 +4,11 @@ import Timeago from "react-timeago";
 import Back from "../../../../../../components/Back";
 import Spinner from "../../../../../../components/Spinner";
 import { cAxios } from "../../../../../../misc/constants";
-import { TResponse } from "../../../../../../misc/types";
 import {
   EContractType,
   IContract,
   EContractStatus,
+  TResponse,
 } from "../../../../../../redux/types";
 
 function Contract() {

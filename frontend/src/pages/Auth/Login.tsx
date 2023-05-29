@@ -5,8 +5,8 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import Button from "../../components/Button";
 import { cAxios } from "../../misc/constants";
-import { TResponse } from "../../misc/types";
 import { setAlert, setUser } from "../../redux/slices/global";
+import { TResponse } from "../../redux/types";
 
 type TInfo = {
   email: string;

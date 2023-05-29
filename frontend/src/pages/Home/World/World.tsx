@@ -3,8 +3,8 @@ import { useDispatch } from "react-redux";
 import { Link, useLocation } from "react-router-dom";
 import Spinner from "../../../components/Spinner";
 import { cAxios } from "../../../misc/constants";
-import { TResponse } from "../../../misc/types";
 import { setWorlds, useWorldState } from "../../../redux/slices/world";
+import { TResponse } from "../../../redux/types";
 
 function World() {
   const [loading, setLoading] = useState(true);

@@ -19,6 +19,7 @@ import {
 } from "../misc/types";
 import getResponse from "../utils/getResponse";
 import Transaction from "../entities/Transaction";
+import Capital from "../entities/Capital";
 
 const router = Router();
 
@@ -122,6 +123,14 @@ router.post("/:id/build/:type", isAuth, async (req: TAuthRequest, res) => {
     await User.getRepository().decrement(
       { id: req.user?.id },
       "coins",
+      shelter.value
+    );
+
+    await Capital.getRepository().increment(
+      {
+        land: { id: req.params.id },
+      },
+      "reserve",
       shelter.value
     );
 

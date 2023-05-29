@@ -4,7 +4,6 @@ import { IoMdNotificationsOutline } from "react-icons/io";
 import { MdJoinFull, MdModeEditOutline } from "react-icons/md";
 import { useDispatch } from "react-redux";
 import { cAxios } from "../misc/constants";
-import { TResponse } from "../misc/types";
 import {
   setNotifications,
   setShowNotification,
@@ -14,6 +13,7 @@ import {
 import Button from "./Button";
 import Logo from "./Logo";
 import Spinner from "./Spinner";
+import { TResponse } from "../redux/types";
 
 function Header() {
   const [loading, setLoading] = useState(false);

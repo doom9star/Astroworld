@@ -12,9 +12,8 @@ import Button from "../../../../../components/Button";
 import Spinner from "../../../../../components/Spinner";
 import { useLand } from "../../../../../hooks/useLand";
 import { getExpiryDate } from "../../../../../misc/utils";
-import { EBuildable } from "../../../../../redux/types";
+import { EBuildable, TResponse } from "../../../../../redux/types";
 import { cAxios } from "../../../../../misc/constants";
-import { TResponse } from "../../../../../misc/types";
 import { useDispatch } from "react-redux";
 import {
   setAlert,

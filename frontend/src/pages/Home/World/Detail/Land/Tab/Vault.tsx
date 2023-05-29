@@ -2,8 +2,12 @@ import { useEffect, useState } from "react";
 import { GrTransaction } from "react-icons/gr";
 import Spinner from "../../../../../../components/Spinner";
 import { cAxios } from "../../../../../../misc/constants";
-import { TResponse } from "../../../../../../misc/types";
-import { ILand, ITransaction } from "../../../../../../redux/types";
+import {
+  ETransactionType,
+  ILand,
+  ITransaction,
+  TResponse,
+} from "../../../../../../redux/types";
 import TimeAgo from "react-timeago";
 
 type Props = {
@@ -48,11 +52,14 @@ function TabVault({ land }: Props) {
               <span>Coins</span>
             </div>
           </th>
+          <th className="p-2">type</th>
           <th className="p-2">time</th>
         </tr>
         {transactions.map((t) => (
           <tr key={t.id} className="text-xs">
-            <td className="border p-4 w-[32%] text-center">{t.id}</td>
+            <td className="border p-4 w-[15%] text-center">
+              {t.id.slice(0, 10)}
+            </td>
             <td className="border p-4 w-[17%] text-center">
               {t.from ? t.from.email : "astroworld@gmail.com"}
             </td>
@@ -60,6 +67,9 @@ function TabVault({ land }: Props) {
               {t.to ? t.to.email : "astroworld@gmail.com"}
             </td>
             <td className="border p-4 w-[17%] text-center">{t.coins}</td>
+            <td className="border p-4 w-[17%] text-center">
+              {ETransactionType[t.type].split("_").join(" | ")}
+            </td>
             <td className="border p-4 w-[17%] text-center">
               <TimeAgo date={t.createdAt} />
             </td>

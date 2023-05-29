@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { cAxios } from "../misc/constants";
-import { TResponse } from "../misc/types";
-import { ILand } from "../redux/types";
+import { ILand, TResponse } from "../redux/types";
 
 export function useLand(id?: string) {
   const [land, setLand] = useState<ILand | null>(null);

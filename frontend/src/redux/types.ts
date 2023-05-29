@@ -123,11 +123,11 @@ export enum ENotificationType {
 }
 
 export enum ETransactionType {
-  NONE = "0",
-  LAND_BUY = "1",
-  LAND_SALE = "2",
-  LAND_BUILD = "3",
-  USER_JOIN = "4",
+  NONE = "0" as any,
+  LAND_BUY = "1" as any,
+  LAND_SALE = "2" as any,
+  LAND_BUILD = "3" as any,
+  USER_JOIN = "4" as any,
 }
 
 export enum ENotificationHandler {
@@ -162,3 +162,10 @@ export enum EMapFilterType {
   BUY = "BUY",
   SALE = "SALE",
 }
+
+export type TResponseStatus = "SUCCESS" | "ERROR";
+export type TResponse = {
+  status: TResponseStatus;
+  message: string;
+  data?: any;
+};

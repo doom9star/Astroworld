@@ -10,13 +10,13 @@ import Button from "../../../../../../components/Button";
 import Info from "../../../../../../components/Info";
 import Spinner from "../../../../../../components/Spinner";
 import { cAxios } from "../../../../../../misc/constants";
-import { TResponse } from "../../../../../../misc/types";
 import { getDate } from "../../../../../../misc/utils";
 import { setUser, useGlobalState } from "../../../../../../redux/slices/global";
 import {
   EContractStatus,
   EContractType,
   IContract,
+  TResponse,
 } from "../../../../../../redux/types";
 import classNames from "classnames";
 
@@ -160,7 +160,7 @@ function Detail() {
       style={{ overflow: "scroll", maxHeight: "80vh" }}
     >
       {!contract.negotiable && (
-        <Info body={contract.negotiation[0].comment} top={40} left={80} />
+        <Info body={contract.negotiation[0].comment} top={40} left={75} />
       )}
       <div className="flex relative">
         <div className="absolute -left-32">
@@ -322,136 +322,140 @@ function Detail() {
           </div>
         </div>
       </div>
-      <div
-        className={
-          "m-10" +
-          classNames({
-            " opacity-50":
-              contract.status === EContractStatus.ACCEPTED ||
-              (contract.status === EContractStatus.REJECTED &&
-                contract.type === EContractType.LAND_BUY),
-          })
-        }
-      >
-        <p className="flex justify-center items-center font-mono mb-4">
-          <TiBusinessCard className="mr-2" /> Negotiation
-        </p>
-        <div className="flex w-full items-start justify-center">
-          <div className="flex flex-col mb-6 mr-10 w-1/2">
-            <div className="flex items-center justify-between">
-              <label htmlFor="coins" className="text-xs mx-2">
-                Coins
-              </label>
-              <input
-                type={"number"}
-                placeholder="Coins"
-                className={`input`}
-                name="coins"
-                value={info.coins}
-                onChange={(e) =>
-                  setInfo({ ...info, coins: parseInt(e.target.value) })
-                }
-                id="coins"
-                disabled={
-                  contract.status === EContractStatus.ACCEPTED ||
-                  (contract.status === EContractStatus.REJECTED &&
-                    contract.type === EContractType.LAND_BUY)
-                }
+      {contract.negotiable && (
+        <div
+          className={
+            "m-10" +
+            classNames({
+              " opacity-50":
+                contract.status === EContractStatus.ACCEPTED ||
+                (contract.status === EContractStatus.REJECTED &&
+                  contract.type === EContractType.LAND_BUY),
+            })
+          }
+        >
+          <p className="flex justify-center items-center font-mono mb-4">
+            <TiBusinessCard className="mr-2" /> Negotiation
+          </p>
+          <div className="flex w-full items-start justify-center">
+            <div className="flex flex-col mb-6 mr-10 w-1/2">
+              <div className="flex items-center justify-between">
+                <label htmlFor="coins" className="text-xs mx-2">
+                  Coins
+                </label>
+                <input
+                  type={"number"}
+                  placeholder="Coins"
+                  className={`input`}
+                  name="coins"
+                  value={info.coins}
+                  onChange={(e) =>
+                    setInfo({ ...info, coins: parseInt(e.target.value) })
+                  }
+                  id="coins"
+                  disabled={
+                    contract.status === EContractStatus.ACCEPTED ||
+                    (contract.status === EContractStatus.REJECTED &&
+                      contract.type === EContractType.LAND_BUY)
+                  }
+                />
+              </div>
+              <div className="flex items-center justify-between">
+                <label htmlFor="comment" className="text-xs mx-2">
+                  Comment
+                </label>
+                <textarea
+                  placeholder="Write about your counter offer..."
+                  className={`input`}
+                  name="comment"
+                  onChange={(e) =>
+                    setInfo({ ...info, comment: e.target.value })
+                  }
+                  id="comment`"
+                  value={info.comment}
+                  disabled={
+                    contract.status === EContractStatus.ACCEPTED ||
+                    (contract.status === EContractStatus.REJECTED &&
+                      contract.type === EContractType.LAND_BUY)
+                  }
+                ></textarea>
+              </div>
+              <Button
+                label="Negotiate"
+                icon={<TiBusinessCard />}
+                btnProps={{
+                  className: "mt-4 float-right",
+                  style: {
+                    opacity: contract.negotiation[0].uid === user?.id ? 0.5 : 1,
+                  },
+                  disabled:
+                    contract.negotiation[0].uid === user?.id ||
+                    contract.status === EContractStatus.ACCEPTED,
+                  onClick: negotiateContract,
+                }}
+                loading={negotiating}
               />
-            </div>
-            <div className="flex items-center justify-between">
-              <label htmlFor="comment" className="text-xs mx-2">
-                Comment
-              </label>
-              <textarea
-                placeholder="Write about your counter offer..."
-                className={`input`}
-                name="comment"
-                onChange={(e) => setInfo({ ...info, comment: e.target.value })}
-                id="comment`"
-                value={info.comment}
-                disabled={
-                  contract.status === EContractStatus.ACCEPTED ||
-                  (contract.status === EContractStatus.REJECTED &&
-                    contract.type === EContractType.LAND_BUY)
-                }
-              ></textarea>
-            </div>
-            <Button
-              label="Negotiate"
-              icon={<TiBusinessCard />}
-              btnProps={{
-                className: "mt-4 float-right",
-                style: {
-                  opacity: contract.negotiation[0].uid === user?.id ? 0.5 : 1,
-                },
-                disabled:
-                  contract.negotiation[0].uid === user?.id ||
-                  contract.status === EContractStatus.ACCEPTED,
-                onClick: negotiateContract,
-              }}
-              loading={negotiating}
-            />
-            {contract.negotiation[0].uid === user?.id && (
-              <span className="text-right" style={{ fontSize: "0.6rem" }}>
-                * You can negotiate after a counter *
-              </span>
-            )}
-          </div>
-          <div className="w-1/2">
-            {contract.negotiation.map((n, idx) => (
-              <div
-                key={n.coins}
-                className={
-                  "flex flex-col border p-4 font-mono my-2 w-full" +
-                  classNames({
-                    " opacity-50": idx > 0,
-                    " ml-auto": n.uid === user?.id,
-                  })
-                }
-              >
-                <span
-                  style={{ fontSize: "0.6rem" }}
-                  className={
-                    "my-2 text-gray-500 " +
-                    classNames({
-                      "text-left": n.uid !== user?.id,
-                      "text-right": n.uid === user?.id,
-                    })
-                  }
-                >
-                  {n.uid}
+              {contract.negotiation[0].uid === user?.id && (
+                <span className="text-right" style={{ fontSize: "0.6rem" }}>
+                  * You can negotiate after a counter *
                 </span>
+              )}
+            </div>
+            <div className="w-1/2">
+              {contract.negotiation.map((n, idx) => (
                 <div
+                  key={n.coins}
                   className={
-                    "flex items-center my-2 " +
+                    "flex flex-col border p-4 font-mono my-2 w-full" +
                     classNames({
-                      "flex-row": n.uid !== user?.id,
-                      "flex-row-reverse": n.uid === user?.id,
+                      " opacity-50": idx > 0,
+                      " ml-auto": n.uid === user?.id,
                     })
                   }
                 >
+                  <span
+                    style={{ fontSize: "0.6rem" }}
+                    className={
+                      "my-2 text-gray-500 " +
+                      classNames({
+                        "text-left": n.uid !== user?.id,
+                        "text-right": n.uid === user?.id,
+                      })
+                    }
+                  >
+                    {n.uid}
+                  </span>
                   <div
                     className={
-                      "flex items-center " +
+                      "flex items-center my-2 " +
                       classNames({
                         "flex-row": n.uid !== user?.id,
                         "flex-row-reverse": n.uid === user?.id,
                       })
                     }
                   >
-                    <div className="w-10 h-10 rounded-full bg-yellow-500" />
-                    &nbsp;
-                    <span className="font-bold">{n.coins}</span>
+                    <div
+                      className={
+                        "flex items-center " +
+                        classNames({
+                          "flex-row": n.uid !== user?.id,
+                          "flex-row-reverse": n.uid === user?.id,
+                        })
+                      }
+                    >
+                      <div className="w-10 h-10 rounded-full bg-yellow-500" />
+                      &nbsp;
+                      <span className="font-bold">{n.coins}</span>
+                    </div>
+                    <div className="mx-10" />
+                    <span className="text-xs">{n.comment}</span>
                   </div>
-                  <div className="mx-10" />
-                  <span className="text-xs">{n.comment}</span>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

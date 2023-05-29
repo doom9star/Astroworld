@@ -6,7 +6,6 @@ import Notification from "./components/Notification";
 import { CRouter, PrivateRoute, PublicRoute } from "./components/Route";
 import Spinner from "./components/Spinner";
 import { cAxios } from "./misc/constants";
-import { TResponse } from "./misc/types";
 import AuthRouter from "./pages/Auth";
 import HomeRouter from "./pages/Home";
 import Landing from "./pages/Landing";
@@ -15,6 +14,7 @@ import {
   setUser,
   useGlobalState,
 } from "./redux/slices/global";
+import { TResponse } from "./redux/types";
 
 function App() {
   const { loading, showNotification } = useGlobalState();

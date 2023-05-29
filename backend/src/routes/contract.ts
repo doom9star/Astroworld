@@ -20,6 +20,19 @@ import User from "../entities/User";
 
 const router = Router();
 
+router.get("/sale", isAuth, async (req, res) => {
+  const contracts = await Contract.find({
+    where: { type: EContractType.LAND_SALE, status: EContractStatus.PENDING },
+    relations: ["to"],
+    order: {
+      createdAt: "DESC",
+    },
+  });
+  return res.json(
+    getResponse("SUCCESS", "Sale Contracts retrieved successfully!", contracts)
+  );
+});
+
 router.get("/:id", isAuth, async (req, res) => {
   const contract = await Contract.findOne({
     where: { id: req.params.id },

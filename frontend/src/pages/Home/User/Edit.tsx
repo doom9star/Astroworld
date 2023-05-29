@@ -6,14 +6,13 @@ import Back from "../../../components/Back";
 import Button from "../../../components/Button";
 import Spinner from "../../../components/Spinner";
 import { cAxios } from "../../../misc/constants";
-import { TResponse } from "../../../misc/types";
 import { getExpiryDate } from "../../../misc/utils";
 import {
   setAlert,
   setUser,
   useGlobalState,
 } from "../../../redux/slices/global";
-import { EGender, IFile } from "../../../redux/types";
+import { EGender, IFile, TResponse } from "../../../redux/types";
 import { getDate } from "../../../misc/utils";
 
 type AvatarPickerProps = {

@@ -8,10 +8,9 @@ import Button from "../../../../../components/Button";
 import Spinner from "../../../../../components/Spinner";
 import { useLand } from "../../../../../hooks/useLand";
 import { cAxios } from "../../../../../misc/constants";
-import { TResponse } from "../../../../../misc/types";
 import { getExpiryDate } from "../../../../../misc/utils";
 import { setAlert, useGlobalState } from "../../../../../redux/slices/global";
-import { EContractType } from "../../../../../redux/types";
+import { EContractType, TResponse } from "../../../../../redux/types";
 import { useWorldState } from "../../../../../redux/slices/world";
 
 type TInfo = {
@@ -59,7 +58,7 @@ function Buy() {
           dispatch(
             setAlert({
               state: "SUCCESS",
-              message: `"LAND_SALE" contract has been successfully created!`,
+              message: `"LAND_SALE" contract has been successfully created for land=${land?.id}!`,
             })
           );
           navigate(-1);
