@@ -10,7 +10,6 @@ const router = Router();
 router.get("/", isAuth, async (req: TAuthRequest, res) => {
   const notifications = await Notification.find({
     where: { info: Like(`%${req.user?.id}%`) },
-    relations: ["thumbnail"],
     order: { createdAt: "DESC" },
   });
   return res.json(

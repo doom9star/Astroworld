@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Countdown from "react-countdown";
 import {
   AiOutlineCaretLeft,
@@ -13,15 +13,20 @@ import { IoMdSettings } from "react-icons/io";
 import { useLocation } from "react-router-dom";
 import Button from "../../../../components/Button";
 import { useGlobalState } from "../../../../redux/slices/global";
-import { useWorldState } from "../../../../redux/slices/world";
+import { setWorld, useWorldState } from "../../../../redux/slices/world";
 import {
   EContractStatus,
   EContractType,
   EMapFilterType,
+  INotification,
+  TResponse,
 } from "../../../../redux/types";
 import { THeader, TSelected } from "./Detail";
 import Info from "./Info";
 import { TiCancel } from "react-icons/ti";
+import { cAxios } from "../../../../misc/constants";
+import { useDispatch } from "react-redux";
+import { setNotifications } from "../../../../redux/slices/global";
 
 const ZoomMap = { 250: 100, 220: 75, 190: 50, 160: 25 };
 
@@ -38,11 +43,13 @@ function Map({ setHeader, toLand, selected, setSelected }: Props) {
     EMapFilterType.ALL
   );
   const [currentFilteredLand, setCurrentFilteredLand] = useState(-1);
+  const [cancelling, setCancelling] = useState(false);
 
   const { world } = useWorldState();
   const { user } = useGlobalState();
   const toLandRef = useRef(toLand);
   const { state } = useLocation();
+  const dispatch = useDispatch();
 
   const filteredLands = useMemo(() => {
     let lands: string[] = [];
@@ -93,6 +100,41 @@ function Map({ setHeader, toLand, selected, setSelected }: Props) {
     setCurrentFilteredLand(mapFilter === EMapFilterType.ALL ? -1 : 0);
     return lands;
   }, [mapFilter, world, user]);
+
+  const onBuildCancel = useCallback(
+    (cid: string, lid: string) => {
+      setCancelling(true);
+      cAxios.delete<TResponse>(`/land/${lid}/build/cancel`).then(({ data }) => {
+        if (data.status === "SUCCESS") {
+          const _world = { ...world! };
+          const cidx = _world.continents.findIndex((c) => c.id === cid);
+          const lidx = _world.continents[cidx].lands.findIndex(
+            (l) => l.id === lid
+          );
+          _world.continents[cidx].lands[lidx].shelter = undefined;
+          dispatch(setWorld(_world));
+          setCancelling(false);
+        }
+      });
+    },
+    [dispatch, world]
+  );
+
+  const onBuildComplete = useCallback(
+    (lid: string) => {
+      cAxios.put<TResponse>(`/land/${lid}/build/complete`).then(({ data }) => {
+        if (data.status === "SUCCESS") {
+          dispatch(
+            setNotifications({
+              notifications: [data.data as INotification],
+              replace: false,
+            })
+          );
+        }
+      });
+    },
+    [dispatch]
+  );
 
   useEffect(() => {
     if (state) {
@@ -268,9 +310,17 @@ function Map({ setHeader, toLand, selected, setSelected }: Props) {
                             </span>
                           );
                         }}
+                        onComplete={() => onBuildComplete(l.id)}
                       />
                       {user?.id === l.owner.id && (
-                        <Button label="Cancel" icon={<TiCancel />} />
+                        <Button
+                          label="Cancel"
+                          icon={<TiCancel />}
+                          btnProps={{
+                            onClick: () => onBuildCancel(c.id, l.id),
+                          }}
+                          loading={cancelling}
+                        />
                       )}
                     </div>
                   ) : (

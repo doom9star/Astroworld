@@ -91,8 +91,8 @@ export interface ILand extends ICommon {
   position: string;
   type: ELandType;
   owner: IUser;
-  capital: ICapital;
-  shelter: IShelter;
+  capital?: ICapital;
+  shelter?: IShelter;
   available: boolean;
   thumbnail: IFile;
   continent: IContinent;
@@ -120,6 +120,7 @@ export enum ENotificationType {
   CONTRACT_REJECTED = "3",
   CONTRACT_NEGOTIATION = "4",
   USER_JOIN = "5",
+  BUILD_COMPLETE = "6",
 }
 
 export enum ETransactionType {
@@ -140,7 +141,6 @@ export interface INotification extends ICommon {
   info: { [k: string]: any };
   read: boolean;
   handlers: { type: ENotificationHandler; info: string }[];
-  thumbnail: IFile;
   type: ENotificationType;
 }
 

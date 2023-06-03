@@ -1,7 +1,6 @@
-import { Column, Entity, JoinColumn, OneToOne } from "typeorm";
+import { Column, Entity } from "typeorm";
 import { ENotificationHandler, ENotificationType } from "../misc/types";
 import Base from "./Base";
-import File from "./File";
 
 @Entity("notification")
 export default class Notification extends Base {
@@ -13,10 +12,6 @@ export default class Notification extends Base {
 
   @Column("simple-json")
   handlers: { type: ENotificationHandler; info: string }[];
-
-  @OneToOne(() => File, { cascade: true })
-  @JoinColumn()
-  thumbnail: File;
 
   @Column({
     type: "enum",

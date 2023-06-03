@@ -13,6 +13,8 @@ import {
   INotification,
 } from "../redux/types";
 import Button from "./Button";
+import { GiCoins } from "react-icons/gi";
+import { TbFileInvoice } from "react-icons/tb";
 
 type Props = {
   n: INotification;
@@ -40,15 +42,27 @@ function NotificationDetail({ n }: Props) {
         })
       }
     >
-      <img src={n.thumbnail.url} alt={n.id} className="w-16 h-16" />
+      {n.type === ENotificationType.USER_JOIN ? (
+        <GiCoins className="text-5xl text-yellow-500 mr-2" />
+      ) : n.type === ENotificationType.BUILD_COMPLETE ? (
+        <RiLandscapeLine className="text-5xl text-green-500 mr-2" />
+      ) : (
+        <TbFileInvoice className="text-5xl text-purple-500 mr-2" />
+      )}
       <div className="px-2">
         <p className="leading-5 font-mono" style={{ fontSize: "0.6rem" }}>
           {n.type === ENotificationType.USER_JOIN ? (
             <span>
               Welcome to <span className="font-bold">ASTROWORLD</span>, the
               worlds have gifted you{" "}
-              <span className="text-yellow-600 font-bold">{n.info.coins}</span>{" "}
+              <span className="text-yellow-500 font-bold">{n.info.coins}</span>{" "}
               coins to begin your journey!
+            </span>
+          ) : n.type === ENotificationType.BUILD_COMPLETE ? (
+            <span>
+              Construction of{" "}
+              <span className="text-green-500 font-bold">shelter </span>on land-
+              {land?.info} has completed successfully!
             </span>
           ) : (
             <>

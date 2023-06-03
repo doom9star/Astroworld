@@ -1,5 +1,8 @@
 import { Router } from "express";
 
+import Capital from "../entities/Capital";
+import Notification from "../entities/Notification";
+import Transaction from "../entities/Transaction";
 import User from "../entities/User";
 import isAuth from "../middlewares/isAuth";
 import isNotAuth from "../middlewares/isNotAuth";
@@ -11,11 +14,6 @@ import {
 } from "../misc/types";
 import getResponse from "../utils/getResponse";
 import getToken from "../utils/getToken";
-import Capital from "../entities/Capital";
-import Transaction from "../entities/Transaction";
-import Notification from "../entities/Notification";
-import File from "../entities/File";
-import { v4 } from "uuid";
 
 const router = Router();
 
@@ -58,9 +56,6 @@ router.post("/register", isNotAuth, async (req, res) => {
       coins,
     };
     notification.type = ENotificationType.USER_JOIN;
-    notification.thumbnail = new File();
-    notification.thumbnail.cid = `notification-${v4()}`;
-    notification.thumbnail.url = "/images/coins.png";
     await notification.save();
 
     res.cookie(COOKIE_NAME, getToken({ id: user.id }), {

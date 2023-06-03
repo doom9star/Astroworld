@@ -72,9 +72,6 @@ router.post("/:id/contract", isAuth, async (req: TAuthRequest, res) => {
     ];
     notification.type = ENotificationType.CONTRACT_PENDING;
     notification.info = { world: req.body.wid, user: req.body.to };
-    notification.thumbnail = new File();
-    notification.thumbnail.cid = `notification-${v4()}`;
-    notification.thumbnail.url = "/images/contract.png";
     await notification.save();
   } else {
     await Contract.update(
@@ -103,6 +100,27 @@ router.get("/:id/contract/:type", isAuth, async (req, res) => {
   });
   return res.json(
     getResponse("SUCCESS", "Contracts retreived successfully!", contracts)
+  );
+});
+
+router.delete("/:id/build/cancel", isAuth, async (req: TAuthRequest, res) => {
+  await Shelter.delete({ land: { id: req.params.id } });
+  return res.json(
+    getResponse("SUCCESS", "Land construction cancelled successfully!")
+  );
+});
+
+router.put("/:id/build/complete", isAuth, async (req: TAuthRequest, res) => {
+  const notification = new Notification();
+  notification.handlers = [
+    { type: ENotificationHandler.LAND, info: req.params.id },
+  ];
+  notification.type = ENotificationType.BUILD_COMPLETE;
+  notification.info = { world: req.body.wid, user: req.user?.id };
+  await notification.save();
+
+  return res.json(
+    getResponse("SUCCESS", "Build completed successfully!", notification)
   );
 });
 

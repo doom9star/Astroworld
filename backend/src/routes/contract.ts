@@ -1,8 +1,11 @@
 import { Router } from "express";
+import { Not } from "typeorm";
 import Contract from "../entities/Contract";
-import isAuth from "../middlewares/isAuth";
+import Land from "../entities/Land";
+import Notification from "../entities/Notification";
 import Transaction from "../entities/Transaction";
-import getResponse from "../utils/getResponse";
+import User from "../entities/User";
+import isAuth from "../middlewares/isAuth";
 import {
   EContractStatus,
   EContractType,
@@ -11,12 +14,7 @@ import {
   ETransactionType,
   TAuthRequest,
 } from "../misc/types";
-import Notification from "../entities/Notification";
-import { v4 } from "uuid";
-import File from "../entities/File";
-import Land from "../entities/Land";
-import { Not } from "typeorm";
-import User from "../entities/User";
+import getResponse from "../utils/getResponse";
 
 const router = Router();
 
@@ -100,9 +98,6 @@ router.post("/:id/sign", isAuth, async (req: TAuthRequest, res) => {
           ? contract.from.id
           : contract.to.id,
     };
-    notification.thumbnail = new File();
-    notification.thumbnail.cid = `notification-${v4()}`;
-    notification.thumbnail.url = "/images/contract.png";
     await notification.save();
 
     await contract.save();
@@ -141,9 +136,6 @@ router.post("/:id/negotiate", isAuth, async (req: TAuthRequest, res) => {
       world: req.body.wid,
       user: req.body.to,
     };
-    notification.thumbnail = new File();
-    notification.thumbnail.cid = `notification-${v4()}`;
-    notification.thumbnail.url = "/images/contract.png";
     await notification.save();
   }
   return res.json(
