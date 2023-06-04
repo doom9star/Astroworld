@@ -46,7 +46,7 @@ export enum EContractStatus {
 export interface IContract extends ICommon {
   from: IUser;
   to: IUser;
-  coins: number[];
+  coins: number;
   dueRate: number;
   expiry: string;
   info: string;

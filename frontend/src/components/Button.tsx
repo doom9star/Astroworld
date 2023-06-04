@@ -19,11 +19,7 @@ function Button({ label, icon, loading, btnProps, linkProps }: Props) {
       <button
         {...btnProps}
         type={"button"}
-        className={
-          `button flex items-center ${classNames({
-            "opacity-60": !!loading,
-          })} ` + btnProps?.className
-        }
+        className={`button flex items-center` + btnProps?.className}
         style={
           label && icon
             ? { fontSize: "0.6rem", ...btnProps?.style }
@@ -40,8 +36,17 @@ function Button({ label, icon, loading, btnProps, linkProps }: Props) {
             }`}
           />
         )}
-        {icon}
-        {label && <span className="ml-2">{label}</span>}
+        <span
+          className={
+            "flex items-center " +
+            classNames({
+              "opacity-30": !!loading,
+            })
+          }
+        >
+          {icon}
+          {label && <span className="ml-2">{label}</span>}
+        </span>
       </button>
     </Link>
   );

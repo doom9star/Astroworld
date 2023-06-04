@@ -76,14 +76,15 @@ function Detail() {
         })
         .then((res) => {
           if (res.data.status === "SUCCESS") {
-            setContract(res.data.data);
+            const c = res.data.data;
+            setContract(c);
             if (sign === EContractStatus.ACCEPTED) {
-              const coins = contract!.coins.slice(-1)[0];
-              if (contract?.type === EContractType.LAND_BUY) {
-                dispatch(setUser({ ...user!, coins: user!.coins + coins }));
-              } else {
-                dispatch(setUser({ ...user!, coins: user!.coins - coins }));
-              }
+              dispatch(
+                setUser({
+                  ...user!,
+                  coins: user?.id === c.from.id ? c.from.coins : c.to.coins,
+                })
+              );
             }
           }
         })
@@ -104,19 +105,21 @@ function Detail() {
       .post<TResponse>(`/contract/${params.cid}/negotiate`, {
         ...info,
         wid: params.wid,
-        to:
-          user?.id === contract?.from.id ? contract?.to.id : contract?.from.id,
       })
       .then((res) => {
         if (res.data.status === "SUCCESS") {
-          setContract((prev) => ({ ...prev!, negotiation: res.data.data }));
+          setContract((prev) => ({
+            ...prev!,
+            coins: info.coins,
+            negotiation: res.data.data,
+          }));
           setInfo({ coins: 0, comment: "" });
         }
       })
       .finally(() => {
         setNegotiating(false);
       });
-  }, [info, params, contract, user]);
+  }, [info, params]);
 
   if (loading) {
     return <Spinner size="medium" />;
@@ -130,15 +133,17 @@ function Detail() {
   const Footer = () => {
     return (
       <div className="flex">
-        <Button
-          label="Accept"
-          icon={<FaSignature />}
-          loading={signLoading.accepted}
-          btnProps={{
-            className: "text-green-600 border border-green-600 mt-2 mr-2",
-            onClick: () => signContract(EContractStatus.ACCEPTED),
-          }}
-        />
+        {user!.coins > contract.coins && (
+          <Button
+            label="Accept"
+            icon={<FaSignature />}
+            loading={signLoading.accepted}
+            btnProps={{
+              className: "text-green-600 border border-green-600 mt-2 mr-2",
+              onClick: () => signContract(EContractStatus.ACCEPTED),
+            }}
+          />
+        )}
         {contract.type !== EContractType.LAND_SALE && (
           <Button
             label="Reject"
@@ -193,7 +198,7 @@ function Detail() {
             <div className="text-xs ml-3 flex items-center font-bold">
               <div className="w-3 h-3 rounded-full bg-yellow-500" />
               &nbsp;
-              <span>{contract.coins.slice(-1)[0]}</span>
+              <span>{contract.coins}</span>
             </div>
           </div>
           <div className="flex justify-between text-xs my-4">

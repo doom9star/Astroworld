@@ -76,13 +76,13 @@ function NotificationDetail({ n }: Props) {
               ) : n.type === ENotificationType.CONTRACT_REJECTED ? (
                 <span>
                   has <span className="text-red-600 font-bold">rejected </span>
-                  your contract to buy the land{" "}
+                  the contract to buy the land{" "}
                 </span>
               ) : n.type === ENotificationType.CONTRACT_ACCEPTED ? (
                 <span>
                   has{" "}
                   <span className="text-green-600 font-bold">accepted </span>
-                  your contract to{" "}
+                  the contract to{" "}
                   {contract?.info.split("|")[1] === EContractType.LAND_BUY
                     ? "buy"
                     : "sell"}{" "}

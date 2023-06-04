@@ -13,8 +13,8 @@ export default class Contract extends Base {
   @ManyToOne(() => User, { cascade: true })
   to: User;
 
-  @Column("simple-array")
-  coins: number[];
+  @Column({default: 80})
+  coins: number;
 
   @Column({ default: 0 })
   dueRate: number;

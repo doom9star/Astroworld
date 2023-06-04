@@ -52,11 +52,18 @@ router.post("/:id/sign", isAuth, async (req: TAuthRequest, res) => {
     const lid = contract.info.split("|")[1];
 
     if (contract.type === EContractType.LAND_SALE) {
-      contract.from = <any>await User.findOne({ where: { id: req.user?.id } });
+      contract.from = <any>await User.findOne({
+        where: {
+          id:
+            req.user?.id === contract.to.id
+              ? contract.negotiation[0].uid
+              : req.user?.id,
+        },
+      });
     }
 
     if (req.body.sign === EContractStatus.ACCEPTED) {
-      const coins = +contract.coins.slice(-1)[0];
+      const coins = contract.coins;
       contract.from.coins -= coins;
       contract.to.coins += coins;
       await Land.update({ id: lid }, { owner: contract.from, value: coins });
@@ -94,9 +101,7 @@ router.post("/:id/sign", isAuth, async (req: TAuthRequest, res) => {
     notification.info = {
       world: req.body.wid,
       user:
-        contract.type === EContractType.LAND_BUY
-          ? contract.from.id
-          : contract.to.id,
+        req.user?.id === contract.from.id ? contract.to.id : contract.from.id,
     };
     await notification.save();
 
@@ -109,7 +114,10 @@ router.post("/:id/sign", isAuth, async (req: TAuthRequest, res) => {
 });
 
 router.post("/:id/negotiate", isAuth, async (req: TAuthRequest, res) => {
-  const contract = await Contract.findOne({ where: { id: req.params.id } });
+  const contract = await Contract.findOne({
+    where: { id: req.params.id },
+    relations: ["from", "to"],
+  });
   if (contract) {
     contract.negotiation = [
       {
@@ -122,21 +130,50 @@ router.post("/:id/negotiate", isAuth, async (req: TAuthRequest, res) => {
     contract.coins = req.body.coins;
     await contract.save();
 
-    const notification = new Notification();
-    notification.handlers = [
-      {
-        type: ENotificationHandler.CONTRACT,
-        info: `${contract.type}|${contract.id}`,
-      },
-      { type: ENotificationHandler.LAND, info: contract.info.split("|")[1] },
-      { type: ENotificationHandler.USER, info: req.user!.id },
-    ];
-    notification.type = ENotificationType.CONTRACT_NEGOTIATION;
-    notification.info = {
-      world: req.body.wid,
-      user: req.body.to,
-    };
-    await notification.save();
+    if (contract.type === EContractType.LAND_BUY) {
+      const notification = new Notification();
+      notification.handlers = [
+        {
+          type: ENotificationHandler.CONTRACT,
+          info: `${contract.type}|${contract.id}`,
+        },
+        { type: ENotificationHandler.LAND, info: contract.info.split("|")[1] },
+        { type: ENotificationHandler.USER, info: req.user!.id },
+      ];
+      notification.type = ENotificationType.CONTRACT_NEGOTIATION;
+      notification.info = {
+        world: req.body.wid,
+        user:
+          req.user?.id === contract.from.id ? contract.to.id : contract.from.id,
+      };
+      await notification.save();
+    } else {
+      const uids = contract.negotiation
+        .map((n) => n.uid)
+        .filter((uid) => uid !== req.user?.id);
+      await Promise.all(
+        uids.map(async (uid) => {
+          const notification = new Notification();
+          notification.handlers = [
+            {
+              type: ENotificationHandler.CONTRACT,
+              info: `${contract.type}|${contract.id}`,
+            },
+            {
+              type: ENotificationHandler.LAND,
+              info: contract.info.split("|")[1],
+            },
+            { type: ENotificationHandler.USER, info: req.user!.id },
+          ];
+          notification.type = ENotificationType.CONTRACT_NEGOTIATION;
+          notification.info = {
+            world: req.body.wid,
+            user: uid,
+          };
+          await notification.save();
+        })
+      );
+    }
   }
   return res.json(
     getResponse("SUCCESS", "Contract negotiation added!", contract?.negotiation)
