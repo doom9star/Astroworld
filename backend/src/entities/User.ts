@@ -27,14 +27,14 @@ export default class User extends Base {
   @Column({
     type: "enum",
     enum: EGender,
-    default: EGender.MALE,
+    default: EGender.OTHER,
   })
   gender: EGender;
 
   @Column({ nullable: true })
   description: string;
 
-  @Column()
+  @Column({ default: 100 })
   coins: number;
 
   @OneToMany(() => Land, (land) => land.owner)

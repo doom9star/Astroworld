@@ -6,10 +6,9 @@ import express from "express";
 import morgan from "morgan";
 import path from "path";
 import "reflect-metadata";
-
 import initORM from "./misc/typeorm";
-import { TAuthRequest } from "./misc/types";
 import MainRouter from "./routes";
+import { TRequest } from "./misc/types";
 
 const main = async () => {
   dotenv.config({ path: path.join(__dirname, "../.env") });
@@ -24,7 +23,7 @@ const main = async () => {
   app.use(morgan("dev"));
   app.use(cookieParser());
   app.use(bodyParser.json());
-  app.use((req: TAuthRequest, _, next) => {
+  app.use((req: TRequest, _, next) => {
     req.db = db;
     next();
   });

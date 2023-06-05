@@ -1,6 +1,5 @@
 import jwt from "jsonwebtoken";
 import { WEEK } from "../misc/constants";
-
 import { TPayload } from "../misc/types";
 
 export default (payload: TPayload) => {

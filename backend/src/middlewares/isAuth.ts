@@ -1,11 +1,9 @@
-import { NextFunction, Response } from "express";
+import { NextFunction } from "express";
 import jwt, { JsonWebTokenError } from "jsonwebtoken";
-
 import { COOKIE_NAME } from "../misc/constants";
-import { TAuthRequest, TPayload } from "../misc/types";
-import getResponse from "../utils/getResponse";
+import { TPayload, TRequest, TResponse } from "../misc/types";
 
-export default (req: TAuthRequest, res: Response, next: NextFunction) => {
+export default (req: TRequest, res: TResponse, next: NextFunction) => {
   try {
     if (!req.cookies[COOKIE_NAME])
       throw new JsonWebTokenError("Token is missing!");
@@ -17,6 +15,6 @@ export default (req: TAuthRequest, res: Response, next: NextFunction) => {
     next();
   } catch (error: any) {
     console.error(error.message);
-    return res.json(getResponse("ERROR", "User is not authenticated!"));
+    return res.json({ status: "F", data: error.message });
   }
 };

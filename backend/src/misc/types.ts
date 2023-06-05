@@ -1,62 +1,54 @@
-import { Request } from "express";
+import { Request, Response } from "express";
 import { DataSource } from "typeorm";
 
 export type TPayload = { id: string };
-export type TAuthRequest = Request & { user?: TPayload; db?: DataSource };
+export type TRequest = Request & { user?: TPayload; db?: DataSource };
+export type TResponse = Response<{ status: "S" | "F"; data?: any }>;
 
 export enum EFileType {
-  IMAGE = "0",
-  VIDEO = "1",
-  AUDIO = "2",
-  FILE = "3",
+  FILE,
+  IMAGE,
+  VIDEO,
+  AUDIO,
 }
 
 export enum ELandType {
-  NONE = "0",
-  SHELTER = "1",
-  CAPITAL = "2",
-  DECORATION = "3",
+  NONE,
+  SHELTER,
+  CAPITAL,
+  DECORATION,
 }
 
 export enum ENotificationType {
-  ADMIN = "0",
-  CONTRACT_PENDING = "1",
-  CONTRACT_ACCEPTED = "2",
-  CONTRACT_REJECTED = "3",
-  CONTRACT_NEGOTIATION = "4",
-  USER_JOIN = "5",
-  BUILD_COMPLETE = "6",
-}
-
-export enum ENotificationHandler {
-  USER = "0",
-  LAND = "1",
-  CONTRACT = "2",
+  ADMIN,
+  NEW_CITIZEN,
+  CONTRACT_PENDING,
+  CONTRACT_ACCEPTED,
+  CONTRACT_REJECTED,
+  CONTRACT_NEGOTIATION,
+  BUILD_COMPLETION,
 }
 
 export enum EContractType {
-  NONE = "0",
-  LAND_BUY = "1",
-  LAND_SALE = "2",
+  LAND_BUY,
+  LAND_SALE,
 }
 
 export enum EContractStatus {
-  PENDING = "0",
-  ACCEPTED = "1",
-  REJECTED = "2",
+  PENDING,
+  ACCEPTED,
+  REJECTED,
 }
 
 export enum EGender {
-  NONE = "0",
-  MALE = "1",
-  FEMALE = "2",
-  OTHER = "3",
+  MALE,
+  FEMALE,
+  OTHER,
 }
 
 export enum ETransactionType {
-  NONE = "0",
-  LAND_BUY = "1",
-  LAND_SALE = "2",
-  LAND_BUILD = "3",
-  USER_JOIN = "4",
+  LAND_BUY,
+  LAND_SALE,
+  LAND_BUILD,
+  NEW_CITIZEN,
 }

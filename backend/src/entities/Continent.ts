@@ -5,13 +5,13 @@ import World from "./World";
 
 @Entity("continent")
 export default class Continent extends Base {
-  @Column()
+  @Column({ default: "unknown" })
   name: string;
 
-  @Column()
+  @Column({ default: 0 })
   area: number;
 
-  @Column()
+  @Column({ default: "-1 -1" })
   position: string;
 
   @ManyToOne(() => World, (world) => world.continents, { onDelete: "CASCADE" })

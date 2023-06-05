@@ -17,5 +17,5 @@ export default class Conversation extends Base {
 
   @OneToOne(() => File)
   @JoinColumn()
-  background: string | File;
+  background: File;
 }

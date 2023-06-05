@@ -1,8 +1,7 @@
-import { Router } from "express";
-
+import { Request, Router } from "express";
+import postNotification from "../controllers/postNotification";
+import postTransaction from "../controllers/postTransaction";
 import Capital from "../entities/Capital";
-import Notification from "../entities/Notification";
-import Transaction from "../entities/Transaction";
 import User from "../entities/User";
 import isAuth from "../middlewares/isAuth";
 import isNotAuth from "../middlewares/isNotAuth";
@@ -10,29 +9,26 @@ import { COOKIE_NAME, WEEK } from "../misc/constants";
 import {
   ENotificationType,
   ETransactionType,
-  TAuthRequest,
+  TRequest,
+  TResponse,
 } from "../misc/types";
-import getResponse from "../utils/getResponse";
 import getToken from "../utils/getToken";
 
 const router = Router();
 
-router.get("/", isAuth, async (req: TAuthRequest, res) => {
+router.get("/", isAuth, async (req: TRequest, res: TResponse) => {
   try {
     const user = await User.findOne({ where: { id: req.user?.id } });
-    return res.json(
-      getResponse("SUCCESS", "Authenticated User returned!", user)
-    );
+    return res.json({ status: "S", data: user });
   } catch (error: any) {
     console.error(error);
-    return res.json(getResponse("ERROR", error.message));
+    return res.json({ status: "F", data: error.message });
   }
 });
 
-router.post("/register", isNotAuth, async (req, res) => {
+router.post("/register", isNotAuth, async (req: Request, res: TResponse) => {
   try {
     const { email, password } = req.body;
-    console.log(email, password);
 
     const coins = (await Capital.getRepository().count()) * 100;
     const user = await User.create({
@@ -43,57 +39,58 @@ router.post("/register", isNotAuth, async (req, res) => {
 
     await Capital.getRepository().decrement({}, "reserve", 100);
 
-    const transaction = new Transaction();
-    transaction.to = <any>{ id: user.id };
-    transaction.coins = coins;
-    transaction.type = ETransactionType.USER_JOIN;
-    await transaction.save();
-
-    const notification = new Notification();
-    notification.handlers = [];
-    notification.info = {
-      user: user.id,
-      coins,
-    };
-    notification.type = ENotificationType.USER_JOIN;
-    await notification.save();
+    if (coins > 0) {
+      await postTransaction({
+        to: { id: user.id } as any,
+        coins,
+        type: ETransactionType.NEW_CITIZEN,
+      });
+      await postNotification({
+        type: ENotificationType.NEW_CITIZEN,
+        info: [`to:${user.id}`, `coins:${coins}`],
+        handlers: [],
+      });
+    }
 
     res.cookie(COOKIE_NAME, getToken({ id: user.id }), {
       maxAge: WEEK,
     });
-    return res.json(
-      getResponse("SUCCESS", `User has registered successfully!`, user)
-    );
+
+    return res.json({ status: "S", data: user });
   } catch (error: any) {
     console.error(error);
-    return res.json(getResponse("ERROR", error.message));
+    return res.json({ status: "F", data: error.message });
   }
 });
 
-router.post("/login", isNotAuth, async (req, res) => {
+router.post("/login", isNotAuth, async (req: Request, res: TResponse) => {
   try {
     const { email, password } = req.body;
+
     const user = await User.findOne({
       where: { [email.includes("@") ? "email" : "name"]: email },
     });
-
-    if (!user) return res.json(getResponse("ERROR", "User does not exist!"));
+    if (!user) return res.json({ status: "F" });
     if (!(await user.checkPassword(password)))
-      return res.json(getResponse("ERROR", "Wrong credentials!"));
+      return res.json({ status: "F", data: "wrong credentials!" });
 
     res.cookie(COOKIE_NAME, getToken({ id: user.id }), { maxAge: WEEK });
-    return res.json(
-      getResponse("SUCCESS", `User has logged in successfully!`, user)
-    );
+
+    return res.json({ status: "S", data: user });
   } catch (error: any) {
     console.error(error);
-    return res.json(getResponse("ERROR", error.message));
+    return res.json({ status: "F", data: error.message });
   }
 });
 
-router.delete("/logout", isAuth, async (_, res) => {
-  res.clearCookie(COOKIE_NAME);
-  return res.json(getResponse("SUCCESS", "User logged out successfully!"));
+router.delete("/logout", isAuth, async (_: TRequest, res: TResponse) => {
+  try {
+    res.clearCookie(COOKIE_NAME);
+    return res.json({ status: "S" });
+  } catch (error: any) {
+    console.error(error);
+    return res.json({ status: "F", data: error.message });
+  }
 });
 
 export default router;

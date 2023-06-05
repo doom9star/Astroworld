@@ -1,18 +1,21 @@
 import { Router } from "express";
 import Transaction from "../entities/Transaction";
 import isAuth from "../middlewares/isAuth";
-import getResponse from "../utils/getResponse";
+import { TRequest, TResponse } from "../misc/types";
 
 const router = Router();
 
-router.get("/", isAuth, async (req, res) => {
-  const transactions = await Transaction.find({
-    relations: ["from", "to"],
-    order: { createdAt: "DESC" },
-  });
-  return res.json(
-    getResponse("SUCCESS", "Transactions retrieved successfully!", transactions)
-  );
+router.get("/", isAuth, async (_: TRequest, res: TResponse) => {
+  try {
+    const transactions = await Transaction.find({
+      relations: ["from", "to"],
+      order: { createdAt: "DESC" },
+    });
+    return res.json({ status: "S", data: transactions });
+  } catch (error: any) {
+    console.error(error);
+    return res.json({ status: "F", data: error.message });
+  }
 });
 
 export default router;

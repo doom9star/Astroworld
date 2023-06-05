@@ -11,13 +11,12 @@ export default class Transaction extends Base {
   @ManyToOne(() => User, { cascade: true })
   to: User;
 
-  @Column()
+  @Column({ default: 0 })
   coins: number;
 
   @Column({
     type: "enum",
     enum: ETransactionType,
-    default: ETransactionType.NONE,
   })
   type: ETransactionType;
 }

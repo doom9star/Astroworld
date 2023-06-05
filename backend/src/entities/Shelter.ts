@@ -1,26 +1,24 @@
 import { Column, Entity, JoinColumn, OneToOne } from "typeorm";
 import Base from "./Base";
 import Conversation from "./Conversation";
-import File from "./File";
 import Land from "./Land";
 
 @Entity("shelter")
 export default class Shelter extends Base {
-  @Column()
+  @Column({ default: 0 })
   value: number;
 
-  @Column()
+  @Column({ default: "[null]" })
   paint: string;
+
+  @Column({ default: 0 })
+  type: number;
 
   @Column()
   built: Date;
 
-  @Column()
+  @Column({ default: false })
   locked: boolean;
-
-  @OneToOne(() => File, { cascade: true })
-  @JoinColumn()
-  thumbnail: File;
 
   @OneToOne(() => Land, (l) => l.shelter, { onDelete: "CASCADE" })
   land: Land;

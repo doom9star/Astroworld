@@ -2,23 +2,21 @@ import { Router } from "express";
 import { Like } from "typeorm";
 import Notification from "../entities/Notification";
 import isAuth from "../middlewares/isAuth";
-import { TAuthRequest } from "../misc/types";
-import getResponse from "../utils/getResponse";
+import { TRequest, TResponse } from "../misc/types";
 
 const router = Router();
 
-router.get("/", isAuth, async (req: TAuthRequest, res) => {
-  const notifications = await Notification.find({
-    where: { info: Like(`%${req.user?.id}%`) },
-    order: { createdAt: "DESC" },
-  });
-  return res.json(
-    getResponse(
-      "SUCCESS",
-      "Notifications retrieved successfully!",
-      notifications
-    )
-  );
+router.get("/", isAuth, async (req: TRequest, res: TResponse) => {
+  try {
+    const notifications = await Notification.find({
+      where: { info: Like(`%to:${req.user?.id}%`) },
+      order: { createdAt: "DESC" },
+    });
+    return res.json({ status: "S", data: notifications });
+  } catch (error: any) {
+    console.error(error);
+    return res.json({ status: "F", data: error.message });
+  }
 });
 
 export default router;

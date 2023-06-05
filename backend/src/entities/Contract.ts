@@ -1,7 +1,6 @@
-import { Column, Entity, ManyToOne, OneToMany } from "typeorm";
+import { Column, Entity, ManyToOne } from "typeorm";
 import { EContractStatus, EContractType } from "../misc/types";
 import Base from "./Base";
-import Comment from "./Comment";
 import Land from "./Land";
 import User from "./User";
 
@@ -13,7 +12,7 @@ export default class Contract extends Base {
   @ManyToOne(() => User, { cascade: true })
   to: User;
 
-  @Column({default: 80})
+  @Column({ default: 0 })
   coins: number;
 
   @Column({ default: 0 })
@@ -29,16 +28,15 @@ export default class Contract extends Base {
   })
   status: EContractStatus;
 
-  @Column()
+  @Column({ nullable: true })
   info: string;
 
-  @Column()
+  @Column({ default: false })
   negotiable: boolean;
 
   @Column({
     type: "enum",
     enum: EContractType,
-    default: EContractType.NONE,
   })
   type: EContractType;
 
