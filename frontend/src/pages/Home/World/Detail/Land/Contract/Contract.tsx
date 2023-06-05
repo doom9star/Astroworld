@@ -21,9 +21,9 @@ function Contract() {
   useEffect(() => {
     cAxios
       .get<TResponse>(`/land/${params.lid}/contract/${EContractType.LAND_BUY}`)
-      .then((res) => {
-        if (res.data.status === "SUCCESS") {
-          setContracts(res.data.data);
+      .then(({ data }) => {
+        if (data.status === "S") {
+          setContracts(data.data);
         }
       })
       .finally(() => {
@@ -52,7 +52,7 @@ function Contract() {
               className="flex justify-between items-center bg-gray-100 py-4 px-8 text-xs rounded-lg mb-2"
             >
               <span>{c.id}</span>
-              <span>{c.from.email}</span>
+              <span>{c.from?.email}</span>
               <div className="ml-3 flex items-center">
                 <div className="w-2 h-2 rounded-full bg-yellow-500" />
                 &nbsp;

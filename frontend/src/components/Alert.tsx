@@ -1,4 +1,3 @@
-import React from "react";
 import classNames from "classnames";
 import { FaCannabis } from "react-icons/fa";
 import { VscChromeClose } from "react-icons/vsc";

@@ -46,9 +46,9 @@ function Detail() {
   useEffect(() => {
     cAxios
       .get<TResponse>("/contract/" + params.cid)
-      .then((res) => {
-        if (res.data.status === "SUCCESS") {
-          setContract(res.data.data);
+      .then(({ data }) => {
+        if (data.status === "S") {
+          setContract(data.data);
         }
       })
       .finally(() => {
@@ -58,7 +58,7 @@ function Detail() {
 
   const contractInfo = useMemo(() => {
     if (contract) {
-      const [entity, id] = contract.info.split("|");
+      const [entity, id] = contract.info!.split(":");
       return { entity, id };
     }
   }, [contract]);
@@ -74,9 +74,9 @@ function Detail() {
           sign,
           wid: params.wid,
         })
-        .then((res) => {
-          if (res.data.status === "SUCCESS") {
-            const c = res.data.data;
+        .then(({ data }) => {
+          if (data.status === "S") {
+            const c = data.data;
             setContract(c);
             if (sign === EContractStatus.ACCEPTED) {
               dispatch(
@@ -106,12 +106,12 @@ function Detail() {
         ...info,
         wid: params.wid,
       })
-      .then((res) => {
-        if (res.data.status === "SUCCESS") {
+      .then(({ data }) => {
+        if (data.status === "S") {
           setContract((prev) => ({
             ...prev!,
             coins: info.coins,
-            negotiation: res.data.data,
+            negotiation: data.data,
           }));
           setInfo({ coins: 0, comment: "" });
         }
@@ -133,7 +133,7 @@ function Detail() {
   const Footer = () => {
     return (
       <div className="flex">
-        {user!.coins > contract.coins && (
+        {(contract.to?.id === user?.id || user!.coins > contract.coins) && (
           <Button
             label="Accept"
             icon={<FaSignature />}
@@ -184,14 +184,14 @@ function Detail() {
             <span className="font-bold">
               {contract.from
                 ? contract.from.email
-                : contract.to.id !== user?.id
+                : contract.to?.id !== user?.id
                 ? user?.email
                 : "-"}
             </span>
           </div>
           <div className="flex justify-between text-xs my-4">
             <span>seller</span>
-            <span className="font-bold">{contract.to.email}</span>
+            <span className="font-bold">{contract.to?.email}</span>
           </div>
           <div className="flex justify-between text-xs my-4">
             <span>coins</span>
@@ -247,11 +247,25 @@ function Detail() {
             }}
           >
             <div className="flex flex-col items-start">
-              {contract.status === EContractStatus.ACCEPTED ||
-              contract.negotiation[0].uid === contract.from?.id ? (
+              {contract.status === EContractStatus.REJECTED ? (
+                <>
+                  <span className="mb-2">{`(${getDate(
+                    contract.updatedAt
+                  )})`}</span>
+                  <span
+                    className="flex items-center font-bold text-white py-1 px-2 rounded-lg bg-red-600"
+                    style={{
+                      fontSize: "0.6rem",
+                    }}
+                  >
+                    <RxCross2 /> &nbsp;<span>REJECTED</span>
+                  </span>
+                </>
+              ) : contract.status === EContractStatus.ACCEPTED ||
+                contract.from?.id === contract.negotiation[0].uid ? (
                 <>
                   <span className="font-bold whitespace-nowrap">
-                    {contract.from.email}
+                    {contract.from?.email}
                     &nbsp;{" (Buyer)"}
                   </span>
                   <span className="mb-2">{`(${getDate(
@@ -268,7 +282,8 @@ function Detail() {
                     <TiTick /> <span>SIGNED</span>
                   </span>
                 </>
-              ) : contract.to.id !== user?.id ? (
+              ) : contract.to?.id !== user?.id &&
+                contract.negotiation[0].uid !== user?.id ? (
                 <>
                   <span className="font-bold whitespace-nowrap">
                     {user?.email}
@@ -286,11 +301,11 @@ function Detail() {
             </div>
             <div className="flex flex-col items-end">
               <span className="font-bold whitespace-nowrap">
-                {contract.to.email}
+                {contract.to?.email}
                 &nbsp;{" (Seller)"}
               </span>
               {contract.status === EContractStatus.ACCEPTED ||
-              contract.negotiation[0].uid === contract.to.id ? (
+              contract.negotiation[0].uid === contract.to?.id ? (
                 <>
                   <span className="mb-2">{`(${getDate(
                     contract.type === EContractType.LAND_SALE
@@ -320,7 +335,7 @@ function Detail() {
                     <RxCross2 /> &nbsp;<span>REJECTED</span>
                   </span>
                 </>
-              ) : contract.to.id === user?.id ? (
+              ) : contract.to?.id === user?.id ? (
                 <Footer />
               ) : null}
             </div>

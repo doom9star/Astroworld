@@ -40,7 +40,10 @@ function AvatarPicker({
         </span>
         <div className="grid grid-cols-3">
           {avatars.map((avatar) => (
-            <div className="flex flex-col items-center justify-center">
+            <div
+              className="flex flex-col items-center justify-center"
+              key={avatar.cid}
+            >
               <img
                 src={avatar.url}
                 alt={avatar.id}
@@ -91,12 +94,12 @@ export default function Edit() {
 
   useEffect(() => {
     setLoading(true);
-    cAxios.get<TResponse>("/user/avatar").then((res) => {
-      if (res.data.status === "SUCCESS") {
-        setAvatars(res.data.data);
+    cAxios.get<TResponse>("/user/avatar").then(({ data }) => {
+      if (data.status === "S") {
+        setAvatars(data.data);
         setInfo((prev) => ({
           ...prev,
-          avatar: prev.avatar || res.data.data[0],
+          avatar: prev.avatar || data.data[0],
         }));
         setLoading(false);
       }
@@ -114,8 +117,8 @@ export default function Edit() {
     setSaveLoading(true);
     cAxios
       .put<TResponse>("/user", info)
-      .then((res) => {
-        if (res.data.status === "SUCCESS") {
+      .then(({ data }) => {
+        if (data.status === "S") {
           dispatch(setUser({ ...user!, ...info }));
           dispatch(
             setAlert({

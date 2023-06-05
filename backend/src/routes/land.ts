@@ -63,17 +63,17 @@ router.post("/:id/contract", isAuth, async (req: TRequest, res: TResponse) => {
         handlers: [
           `user:${req.body.from}`,
           `land:${req.params.id}`,
-          `contract:${contract.type}|${contract.id}`,
+          `contract:${contract.id}`,
         ],
       });
     } else {
       await Contract.update(
-        {
+        <any>{
           id: Not(contract.id),
-          status: EContractStatus.PENDING,
+          status: EContractStatus.PENDING.toString(),
           land: { id: req.params.id },
         },
-        { status: EContractStatus.REJECTED }
+        <any>{ status: EContractStatus.REJECTED.toString() }
       );
     }
 
@@ -90,9 +90,9 @@ router.get(
   async (req: TRequest, res: TResponse) => {
     try {
       const contracts = await Contract.find({
-        where: {
+        where: <any>{
           land: { id: req.params.id },
-          type: parseInt(req.params.type),
+          type: req.params.type,
         },
         relations: ["from"],
         order: { createdAt: "DESC" },

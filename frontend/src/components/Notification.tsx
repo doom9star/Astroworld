@@ -1,20 +1,15 @@
 import classNames from "classnames";
 import { Fragment, useMemo } from "react";
 import { AiOutlineUser } from "react-icons/ai";
+import { GiCoins } from "react-icons/gi";
 import { ImFileText } from "react-icons/im";
 import { RiLandscapeLine } from "react-icons/ri";
+import { TbFileInvoice } from "react-icons/tb";
 import { useDispatch } from "react-redux";
 import TimeAgo from "react-timeago";
 import { setShowNotification, useGlobalState } from "../redux/slices/global";
-import {
-  EContractType,
-  ENotificationHandler,
-  ENotificationType,
-  INotification,
-} from "../redux/types";
+import { ENotificationType, INotification } from "../redux/types";
 import Button from "./Button";
-import { GiCoins } from "react-icons/gi";
-import { TbFileInvoice } from "react-icons/tb";
 
 type Props = {
   n: INotification;
@@ -24,13 +19,34 @@ function NotificationDetail({ n }: Props) {
   const dispatch = useDispatch();
 
   const contract = useMemo(() => {
-    return n.handlers.find((h) => h.type === ENotificationHandler.CONTRACT);
+    return {
+      id: n.handlers.find((h) => h.includes("contract"))?.split(":")[1],
+    };
   }, [n]);
   const land = useMemo(() => {
-    return n.handlers.find((h) => h.type === ENotificationHandler.LAND);
+    return {
+      id: n.handlers.find((h) => h.includes("land"))?.split(":")[1],
+    };
   }, [n]);
   const user = useMemo(() => {
-    return n.handlers.find((h) => h.type === ENotificationHandler.USER);
+    return {
+      id: n.handlers.find((h) => h.includes("user"))?.split(":")[1],
+    };
+  }, [n]);
+
+  const contractColor = useMemo(() => {
+    switch (n.type) {
+      case ENotificationType.CONTRACT_PENDING:
+        return "text-orange-500";
+      case ENotificationType.CONTRACT_ACCEPTED:
+        return "text-green-500";
+      case ENotificationType.CONTRACT_REJECTED:
+        return "text-red-500";
+      case ENotificationType.CONTRACT_NEGOTIATION:
+        return "text-blue-500";
+      default:
+        return "";
+    }
   }, [n]);
 
   return (
@@ -42,63 +58,68 @@ function NotificationDetail({ n }: Props) {
         })
       }
     >
-      {n.type === ENotificationType.USER_JOIN ? (
+      {n.type === ENotificationType.NEW_CITIZEN ? (
         <GiCoins className="text-5xl text-yellow-500 mr-2" />
-      ) : n.type === ENotificationType.BUILD_COMPLETE ? (
+      ) : n.type === ENotificationType.BUILD_COMPLETION ? (
         <RiLandscapeLine className="text-5xl text-green-500 mr-2" />
       ) : (
-        <TbFileInvoice className="text-5xl text-purple-500 mr-2" />
+        <TbFileInvoice
+          className={
+            `text-5xl mr-2 ` +
+            classNames({
+              [contractColor]: !!contractColor,
+            })
+          }
+        />
       )}
       <div className="px-2">
         <p className="leading-5 font-mono" style={{ fontSize: "0.6rem" }}>
-          {n.type === ENotificationType.USER_JOIN ? (
+          {n.type === ENotificationType.NEW_CITIZEN ? (
             <span>
               Welcome to <span className="font-bold">ASTROWORLD</span>, the
               worlds have gifted you{" "}
-              <span className="text-yellow-500 font-bold">{n.info.coins}</span>{" "}
+              <span className="text-yellow-500 font-bold">
+                {n.info.find((i) => i.includes("coins"))?.split(":")[1]}
+              </span>{" "}
               coins to begin your journey!
             </span>
-          ) : n.type === ENotificationType.BUILD_COMPLETE ? (
+          ) : n.type === ENotificationType.BUILD_COMPLETION ? (
             <span>
               Construction of{" "}
               <span className="text-green-500 font-bold">shelter </span>on land-
-              {land?.info} has completed successfully!
+              {land?.id} has completed successfully!
             </span>
           ) : (
             <>
-              <span className="font-bold">{user?.info} </span>
+              <span className="font-bold">{user?.id} </span>
               {n.type === ENotificationType.CONTRACT_PENDING ? (
                 <span>
                   has{" "}
-                  <span className="text-yellow-600 font-bold">extended </span>a
+                  <span className="text-orange-500 font-bold">extended </span>a
                   contract to buy the land{" "}
                 </span>
               ) : n.type === ENotificationType.CONTRACT_REJECTED ? (
                 <span>
-                  has <span className="text-red-600 font-bold">rejected </span>
+                  has <span className="text-red-500 font-bold">rejected </span>
                   the contract to buy the land{" "}
                 </span>
               ) : n.type === ENotificationType.CONTRACT_ACCEPTED ? (
                 <span>
                   has{" "}
-                  <span className="text-green-600 font-bold">accepted </span>
-                  the contract to{" "}
-                  {contract?.info.split("|")[1] === EContractType.LAND_BUY
-                    ? "buy"
-                    : "sell"}{" "}
-                  the land{" "}
+                  <span className="text-green-500 font-bold">accepted </span>
+                  the contract on the land{" "}
                 </span>
               ) : (
                 <span>
                   has a{" "}
-                  <span className="text-blue-600 font-bold">
+                  <span className="text-blue-500 font-bold">
                     counter negotiation
                   </span>{" "}
                   to a contract on the land{" "}
                 </span>
               )}
               <span className="font-bold" style={{ fontSize: "0.6rem" }}>
-                {land?.info}
+                {land?.id}
               </span>
               !
             </>
@@ -106,39 +127,41 @@ function NotificationDetail({ n }: Props) {
         </p>
         <div className="flex my-2 items-center justify-between">
           <div className="flex">
-            {contract && (
+            {contract.id && (
               <Button
                 icon={<ImFileText />}
                 linkProps={{
                   className: "mr-2",
-                  to: `/home/world/${n.info["world"]}/${land?.info}/contract/${
-                    contract.info.split("|")[1]
-                  }`,
+                  to: `/home/world/${
+                    n.info.find((i) => i.includes("world"))?.split(":")[1]
+                  }/${land?.id}/contract/${contract?.id}`,
                 }}
                 btnProps={{
                   onClick: () => dispatch(setShowNotification(false)),
                 }}
               />
             )}
-            {land && (
+            {land.id && (
               <Button
                 icon={<RiLandscapeLine />}
                 linkProps={{
                   className: "mr-2",
-                  to: `/home/world/${n.info["world"]}`,
-                  state: land.info,
+                  to: `/home/world/${
+                    n.info.find((i) => i.includes("world"))?.split(":")[1]
+                  }`,
+                  state: land.id,
                 }}
                 btnProps={{
                   onClick: () => dispatch(setShowNotification(false)),
                 }}
               />
             )}
-            {user && (
+            {user.id && (
               <Button
                 icon={<AiOutlineUser />}
                 linkProps={{
                   className: "mr-2",
-                  to: `/home/user/${user.info}`,
+                  to: `/home/user/${user.id}`,
                 }}
                 btnProps={{
                   onClick: () => dispatch(setShowNotification(false)),

@@ -67,8 +67,8 @@ function Build() {
         built: new Date(getExpiryDate(shelterInfo.type * 20)),
         type: shelterInfo.type,
       })
-      .then((res) => {
-        if (res.data.status === "SUCCESS") {
+      .then(({ data }) => {
+        if (data.status === "S") {
           dispatch(
             setAlert({
               state: "SUCCESS",

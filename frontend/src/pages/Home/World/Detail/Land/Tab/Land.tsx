@@ -1,7 +1,7 @@
 import { BiCoin, BiCoinStack } from "react-icons/bi";
 import { FaPlaceOfWorship, FaUserTie } from "react-icons/fa";
 import { GrLocation } from "react-icons/gr";
-import { ILand } from "../../../../../../redux/types";
+import { ELandType, ILand } from "../../../../../../redux/types";
 import { AiOutlineCalendar } from "react-icons/ai";
 import { getDate } from "../../../../../../misc/utils";
 
@@ -70,9 +70,9 @@ function TabLand({ land }: Props) {
         </div>
       </div>
       <div>
-        {land.capital && (
+        {land.type === ELandType.CAPITAL && (
           <img
-            src={land.capital.thumbnail.url}
+            src={`/images/houses/3/blue.png`}
             alt="Capital"
             className="pt-8"
           />

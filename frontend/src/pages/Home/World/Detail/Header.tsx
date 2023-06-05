@@ -29,8 +29,8 @@ function Header({ header, toLand }: Props) {
     <div className="flex justify-center ml-[35%] items-center pb-4 text-gray-700 font-bold absolute top-12">
       <div className="flex items-center">
         <img
-          src={world?.thumbnail.url}
-          alt="Oasis"
+          src={`/images/worlds/${world?.name}.png`}
+          alt={world?.name}
           className="w-24 rounded-full"
         />
         <div className="flex flex-col items-center">

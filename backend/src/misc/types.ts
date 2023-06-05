@@ -17,6 +17,7 @@ export enum ELandType {
   SHELTER,
   CAPITAL,
   DECORATION,
+  WAREHOUSE,
 }
 
 export enum ENotificationType {

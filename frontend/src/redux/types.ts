@@ -15,58 +15,56 @@ export interface IFile extends ICommon {
 }
 
 export enum EGender {
-  NONE = "0",
-  MALE = "1",
-  FEMALE = "2",
-  OTHER = "3",
+  MALE,
+  FEMALE,
+  OTHER,
 }
 
 export interface IUser extends ICommon {
-  name: string;
   email: string;
-  avatar: IFile;
   gender: EGender;
   coins: number;
-  birthDate: string;
-  description: string;
+  name?: string;
+  avatar?: IFile;
+  birthDate?: string;
+  description?: string;
 }
 
 export enum EContractType {
-  NONE = "0",
-  LAND_BUY = "1",
-  LAND_SALE = "2",
+  LAND_BUY,
+  LAND_SALE,
 }
 
 export enum EContractStatus {
-  PENDING = "0",
-  ACCEPTED = "1",
-  REJECTED = "2",
+  PENDING,
+  ACCEPTED,
+  REJECTED,
 }
 
 export interface IContract extends ICommon {
-  from: IUser;
-  to: IUser;
   coins: number;
   dueRate: number;
   expiry: string;
-  info: string;
   status: EContractStatus;
   type: EContractType;
   negotiation: { uid: string; coins: number; comment: string }[];
   negotiable: boolean;
+  from?: IUser;
+  to?: IUser;
+  info?: string;
 }
 
 export enum ELandType {
-  NONE = "0",
-  SHELTER = "1",
-  CAPITAL = "2",
-  DECORATION = "3",
-  WAREHOUSE = "4",
+  NONE,
+  SHELTER,
+  CAPITAL,
+  DECORATION,
+  WAREHOUSE,
 }
 
 export enum EBuildable {
-  SHELTER = "1",
-  WAREHOUSE = "4",
+  SHELTER = 1,
+  WAREHOUSE = 4,
 }
 
 export interface ICapital extends ICommon {
@@ -74,15 +72,14 @@ export interface ICapital extends ICommon {
   locked: boolean;
   reserve: number;
   operating: boolean;
-  thumbnail: IFile;
 }
 
 export interface IShelter extends ICommon {
   value: number;
   paint: string;
+  type: number;
   built: string;
   locked: boolean;
-  thumbnail: IFile;
 }
 
 export interface ILand extends ICommon {
@@ -91,12 +88,11 @@ export interface ILand extends ICommon {
   position: string;
   type: ELandType;
   owner: IUser;
-  capital?: ICapital;
-  shelter?: IShelter;
   available: boolean;
-  thumbnail: IFile;
   continent: IContinent;
   contracts: IContract[];
+  capital?: ICapital;
+  shelter?: IShelter;
 }
 
 export interface IContinent extends ICommon {
@@ -109,38 +105,30 @@ export interface IContinent extends ICommon {
 export interface IWorld extends ICommon {
   name: string;
   area: number;
-  thumbnail: IFile;
   continents: IContinent[];
 }
 
 export enum ENotificationType {
-  ADMIN = "0",
-  CONTRACT_PENDING = "1",
-  CONTRACT_ACCEPTED = "2",
-  CONTRACT_REJECTED = "3",
-  CONTRACT_NEGOTIATION = "4",
-  USER_JOIN = "5",
-  BUILD_COMPLETE = "6",
+  ADMIN,
+  NEW_CITIZEN,
+  CONTRACT_PENDING,
+  CONTRACT_ACCEPTED,
+  CONTRACT_REJECTED,
+  CONTRACT_NEGOTIATION,
+  BUILD_COMPLETION,
 }
 
 export enum ETransactionType {
-  NONE = "0" as any,
-  LAND_BUY = "1" as any,
-  LAND_SALE = "2" as any,
-  LAND_BUILD = "3" as any,
-  USER_JOIN = "4" as any,
-}
-
-export enum ENotificationHandler {
-  USER = "0",
-  LAND = "1",
-  CONTRACT = "2",
+  LAND_BUY,
+  LAND_SALE,
+  LAND_BUILD,
+  NEW_CITIZEN,
 }
 
 export interface INotification extends ICommon {
-  info: { [k: string]: any };
+  info: any[];
   read: boolean;
-  handlers: { type: ENotificationHandler; info: string }[];
+  handlers: any[];
   type: ENotificationType;
 }
 
@@ -163,9 +151,7 @@ export enum EMapFilterType {
   SALE = "SALE",
 }
 
-export type TResponseStatus = "SUCCESS" | "ERROR";
 export type TResponse = {
-  status: TResponseStatus;
-  message: string;
+  status: "S" | "F";
   data?: any;
 };

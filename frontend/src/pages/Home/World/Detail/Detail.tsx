@@ -67,9 +67,9 @@ function Detail() {
     setLoading(true);
     cAxios
       .get<TResponse>("/world/" + params.wid)
-      .then((res) => {
-        if (res.data.status === "SUCCESS") {
-          dispatch(setWorld(res.data.data));
+      .then(({ data }) => {
+        if (data.status === "S") {
+          dispatch(setWorld(data.data));
         }
       })
       .finally(() => {

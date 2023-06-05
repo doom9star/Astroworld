@@ -43,11 +43,11 @@ function Register() {
         setLoading(true);
         dispatch(setAlert({ state: "IDLE", message: "" }));
         cAxios.post<TResponse>("/auth/register", info).then(({ data }) => {
-          if (data.status === "SUCCESS") {
+          if (data.status === "S") {
             dispatch(setUser(data.data));
             navigate("/home/user/edit");
           } else {
-            dispatch(setAlert({ state: "ERROR", message: data.message }));
+            dispatch(setAlert({ state: "ERROR", message: data.data }));
           }
           setLoading(false);
         });

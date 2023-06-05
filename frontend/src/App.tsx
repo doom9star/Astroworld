@@ -22,7 +22,7 @@ function App() {
 
   useEffect(() => {
     cAxios.get<TResponse>("/auth").then(({ data }) => {
-      if (data.status === "SUCCESS") {
+      if (data.status === "S") {
         dispatch(setUser(data.data));
       }
       dispatch(setGlobalLoading(false));

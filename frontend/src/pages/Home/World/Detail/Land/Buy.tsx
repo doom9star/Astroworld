@@ -58,8 +58,8 @@ function Buy() {
         type: EContractType.LAND_BUY,
         wid: params.wid,
       })
-      .then((res) => {
-        if (res.data.status === "SUCCESS") {
+      .then(({ data }) => {
+        if (data.status === "S") {
           dispatch(
             setAlert({
               state: "SUCCESS",

@@ -32,7 +32,7 @@ function Info({ onClose, selected }: Props) {
   const pendingContract = useMemo(() => {
     const contract = selected.land.contracts.find(
       (c) =>
-        ((c.from || c.to).id === user?.id ||
+        ((c.from || c.to)!.id === user?.id ||
           c.type === EContractType.LAND_SALE) &&
         c.status === EContractStatus.PENDING
     );

@@ -26,8 +26,8 @@ function Header() {
     setLoading(true);
     cAxios
       .delete<TResponse>("/auth/logout")
-      .then((res) => {
-        if (res.data.status === "SUCCESS") {
+      .then(({ data }) => {
+        if (data.status === "S") {
           dispatch(setUser(null));
         }
       })
@@ -41,10 +41,10 @@ function Header() {
       setNLoading(true);
       cAxios
         .get<TResponse>("/notification")
-        .then((res) => {
-          if (res.data.status === "SUCCESS") {
+        .then(({ data }) => {
+          if (data.status === "S") {
             dispatch(
-              setNotifications({ notifications: res.data.data, replace: true })
+              setNotifications({ notifications: data.data, replace: true })
             );
           }
         })

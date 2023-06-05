@@ -21,9 +21,9 @@ function TabVault({ land }: Props) {
   useEffect(() => {
     cAxios
       .get<TResponse>("/transaction")
-      .then((res) => {
-        if (res.data.status === "SUCCESS") {
-          setTransactions(res.data.data);
+      .then(({ data }) => {
+        if (data.status === "S") {
+          setTransactions(data.data);
         }
       })
       .finally(() => {

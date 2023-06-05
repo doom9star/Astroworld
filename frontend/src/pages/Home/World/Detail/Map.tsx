@@ -17,6 +17,7 @@ import { setWorld, useWorldState } from "../../../../redux/slices/world";
 import {
   EContractStatus,
   EContractType,
+  ELandType,
   EMapFilterType,
   INotification,
   TResponse,
@@ -73,7 +74,7 @@ function Map({ setHeader, toLand, selected, setSelected }: Props) {
                   (_c) =>
                     _c.type === EContractType.LAND_BUY &&
                     _c.status === EContractStatus.PENDING &&
-                    _c.from.id === user?.id
+                    _c.from?.id === user?.id
                 )
               )
               .map((l) => `${c.position} ${l.position}`),
@@ -89,7 +90,7 @@ function Map({ setHeader, toLand, selected, setSelected }: Props) {
                   (_c) =>
                     _c.type === EContractType.LAND_SALE &&
                     _c.status === EContractStatus.PENDING &&
-                    _c.to.id === user?.id
+                    _c.to?.id === user?.id
                 )
               )
               .map((l) => `${c.position} ${l.position}`),
@@ -105,7 +106,7 @@ function Map({ setHeader, toLand, selected, setSelected }: Props) {
     (cid: string, lid: string) => {
       setCancelling(true);
       cAxios.delete<TResponse>(`/land/${lid}/build/cancel`).then(({ data }) => {
-        if (data.status === "SUCCESS") {
+        if (data.status === "S") {
           const _world = { ...world! };
           const cidx = _world.continents.findIndex((c) => c.id === cid);
           const lidx = _world.continents[cidx].lands.findIndex(
@@ -123,7 +124,7 @@ function Map({ setHeader, toLand, selected, setSelected }: Props) {
   const onBuildComplete = useCallback(
     (lid: string) => {
       cAxios.put<TResponse>(`/land/${lid}/build/complete`).then(({ data }) => {
-        if (data.status === "SUCCESS") {
+        if (data.status === "S") {
           dispatch(
             setNotifications({
               notifications: [data.data as INotification],
@@ -178,10 +179,13 @@ function Map({ setHeader, toLand, selected, setSelected }: Props) {
           />
           <Button
             icon={<AiOutlineMinus />}
+            linkProps={{
+              className: "mr-2",
+            }}
             btnProps={{
               onClick: () => setZoom(zoom - 30),
               disabled: zoom <= 160,
-              className: `mr-2 ${classNames({
+              className: `${classNames({
                 "opacity-30": zoom <= 160,
               })}`,
             }}
@@ -202,11 +206,14 @@ function Map({ setHeader, toLand, selected, setSelected }: Props) {
           <div className="flex items-center cursor-pointer">
             <Button
               icon={<AiOutlineCaretLeft />}
+              linkProps={{
+                className: "mr-2",
+              }}
               btnProps={{
                 onClick: () => setCurrentFilteredLand(currentFilteredLand - 1),
                 disabled: currentFilteredLand < 1,
-                className: `mr-1 ${classNames({
-                  "text-gray-400": currentFilteredLand < 1,
+                className: `${classNames({
+                  " text-gray-400": currentFilteredLand < 1,
                 })}`,
               }}
             />
@@ -216,7 +223,7 @@ function Map({ setHeader, toLand, selected, setSelected }: Props) {
                 onClick: () => setCurrentFilteredLand(currentFilteredLand + 1),
                 disabled: currentFilteredLand === filteredLands.length - 1,
                 className: `${classNames({
-                  "text-gray-400":
+                  " text-gray-400":
                     currentFilteredLand === filteredLands.length - 1,
                 })}`,
               }}
@@ -279,17 +286,17 @@ function Map({ setHeader, toLand, selected, setSelected }: Props) {
                   setSelected({ land: l, continent: c });
                 }}
               >
-                {l.thumbnail && (
+                {l.type === ELandType.DECORATION && (
                   <img
-                    src={l.thumbnail.url}
+                    src={"/images/decorations/grass2.png"}
                     alt="Decoration"
                     className="w-full h-full"
                   />
                 )}
-                {l.capital && (
+                {l.type === ELandType.CAPITAL && (
                   <img
-                    src={l.capital.thumbnail.url}
-                    alt="Capital"
+                    src={"/images/houses/3/blue.png"}
+                    alt={`${world.name}-capital`}
                     className="pt-8"
                   />
                 )}
@@ -325,7 +332,7 @@ function Map({ setHeader, toLand, selected, setSelected }: Props) {
                     </div>
                   ) : (
                     <img
-                      src={l.shelter.thumbnail.url}
+                      src={`/images/houses/${l.shelter.type}/${l.shelter.paint}.png`}
                       alt="Shelter"
                       className="w-full h-full"
                     />

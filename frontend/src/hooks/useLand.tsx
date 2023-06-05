@@ -10,9 +10,9 @@ export function useLand(id?: string) {
     if (id) {
       cAxios
         .get<TResponse>(`/land/${id}`)
-        .then((res) => {
-          if (res.data.status === "SUCCESS") {
-            setLand(res.data.data);
+        .then(({ data }) => {
+          if (data.status === "S") {
+            setLand(data.data);
           }
         })
         .finally(() => {

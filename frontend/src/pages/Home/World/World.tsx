@@ -17,9 +17,9 @@ function World() {
     setLoading(true);
     cAxios
       .get<TResponse>("/world")
-      .then((res) => {
-        if (res.data.status === "SUCCESS") {
-          dispatch(setWorlds(res.data.data));
+      .then(({ data }) => {
+        if (data.status === "S") {
+          dispatch(setWorlds(data.data));
         }
       })
       .finally(() => {
@@ -35,7 +35,11 @@ function World() {
       {worlds.map((w) => (
         <Link to={`${pathname}/${w.id}`} key={w.id}>
           <div className="flex text-xs flex-col items-center capitalize font-mono font-bold">
-            <img src={w.thumbnail.url} alt={w.thumbnail.cid} className="w-52" />
+            <img
+              src={`/images/worlds/${w.name}.png`}
+              alt={w.name}
+              className="w-52"
+            />
             <span
               style={{
                 marginTop: "-0.5rem",
