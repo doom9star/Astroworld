@@ -123,6 +123,7 @@ export enum ETransactionType {
   LAND_SALE,
   LAND_BUILD,
   NEW_CITIZEN,
+  LOGIN_GIFT,
 }
 
 export interface INotification extends ICommon {
@@ -136,6 +137,7 @@ export interface ITransaction extends ICommon {
   from?: IUser;
   to?: IUser;
   coins: number;
+  completed: boolean;
   type: ETransactionType;
 }
 

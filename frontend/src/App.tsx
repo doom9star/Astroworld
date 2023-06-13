@@ -15,9 +15,10 @@ import {
   useGlobalState,
 } from "./redux/slices/global";
 import { TResponse } from "./redux/types";
+import Gift from "./components/Gift";
 
 function App() {
-  const { loading, showNotification } = useGlobalState();
+  const { loading, showNotification, showGift } = useGlobalState();
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -37,6 +38,7 @@ function App() {
     <BrowserRouter>
       <Alert />
       {showNotification && <Notification />}
+      {showGift && <Gift />}
       <CRouter>
         <Route path="/" element={<Landing />} />
         <Route

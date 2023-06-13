@@ -28,7 +28,7 @@ function Button({ label, icon, loading, btnProps, linkProps }: Props) {
       >
         {loading && (
           <div
-            className={`spinner ${
+            className={`spinner ${!label ? "w-3 h-3 top-2" : ""} ${
               !btnProps?.className?.includes("text-")
                 ? "border-black"
                 : "border" +

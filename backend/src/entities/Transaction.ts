@@ -14,6 +14,9 @@ export default class Transaction extends Base {
   @Column({ default: 0 })
   coins: number;
 
+  @Column({ default: true })
+  completed: boolean;
+
   @Column({
     type: "enum",
     enum: ETransactionType,

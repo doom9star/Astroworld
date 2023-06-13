@@ -1,14 +1,16 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { useSelector } from "react-redux";
 import { TRootState } from "../store";
-import { INotification, IUser, TAlert } from "../types";
+import { INotification, ITransaction, IUser, TAlert } from "../types";
 
 type TGlobalState = {
   loading: boolean;
   user: IUser | null;
   alert: TAlert;
   showNotification: boolean;
+  showGift: boolean;
   notifications: INotification[];
+  gifts: ITransaction[];
 };
 
 const globalSlice = createSlice({
@@ -18,7 +20,9 @@ const globalSlice = createSlice({
     user: null,
     alert: { state: "IDLE", message: "" },
     showNotification: false,
+    showGift: false,
     notifications: [],
+    gifts: [],
   } as TGlobalState,
   reducers: {
     setGlobalLoading: (state, action: PayloadAction<boolean>) => {
@@ -32,6 +36,9 @@ const globalSlice = createSlice({
     },
     setShowNotification: (state, action: PayloadAction<boolean>) => {
       state.showNotification = action.payload;
+    },
+    setShowGift: (state, action: PayloadAction<boolean>) => {
+      state.showGift = action.payload;
     },
     setNotifications: (
       state,
@@ -48,6 +55,16 @@ const globalSlice = createSlice({
           ...state.notifications,
         ];
     },
+    setGifts: (
+      state,
+      action: PayloadAction<{
+        gifts: ITransaction[];
+        replace: boolean;
+      }>
+    ) => {
+      if (action.payload.replace) state.gifts = action.payload.gifts;
+      else state.gifts = [...action.payload.gifts, ...state.gifts];
+    },
   },
 });
 
@@ -58,6 +75,8 @@ export const {
   setUser,
   setAlert,
   setShowNotification,
+  setShowGift,
   setNotifications,
+  setGifts,
 } = globalSlice.actions;
 export default globalSlice.reducer;

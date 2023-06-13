@@ -19,6 +19,19 @@ const router = Router();
 router.get("/", isAuth, async (req: TRequest, res: TResponse) => {
   try {
     const user = await User.findOne({ where: { id: req.user?.id } });
+    if (
+      user &&
+      Math.floor(new Date().getTime() - user.loginGift.getTime()) > WEEK / 7
+    ) {
+      user.loginGift = new Date();
+      await user.save();
+      await postTransaction({
+        to: user,
+        coins: 10,
+        completed: false,
+        type: ETransactionType.LOGIN_GIFT,
+      });
+    }
     return res.json({ status: "S", data: user });
   } catch (error: any) {
     console.error(error);

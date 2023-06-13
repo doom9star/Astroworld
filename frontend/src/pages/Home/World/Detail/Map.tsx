@@ -210,7 +210,7 @@ function Map({ setHeader, toLand, selected, setSelected }: Props) {
                 className: "mr-2",
               }}
               btnProps={{
-                onClick: () => setCurrentFilteredLand(currentFilteredLand - 1),
+                onClick: () => setCurrentFilteredLand((value) => value - 1),
                 disabled: currentFilteredLand < 1,
                 className: `${classNames({
                   " text-gray-400": currentFilteredLand < 1,
@@ -220,7 +220,7 @@ function Map({ setHeader, toLand, selected, setSelected }: Props) {
             <Button
               icon={<AiOutlineCaretRight />}
               btnProps={{
-                onClick: () => setCurrentFilteredLand(currentFilteredLand + 1),
+                onClick: () => setCurrentFilteredLand((value) => value + 1),
                 disabled: currentFilteredLand === filteredLands.length - 1,
                 className: `${classNames({
                   " text-gray-400":
@@ -260,10 +260,10 @@ function Map({ setHeader, toLand, selected, setSelected }: Props) {
                 className={
                   `cursor-pointer hover:bg-gray-100 ` +
                   classNames({
-                    "bg-gray-100":
+                    "bg-gray-200":
                       selected?.land.id === l.id ||
                       filteredLands.includes(`${c.position} ${l.position}`),
-                    " bg-gray-200":
+                    " opacity-70":
                       currentFilteredLand !== -1 &&
                       filteredLands[currentFilteredLand] ===
                         `${c.position} ${l.position}`,

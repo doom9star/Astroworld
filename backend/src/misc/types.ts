@@ -52,4 +52,5 @@ export enum ETransactionType {
   LAND_SALE,
   LAND_BUILD,
   NEW_CITIZEN,
+  LOGIN_GIFT,
 }

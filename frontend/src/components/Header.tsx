@@ -7,19 +7,23 @@ import { cAxios } from "../misc/constants";
 import {
   setNotifications,
   setShowNotification,
+  setShowGift,
   setUser,
   useGlobalState,
+  setGifts,
 } from "../redux/slices/global";
 import Button from "./Button";
 import Logo from "./Logo";
 import Spinner from "./Spinner";
 import { TResponse } from "../redux/types";
+import { AiOutlineGift } from "react-icons/ai";
 
 function Header() {
   const [loading, setLoading] = useState(false);
   const [nloading, setNLoading] = useState(true);
+  const [gloading, setGLoading] = useState(true);
 
-  const { user, notifications } = useGlobalState();
+  const { user, notifications, gifts } = useGlobalState();
   const dispatch = useDispatch();
 
   const logout = useCallback(() => {
@@ -51,6 +55,17 @@ function Header() {
         .finally(() => {
           setNLoading(false);
         });
+      setGLoading(true);
+      cAxios
+        .get<TResponse>("/transaction/gift")
+        .then(({ data }) => {
+          if (data.status === "S") {
+            dispatch(setGifts({ gifts: data.data, replace: true }));
+          }
+        })
+        .finally(() => {
+          setGLoading(false);
+        });
     } else {
       setNLoading(false);
     }
@@ -59,13 +74,28 @@ function Header() {
   return (
     <Fragment>
       <div className="p-5 flex justify-between items-center fixed bg-white w-[100vw]">
-        {nloading ? (
+        {nloading || gloading ? (
           <Spinner size="small" />
         ) : (
           <>
             <Logo className="w-28" />
             {user ? (
               <div className="flex items-center">
+                <div className="mr-2 flex items-center relative">
+                  <Button
+                    btnProps={{
+                      onClick: () => dispatch(setShowGift(true)),
+                      className: "text-lg",
+                    }}
+                    icon={<AiOutlineGift />}
+                  />
+                  <div
+                    className="absolute -top-1 font-bold -left-1 bg-red-500 text-white px-[0.3rem] py-[0.1rem] rounded-full"
+                    style={{ fontSize: "0.6rem" }}
+                  >
+                    {gifts.length}
+                  </div>
+                </div>
                 <div className="mr-4 flex items-center relative">
                   <Button
                     btnProps={{
@@ -75,7 +105,7 @@ function Header() {
                     icon={<IoMdNotificationsOutline />}
                   />
                   <div
-                    className="absolute -top-1 font-bold -left-3 bg-red-500 text-white px-2 py-1 rounded-full"
+                    className="absolute -top-1 font-bold -left-1 bg-red-500 text-white px-[0.3rem] py-[0.1rem] rounded-full"
                     style={{ fontSize: "0.6rem" }}
                   >
                     {notifications.length}

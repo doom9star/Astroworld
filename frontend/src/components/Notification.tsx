@@ -72,7 +72,7 @@ function NotificationDetail({ n }: Props) {
           }
         />
       )}
-      <div className="px-2">
+      <div className="px-2 w-full">
         <p className="leading-5 font-mono" style={{ fontSize: "0.6rem" }}>
           {n.type === ENotificationType.NEW_CITIZEN ? (
             <span>

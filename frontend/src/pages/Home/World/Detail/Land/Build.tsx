@@ -102,43 +102,43 @@ function Build() {
       <Back />
       <div className="flex items-center justify-center h-[50vh]">
         <div className="w-[20%] h-[100%] flex flex-col justify-center items-end">
-          {Object.keys(EBuildable).map((b) => (
-            <Button
-              key={b}
-              label={b[0] + b.toLowerCase().slice(1)}
-              btnProps={{
-                style: {
-                  fontSize: "0.6rem",
-                },
-                className:
-                  "mb-2 w-28" +
-                  classNames({
-                    " opacity-60": tabInfo.main === b,
-                  }),
-                onClick: () => setTabInfo({ ...tabInfo, main: b as any }),
-              }}
-            />
-          ))}
+          {Object.keys(EBuildable)
+            .slice(Object.keys(EBuildable).length / 2)
+            .map((b) => (
+              <Button
+                key={b}
+                label={b[0] + b.toLowerCase().slice(1)}
+                btnProps={{
+                  style: {
+                    fontSize: "0.6rem",
+                  },
+                  className:
+                    "mb-2 w-28" +
+                    classNames({
+                      " opacity-60": tabInfo.main === b,
+                    }),
+                  onClick: () => setTabInfo({ ...tabInfo, main: b as any }),
+                }}
+              />
+            ))}
         </div>
         {tabInfo.main === "SHELTER" ? (
-          <div className="w-[80%] h-[100%] flex justify-center items-center">
+          <div className="w-[80%] h-[80%] flex justify-center items-center">
             <img
               src={`/images/houses/${shelterInfo.type}/${shelterInfo.paint}.png`}
               alt="Shelter"
-              className="w-80"
+              className="w-80 h-[100%]"
             />
-            <div className="w-1/4">
-              <div className="flex justify-around mb-20">
+            <div className="w-1/4 h-[100%]">
+              <div className="flex justify-around mb-10">
                 <Button
                   label="Info"
                   icon={<AiOutlineInfo />}
                   btnProps={{
                     onClick: () => setTabInfo({ ...tabInfo, sub: "info" }),
-                    className:
-                      "border-0" +
-                      classNames({
-                        " border-b-2 border-black": tabInfo.sub === "info",
-                      }),
+                    className: classNames({
+                      " border-none": tabInfo.sub !== "info",
+                    }),
                   }}
                 />
                 <Button
@@ -146,11 +146,9 @@ function Build() {
                   icon={<MdOutlineDesignServices />}
                   btnProps={{
                     onClick: () => setTabInfo({ ...tabInfo, sub: "design" }),
-                    className:
-                      "border-0" +
-                      classNames({
-                        " border-b-2 border-black": tabInfo.sub === "design",
-                      }),
+                    className: classNames({
+                      " border-none": tabInfo.sub !== "design",
+                    }),
                   }}
                 />
               </div>
@@ -209,7 +207,7 @@ function Build() {
                   </div>
                 </div>
               ) : tabInfo.sub === "info" ? (
-                <div className="font-mono">
+                <div className="font-mono flex flex-col">
                   <div className="flex items-center justify-around">
                     <div className="flex items-center">
                       <div className="w-5 h-5 rounded-full bg-yellow-500" />
@@ -235,8 +233,10 @@ function Build() {
                     loading={loading}
                     label="Build"
                     icon={<FaWrench />}
-                    btnProps={{
+                    linkProps={{
                       className: "mx-auto",
+                    }}
+                    btnProps={{
                       style: {
                         opacity:
                           user!.coins < land.value + shelterInfo.type * 100

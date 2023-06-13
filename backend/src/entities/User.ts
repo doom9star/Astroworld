@@ -37,6 +37,9 @@ export default class User extends Base {
   @Column({ default: 100 })
   coins: number;
 
+  @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
+  loginGift: Date;
+
   @OneToMany(() => Land, (land) => land.owner)
   lands: Land[];
 
