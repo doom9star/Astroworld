@@ -1,10 +1,10 @@
 import classNames from "classnames";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { AiOutlineClockCircle, AiOutlineInfo } from "react-icons/ai";
 import { BiBuildingHouse } from "react-icons/bi";
 import { BsHouseDoor } from "react-icons/bs";
 import { CgSandClock } from "react-icons/cg";
-import { FaWrench } from "react-icons/fa";
+import { FaAsterisk, FaWrench } from "react-icons/fa";
 import { MdOutlineDesignServices, MdOutlineHouse } from "react-icons/md";
 import { useNavigate, useParams } from "react-router-dom";
 import Back from "../../../../../components/Back";
@@ -23,14 +23,15 @@ import {
 import { useWorldState } from "../../../../../redux/slices/world";
 
 const paint = ["blue", "green", "orange", "purple", "red", "yellow"] as const;
-const arcToPaint = {
+const arcPaint = {
   1: paint.filter((p) => p !== "yellow"),
   2: paint.filter((p) => p !== "yellow"),
   4: paint.filter((p) => ["blue", "yellow"].includes(p)),
+  5: paint.filter((p) => !["green", "yellow"].includes(p)),
 };
 
-type ShelterInfo = {
-  type: 1 | 2 | 4;
+type ArcInfo = {
+  type: 1 | 2 | 4 | 5;
   paint: (typeof paint)[number];
 };
 
@@ -40,7 +41,7 @@ type TabInfo = {
 };
 
 function Build() {
-  const [shelterInfo, setShelterInfo] = useState<ShelterInfo>({
+  const [arcInfo, setArcInfo] = useState<ArcInfo>({
     type: 1,
     paint: "blue",
   });
@@ -58,14 +59,14 @@ function Build() {
   const { user } = useGlobalState();
 
   const buildProperty = useCallback(() => {
-    const value = land!.value + shelterInfo.type * 100;
+    const value = land!.value * (arcInfo.type * 5);
     setLoading(true);
     cAxios
       .post<TResponse>(`/land/${land!.id}/build/${EBuildable[tabInfo.main]}`, {
         value,
-        paint: shelterInfo.paint,
-        built: new Date(getExpiryDate(shelterInfo.type * 20)),
-        type: shelterInfo.type,
+        paint: arcInfo.paint,
+        built: new Date(getExpiryDate(arcInfo.type * 20)),
+        type: arcInfo.type,
       })
       .then(({ data }) => {
         if (data.status === "S") {
@@ -86,7 +87,15 @@ function Build() {
       .finally(() => {
         setLoading(false);
       });
-  }, [land, world, tabInfo, shelterInfo, dispatch, navigate, user]);
+  }, [land, world, tabInfo, arcInfo, dispatch, navigate, user]);
+
+  useEffect(() => {
+    if (tabInfo.main === "SHELTER") {
+      setArcInfo({ type: 1, paint: "blue" });
+    } else {
+      setArcInfo({ type: 5, paint: "blue" });
+    }
+  }, [tabInfo.main]);
 
   if (landLoading) {
     return <Spinner size="medium" />;
@@ -122,141 +131,143 @@ function Build() {
               />
             ))}
         </div>
-        {tabInfo.main === "SHELTER" ? (
-          <div className="w-[80%] h-[80%] flex justify-center items-center">
-            <img
-              src={`/images/houses/${shelterInfo.type}/${shelterInfo.paint}.png`}
-              alt="Shelter"
-              className="w-80 h-[100%]"
-            />
-            <div className="w-1/4 h-[100%]">
-              <div className="flex justify-around mb-10">
-                <Button
-                  label="Info"
-                  icon={<AiOutlineInfo />}
-                  btnProps={{
-                    onClick: () => setTabInfo({ ...tabInfo, sub: "info" }),
-                    className: classNames({
-                      " border-none": tabInfo.sub !== "info",
-                    }),
-                  }}
-                />
-                <Button
-                  label="Design"
-                  icon={<MdOutlineDesignServices />}
-                  btnProps={{
-                    onClick: () => setTabInfo({ ...tabInfo, sub: "design" }),
-                    className: classNames({
-                      " border-none": tabInfo.sub !== "design",
-                    }),
-                  }}
-                />
-              </div>
-              {tabInfo.sub === "design" ? (
-                <div className="flex flex-col items-center">
+        <div className="w-[80%] h-[80%] flex justify-center items-center">
+          <img
+            src={`/images/houses/${arcInfo.type}/${arcInfo.paint}.png`}
+            alt={"Shelter"}
+            className="w-80 h-[100%]"
+          />
+          <div className="w-1/4 h-[100%]">
+            <div className="flex justify-around mb-10">
+              <Button
+                label="Info"
+                icon={<AiOutlineInfo />}
+                btnProps={{
+                  onClick: () => setTabInfo({ ...tabInfo, sub: "info" }),
+                  className: classNames({
+                    " border-none": tabInfo.sub !== "info",
+                  }),
+                }}
+              />
+              <Button
+                label="Design"
+                icon={<MdOutlineDesignServices />}
+                btnProps={{
+                  onClick: () => setTabInfo({ ...tabInfo, sub: "design" }),
+                  className: classNames({
+                    " border-none": tabInfo.sub !== "design",
+                  }),
+                }}
+              />
+            </div>
+            {tabInfo.sub === "design" ? (
+              <div className="flex flex-col items-center">
+                {tabInfo.main === "SHELTER" && (
                   <div className="flex mb-4">
                     <Button
                       btnProps={{
                         onClick: () =>
-                          setShelterInfo({ type: 1, paint: arcToPaint[1][0] }),
+                          setArcInfo({ type: 1, paint: arcPaint[1][0] }),
                         className:
                           "text-sm mr-2" +
-                          classNames({ " border-2": shelterInfo.type === 1 }),
+                          classNames({ " border-2": arcInfo.type === 1 }),
                       }}
                       icon={<MdOutlineHouse />}
                     />
                     <Button
                       btnProps={{
                         onClick: () =>
-                          setShelterInfo({ type: 2, paint: arcToPaint[2][0] }),
+                          setArcInfo({ type: 2, paint: arcPaint[2][0] }),
                         className:
                           "text-sm mr-2" +
-                          classNames({ " border-2": shelterInfo.type === 2 }),
+                          classNames({ " border-2": arcInfo.type === 2 }),
                       }}
                       icon={<BsHouseDoor />}
                     />
                     <Button
                       btnProps={{
                         onClick: () =>
-                          setShelterInfo({ type: 4, paint: arcToPaint[4][0] }),
+                          setArcInfo({ type: 4, paint: arcPaint[4][0] }),
                         className:
                           "text-sm" +
-                          classNames({ " border-2": shelterInfo.type === 4 }),
+                          classNames({ " border-2": arcInfo.type === 4 }),
                       }}
                       icon={<BiBuildingHouse />}
                     />
                   </div>
-                  <div className="flex items-center">
-                    {arcToPaint[shelterInfo.type].map((p) => (
-                      <div
-                        key={p}
-                        style={{
-                          backgroundColor: p,
-                          filter: "brightness(1.5)",
-                          border:
-                            shelterInfo.paint === p
-                              ? "2px dashed white"
-                              : "none",
-                        }}
-                        className={`w-6 h-6 rounded-full mr-2 cursor-pointer`}
-                        onClick={() =>
-                          setShelterInfo({ ...shelterInfo, paint: p as any })
-                        }
-                      />
-                    ))}
-                  </div>
+                )}
+                <div className="flex items-center">
+                  {arcPaint[arcInfo.type].map((p) => (
+                    <div
+                      key={p}
+                      style={{
+                        backgroundColor: p,
+                        filter: "brightness(1.5)",
+                        border:
+                          arcInfo.paint === p ? "2px dashed white" : "none",
+                      }}
+                      className={`w-6 h-6 rounded-full mr-2 cursor-pointer`}
+                      onClick={() =>
+                        setArcInfo({ ...arcInfo, paint: p as any })
+                      }
+                    />
+                  ))}
                 </div>
-              ) : tabInfo.sub === "info" ? (
-                <div className="font-mono flex flex-col">
-                  <div className="flex items-center justify-around">
-                    <div className="flex items-center">
-                      <div className="w-5 h-5 rounded-full bg-yellow-500" />
-                      &nbsp;
-                      <span>{land.value + shelterInfo.type * 100}</span>
-                    </div>
-                    <span className="flex items-center whitespace-nowrap">
-                      <AiOutlineClockCircle className="text-xl" /> &nbsp;
-                      {shelterInfo.type * 20}d
+              </div>
+            ) : tabInfo.sub === "info" ? (
+              <div className="font-mono flex flex-col">
+                <div className="flex items-center justify-around">
+                  <div className="flex items-center">
+                    <div className="w-5 h-5 rounded-full bg-yellow-500" />
+                    &nbsp;
+                    <span>
+                      {(land.value * (arcInfo.type * 5)).toLocaleString()}
                     </span>
                   </div>
-                  <span className="flex justify-center items-center whitespace-nowrap my-4 text-xs">
-                    <CgSandClock className="text-xl" /> &nbsp;
-                    {new Date(
-                      getExpiryDate(shelterInfo.type * 20)
-                    ).toLocaleDateString("en-GB", {
-                      month: "2-digit",
-                      day: "2-digit",
-                      year: "numeric",
-                    })}
+                  <span className="flex items-center whitespace-nowrap">
+                    <AiOutlineClockCircle className="text-xl" /> &nbsp;
+                    {arcInfo.type * 20}d
                   </span>
-                  <Button
-                    loading={loading}
-                    label="Build"
-                    icon={<FaWrench />}
-                    linkProps={{
-                      className: "mx-auto",
-                    }}
-                    btnProps={{
-                      style: {
-                        opacity:
-                          user!.coins < land.value + shelterInfo.type * 100
-                            ? 0.5
-                            : 1,
-                      },
-                      onClick: buildProperty,
-                      disabled:
-                        user!.coins < land.value + shelterInfo.type * 100,
-                    }}
-                  />
                 </div>
-              ) : null}
-            </div>
+                <span className="flex justify-center items-center whitespace-nowrap my-4 text-xs">
+                  <CgSandClock className="text-xl" /> &nbsp;
+                  {new Date(
+                    getExpiryDate(arcInfo.type * 20)
+                  ).toLocaleDateString("en-GB", {
+                    month: "2-digit",
+                    day: "2-digit",
+                    year: "numeric",
+                  })}
+                </span>
+                <Button
+                  loading={loading}
+                  label="Build"
+                  icon={<FaWrench />}
+                  linkProps={{
+                    className: "mx-auto",
+                  }}
+                  btnProps={{
+                    style: {
+                      opacity:
+                        user!.coins < land.value * (arcInfo.type * 5) ? 0.5 : 1,
+                    },
+                    onClick: buildProperty,
+                    disabled: user!.coins < land.value * (arcInfo.type * 5),
+                  }}
+                />
+                {user!.coins < land.value * (arcInfo.type * 5) && (
+                  <div
+                    className="flex items-center justify-center mt-1"
+                    style={{ fontSize: "0.5rem" }}
+                  >
+                    <FaAsterisk className="text-red-500 mr-2" />
+                    <span>You don't have enough coins!</span>
+                  </div>
+                )}
+              </div>
+            ) : null}
           </div>
-        ) : tabInfo.main === "WAREHOUSE" ? (
-          <div className="w-[80%] flex justify-center items-center">
-            Warehouse
-          </div>
-        ) : null}
+        </div>
       </div>
     </div>
   );

@@ -149,6 +149,7 @@ export interface IComment extends ICommon {
 export enum EMapFilterType {
   ALL = "ALL",
   TERRITORY = "TERRITORY",
+  NONTERRITORIAL = "NON-TERRITORIAL",
   BUY = "BUY",
   SALE = "SALE",
 }

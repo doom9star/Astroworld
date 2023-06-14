@@ -64,6 +64,15 @@ function Map({ setHeader, toLand, selected, setSelected }: Props) {
               .map((l) => `${c.position} ${l.position}`),
           ];
         });
+      } else if (mapFilter === EMapFilterType.NONTERRITORIAL) {
+        world.continents.forEach((c) => {
+          lands = [
+            ...lands,
+            ...c.lands
+              .filter((l) => l.owner.id !== user?.id)
+              .map((l) => `${c.position} ${l.position}`),
+          ];
+        });
       } else if (mapFilter === EMapFilterType.BUY) {
         world.continents.forEach((c) => {
           lands = [
@@ -200,6 +209,9 @@ function Map({ setHeader, toLand, selected, setSelected }: Props) {
           >
             <option value={EMapFilterType.ALL}>All</option>
             <option value={EMapFilterType.TERRITORY}>Territory</option>
+            <option value={EMapFilterType.NONTERRITORIAL}>
+              Non-Territorial
+            </option>
             <option value={EMapFilterType.BUY}>Buy</option>
             <option value={EMapFilterType.SALE}>Sale</option>
           </select>

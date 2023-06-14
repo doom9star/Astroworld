@@ -13,6 +13,7 @@ import Continent from "./Continent";
 import Contract from "./Contract";
 import Shelter from "./Shelter";
 import User from "./User";
+import Warehouse from "./Warehouse";
 
 @Entity("land")
 export default class Land extends Base {
@@ -53,4 +54,8 @@ export default class Land extends Base {
   @OneToOne(() => Shelter, { cascade: true })
   @JoinColumn()
   shelter: Shelter;
+
+  @OneToOne(() => Warehouse, { cascade: true })
+  @JoinColumn()
+  warehouse: Warehouse;
 }

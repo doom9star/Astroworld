@@ -12,6 +12,7 @@ import Shelter from "../entities/Shelter";
 import Transaction from "../entities/Transaction";
 import User from "../entities/User";
 import World from "../entities/World";
+import Warehouse from "../entities/Warehouse";
 
 export default function initORM() {
   return new DataSource({
@@ -28,6 +29,7 @@ export default function initORM() {
       Continent,
       Land,
       Shelter,
+      Warehouse,
       Capital,
       Conversation,
       Message,

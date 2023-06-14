@@ -1,7 +1,9 @@
 import { Fragment, useCallback, useState } from "react";
 import { GiTwoCoins } from "react-icons/gi";
+import { TiTick } from "react-icons/ti";
 import { useDispatch } from "react-redux";
 import Timeago from "react-timeago";
+import { cAxios } from "../misc/constants";
 import {
   setGifts,
   setShowGift,
@@ -10,8 +12,6 @@ import {
 } from "../redux/slices/global";
 import { ETransactionType, ITransaction, TResponse } from "../redux/types";
 import Button from "./Button";
-import { TiTickOutline } from "react-icons/ti";
-import { cAxios } from "../misc/constants";
 
 type Props = {
   g: ITransaction;
@@ -59,7 +59,7 @@ function GiftDetail({ g }: Props) {
           <div className="flex">
             {g.completed ? (
               <Button
-                icon={<TiTickOutline />}
+                icon={<TiTick className="text-green-500" />}
                 btnProps={{
                   disabled: true,
                 }}

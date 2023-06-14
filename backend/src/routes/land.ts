@@ -17,6 +17,7 @@ import {
   TRequest,
   TResponse,
 } from "../misc/types";
+import Warehouse from "../entities/Warehouse";
 
 const router = Router();
 
@@ -145,39 +146,38 @@ router.post(
   async (req: TRequest, res: TResponse) => {
     try {
       const type = parseInt(req.params.type);
-      if (type === ELandType.SHELTER) {
-        const shelter = new Shelter();
-        shelter.value = req.body.value;
-        shelter.type = req.body.type;
-        shelter.paint = req.body.paint;
-        shelter.built = req.body.built;
-        shelter.locked = true;
-        shelter.land = <any>{ id: req.params.id };
-        await shelter.save();
+      const entity: Shelter | Warehouse =
+        type === ELandType.SHELTER ? new Shelter() : new Warehouse();
+      entity.value = req.body.value;
+      if (entity instanceof Shelter) entity.type = req.body.type;
+      else entity.categories = { default: [] };
+      entity.paint = req.body.paint;
+      entity.built = req.body.built;
+      entity.locked = true;
+      entity.land = <any>{ id: req.params.id };
+      await entity.save();
 
-        await User.getRepository().decrement(
-          { id: req.user?.id },
-          "coins",
-          shelter.value
-        );
+      await User.getRepository().decrement(
+        { id: req.user?.id },
+        "coins",
+        entity.value
+      );
 
-        await Capital.getRepository().increment(
-          {
-            land: { id: req.params.id },
-          },
-          "reserve",
-          shelter.value
-        );
+      await Capital.getRepository().increment(
+        {
+          land: { id: req.params.id },
+        },
+        "reserve",
+        entity.value
+      );
 
-        await postTransaction({
-          from: { id: req.user?.id } as any,
-          coins: shelter.value,
-          type: ETransactionType.LAND_BUILD,
-        });
+      await postTransaction({
+        from: { id: req.user?.id } as any,
+        coins: entity.value,
+        type: ETransactionType.LAND_BUILD,
+      });
 
-        return res.json({ status: "S", data: shelter });
-      }
-      return res.json({ status: "F" });
+      return res.json({ status: "S", data: entity });
     } catch (error: any) {
       console.error(error);
       return res.json({ status: "F", data: error.message });
