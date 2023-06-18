@@ -13,25 +13,14 @@ import {
   TResponse,
 } from "../misc/types";
 import getToken from "../utils/getToken";
+import giftUser from "../controllers/giftUser";
 
 const router = Router();
 
 router.get("/", isAuth, async (req: TRequest, res: TResponse) => {
   try {
     const user = await User.findOne({ where: { id: req.user?.id } });
-    if (
-      user &&
-      Math.floor(new Date().getTime() - user.loginGift.getTime()) > WEEK / 7
-    ) {
-      user.loginGift = new Date();
-      await user.save();
-      await postTransaction({
-        to: user,
-        coins: 10,
-        completed: false,
-        type: ETransactionType.LOGIN_GIFT,
-      });
-    }
+    await giftUser(user);
     return res.json({ status: "S", data: user });
   } catch (error: any) {
     console.error(error);
@@ -87,6 +76,7 @@ router.post("/login", isNotAuth, async (req: Request, res: TResponse) => {
     if (!(await user.checkPassword(password)))
       return res.json({ status: "F", data: "wrong credentials!" });
 
+    await giftUser(user);
     res.cookie(COOKIE_NAME, getToken({ id: user.id }), { maxAge: WEEK });
 
     return res.json({ status: "S", data: user });

@@ -1,16 +1,12 @@
 import { useEffect, useState } from "react";
-import { IContract, ILand, TResponse } from "../../../../../../redux/types";
-import { cAxios } from "../../../../../../misc/constants";
-import Spinner from "../../../../../../components/Spinner";
 import { MdSell } from "react-icons/md";
-import ReactTimeago from "react-timeago";
 import { Link, useParams } from "react-router-dom";
+import ReactTimeago from "react-timeago";
+import Spinner from "../../../../../../../components/Spinner";
+import { cAxios } from "../../../../../../../misc/constants";
+import { IContract, TResponse } from "../../../../../../../redux/types";
 
-type Props = {
-  land: ILand;
-};
-
-function TabExplore({ land }: Props) {
+function TabExplore() {
   const [contracts, setContracts] = useState<IContract[]>([]);
   const [loading, setLoading] = useState(true);
   const params = useParams();

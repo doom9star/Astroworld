@@ -1,20 +1,15 @@
 import { useEffect, useState } from "react";
 import { GrTransaction } from "react-icons/gr";
-import Spinner from "../../../../../../components/Spinner";
-import { cAxios } from "../../../../../../misc/constants";
+import TimeAgo from "react-timeago";
+import Spinner from "../../../../../../../components/Spinner";
+import { cAxios } from "../../../../../../../misc/constants";
 import {
   ETransactionType,
-  ILand,
   ITransaction,
   TResponse,
-} from "../../../../../../redux/types";
-import TimeAgo from "react-timeago";
+} from "../../../../../../../redux/types";
 
-type Props = {
-  land: ILand;
-};
-
-function TabVault({ land }: Props) {
+function TabVault() {
   const [transactions, setTransactions] = useState<ITransaction[]>([]);
   const [loading, setLoading] = useState(true);
 

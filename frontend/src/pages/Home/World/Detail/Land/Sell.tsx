@@ -135,7 +135,6 @@ function Buy() {
             className={`input`}
             name="comment"
             onChange={onChange}
-            id="comment`"
             value={info.comment}
           ></textarea>
         </div>

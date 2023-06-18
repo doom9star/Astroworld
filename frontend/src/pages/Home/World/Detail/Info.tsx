@@ -167,7 +167,7 @@ function Info({ onClose, selected }: Props) {
             label="Visit"
             icon={<AiOutlineAlignCenter />}
             linkProps={{
-              to: `${pathname}/${selected.land.id}`,
+              to: `${pathname}/${selected.land.id}/visit`,
               className: "mr-2",
             }}
           />

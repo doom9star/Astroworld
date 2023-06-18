@@ -9,6 +9,7 @@ import "reflect-metadata";
 import initORM from "./misc/typeorm";
 import MainRouter from "./routes";
 import { TRequest } from "./misc/types";
+import killPort from "kill-port";
 
 const main = async () => {
   dotenv.config({ path: path.join(__dirname, "../.env") });
@@ -28,6 +29,10 @@ const main = async () => {
     next();
   });
   app.use("/", MainRouter);
+
+  try {
+    await killPort(parseInt(process.env.PORT!), "tcp");
+  } catch (e) {}
 
   app.listen(process.env.PORT, () => {
     console.log(`\nServer running on http://localhost:${process.env.PORT}`);

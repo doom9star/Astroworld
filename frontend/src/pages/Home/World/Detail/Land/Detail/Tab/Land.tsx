@@ -1,15 +1,26 @@
+import { AiOutlineCalendar } from "react-icons/ai";
 import { BiCoin, BiCoinStack } from "react-icons/bi";
 import { FaPlaceOfWorship, FaUserTie } from "react-icons/fa";
 import { GrLocation } from "react-icons/gr";
-import { ELandType, ILand } from "../../../../../../redux/types";
-import { AiOutlineCalendar } from "react-icons/ai";
-import { getDate } from "../../../../../../misc/utils";
+import { useNavigate, useParams } from "react-router-dom";
+import Spinner from "../../../../../../../components/Spinner";
+import { useLand } from "../../../../../../../hooks/useLand";
+import { getDate } from "../../../../../../../misc/utils";
+import { ELandType } from "../../../../../../../redux/types";
 
-type Props = {
-  land: ILand;
-};
+function TabLand() {
+  const params = useParams();
+  const navigate = useNavigate();
+  const { land, loading } = useLand(params.lid);
 
-function TabLand({ land }: Props) {
+  if (loading) {
+    return <Spinner size="medium" />;
+  }
+
+  if (!land) {
+    navigate("/home/world");
+    return null;
+  }
   return (
     <div className="py-10 flex justify-around items-center">
       <div className="text-xs flex flex-col items-center">
