@@ -16,9 +16,9 @@ import Warehouse from "../entities/Warehouse";
 
 export default function initORM() {
   return new DataSource({
-    type: "mysql",
+    type: "postgres",
     host: "localhost",
-    port: 3306,
+    port: 5432,
     username: "karthik",
     password: "karthik",
     database: "astroworld",

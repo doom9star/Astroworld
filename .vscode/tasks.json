@@ -24,10 +24,10 @@
       "hide": true
     },
     {
-      "label": "mysql",
+      "label": "postgres",
       "type": "process",
       "command": "./.vscode/setup.sh",
-      "args": ["mysql"],
+      "args": ["postgres"],
       "group": "test",
       "presentation": {
         "reveal": "always"
@@ -37,7 +37,7 @@
     {
       "label": "setup",
       "group": "test",
-      "dependsOn": ["backend", "frontend", "mysql"],
+      "dependsOn": ["backend", "frontend", "postgres"],
       "dependsOrder": "parallel"
     }
   ]

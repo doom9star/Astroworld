@@ -8,7 +8,7 @@ elif [ $1 == "frontend" ]
 then
     cd frontend
     BROWSER=NONE npm start
-elif [ $1 == "mysql" ]
+elif [ $1 == "postgres" ]
 then
-    mysql -ukarthik -pkarthik
+    PGPASSWORD='karthik' psql -h localhost -U karthik -d astroworld
 fi
