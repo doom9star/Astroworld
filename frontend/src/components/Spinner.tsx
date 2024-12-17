@@ -10,7 +10,7 @@ function Spinner({ size }: Props) {
       className={`border-2 border-b-0 border-awblack rounded-full animate-spin absolute top-1/2 left-1/2 ${classNames(
         {
           "w-7 h-7": size === "small",
-          "w-10 h-10": size !== "small",
+          "w-9 h-9": size !== "small",
         }
       )}`}
     />

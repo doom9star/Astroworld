@@ -72,7 +72,7 @@ router.post("/login", isNotAuth, async (req: Request, res: TResponse) => {
     const user = await User.findOne({
       where: { [email.includes("@") ? "email" : "name"]: email },
     });
-    if (!user) return res.json({ status: "F" });
+    if (!user) return res.json({ status: "F", data: "user does not exist!" });
     if (!(await user.checkPassword(password)))
       return res.json({ status: "F", data: "wrong credentials!" });
 

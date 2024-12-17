@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import { Fragment, useMemo } from "react";
+import { Fragment, useEffect, useMemo } from "react";
 import { AiOutlineUser } from "react-icons/ai";
 import { GiCoins } from "react-icons/gi";
 import { ImFileText } from "react-icons/im";
@@ -7,8 +7,13 @@ import { RiLandscapeLine } from "react-icons/ri";
 import { TbFileInvoice } from "react-icons/tb";
 import { useDispatch } from "react-redux";
 import TimeAgo from "react-timeago";
-import { setShowNotification, useGlobalState } from "../redux/slices/global";
-import { ENotificationType, INotification } from "../redux/types";
+import { cAxios } from "../misc/constants";
+import {
+  setNotifications,
+  setShowNotification,
+  useGlobalState,
+} from "../redux/slices/global";
+import { ENotificationType, INotification, TResponse } from "../redux/types";
 import Button from "./Button";
 
 type Props = {
@@ -50,14 +55,7 @@ function NotificationDetail({ n }: Props) {
   }, [n]);
 
   return (
-    <div
-      className={
-        "flex mb-4 hover:opacity-80 cursor-pointer" +
-        classNames({
-          " bg-gray-200": n.read,
-        })
-      }
-    >
+    <div className={"flex mb-4 hover:opacity-80 cursor-pointer"}>
       {n.type === ENotificationType.NEW_CITIZEN ? (
         <GiCoins className="text-5xl text-yellow-500 mr-2" />
       ) : n.type === ENotificationType.BUILD_COMPLETION ? (
@@ -181,6 +179,31 @@ function NotificationDetail({ n }: Props) {
 function Notification() {
   const dispatch = useDispatch();
   const { notifications } = useGlobalState();
+
+  const unread_notifications = useMemo(
+    () => notifications.filter((n) => !n.read),
+    [notifications]
+  );
+
+  useEffect(() => {
+    if (unread_notifications.length > 0) {
+      cAxios
+        .post<TResponse>(`/notification/read`, {
+          nids: unread_notifications.map((n) => n.id),
+        })
+        .then(({ data }) => {
+          if (data.status === "S") {
+            const _notifications = notifications.map((n) => ({
+              ...n,
+              read: true,
+            }));
+            dispatch(
+              setNotifications({ notifications: _notifications, replace: true })
+            );
+          }
+        });
+    }
+  }, [unread_notifications, notifications]);
 
   return (
     <Fragment>

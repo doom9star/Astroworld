@@ -1,4 +1,4 @@
-import { Fragment, useCallback, useEffect, useState } from "react";
+import { Fragment, useCallback, useEffect, useMemo, useState } from "react";
 import { HiLogin, HiLogout } from "react-icons/hi";
 import { IoMdNotificationsOutline } from "react-icons/io";
 import { MdJoinFull, MdModeEditOutline } from "react-icons/md";
@@ -39,6 +39,16 @@ function Header() {
         setLoading(false);
       });
   }, [dispatch]);
+
+  const incomplete_gifts = useMemo(
+    () => gifts.filter((g) => !g.completed),
+    [gifts]
+  );
+
+  const unread_notifications = useMemo(
+    () => notifications.filter((n) => !n.read),
+    [notifications]
+  );
 
   useEffect(() => {
     if (user) {
@@ -89,12 +99,14 @@ function Header() {
                     }}
                     icon={<AiOutlineGift />}
                   />
-                  <div
-                    className="absolute -top-1 font-bold -left-1 bg-red-500 text-white px-[0.3rem] py-[0.1rem] rounded-full"
-                    style={{ fontSize: "0.6rem" }}
-                  >
-                    {gifts.length}
-                  </div>
+                  {incomplete_gifts.length > 0 && (
+                    <div
+                      className="absolute -top-1 font-bold -left-1 bg-red-500 text-white px-[0.3rem] py-[0.1rem] rounded-full"
+                      style={{ fontSize: "0.6rem" }}
+                    >
+                      {incomplete_gifts.length}
+                    </div>
+                  )}
                 </div>
                 <div className="mr-4 flex items-center relative">
                   <Button
@@ -104,12 +116,14 @@ function Header() {
                     }}
                     icon={<IoMdNotificationsOutline />}
                   />
-                  <div
-                    className="absolute -top-1 font-bold -left-1 bg-red-500 text-white px-[0.3rem] py-[0.1rem] rounded-full"
-                    style={{ fontSize: "0.6rem" }}
-                  >
-                    {notifications.length}
-                  </div>
+                  {unread_notifications.length > 0 && (
+                    <div
+                      className="absolute -top-1 font-bold -left-1 bg-red-500 text-white px-[0.3rem] py-[0.1rem] rounded-full"
+                      style={{ fontSize: "0.6rem" }}
+                    >
+                      {unread_notifications.length}
+                    </div>
+                  )}
                 </div>
                 <img
                   src={user.avatar ? user.avatar.url : "/images/noImg.png"}
