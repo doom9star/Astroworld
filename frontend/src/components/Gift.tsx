@@ -33,7 +33,7 @@ function GiftDetail({ g }: Props) {
             if (_g.id === g.id) {
               return { ...g, completed: true };
             }
-            return g;
+            return _g;
           });
           dispatch(setGifts({ gifts: _gifts, replace: true }));
           dispatch(setUser({ ...user!, coins: user!.coins + 10 }));

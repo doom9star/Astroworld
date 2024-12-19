@@ -1,10 +1,11 @@
+import { FaHome } from "react-icons/fa";
 import { HiLogin } from "react-icons/hi";
 import { MdJoinFull } from "react-icons/md";
-import { useNavigate } from "react-router-dom";
 import Button from "../components/Button";
+import { useGlobalState } from "../redux/slices/global";
 
 function Landing() {
-  const navigate = useNavigate();
+  const { user } = useGlobalState();
 
   return (
     <div className="w-[100vw] h-[100vh] flex flex-col justify-center items-center">
@@ -12,22 +13,34 @@ function Landing() {
       <span className="text-4xl">Astroworld</span>
       <span>A universe with many worlds</span>
       <div className="flex items-center my-4">
-        <div className="mr-4">
+        {user ? (
           <Button
-            label="Login"
-            icon={<HiLogin />}
+            label="Home"
+            icon={<FaHome />}
             linkProps={{
-              to: "/auth/login",
+              to: "/home/world",
             }}
           />
-        </div>
-        <Button
-          label="Register"
-          icon={<MdJoinFull />}
-          linkProps={{
-            to: "/auth/register",
-          }}
-        />
+        ) : (
+          <>
+            <div className="mr-4">
+              <Button
+                label="Login"
+                icon={<HiLogin />}
+                linkProps={{
+                  to: "/auth/login",
+                }}
+              />
+            </div>
+            <Button
+              label="Register"
+              icon={<MdJoinFull />}
+              linkProps={{
+                to: "/auth/register",
+              }}
+            />
+          </>
+        )}
       </div>
     </div>
   );

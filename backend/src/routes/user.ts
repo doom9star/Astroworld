@@ -22,8 +22,26 @@ router.get("/avatar", isAuth, async (_: TRequest, res: TResponse) => {
 
 router.put("/", isAuth, async (req: TRequest, res: TResponse) => {
   try {
-    await User.update(req.user!.id, { ...req.body });
+    await User.update(req.user!.id, {
+      ...req.body,
+      ...(req.body.avatar
+        ? { avatar: { id: req.body.avatar } }
+        : { avatar: null }),
+    });
     return res.json({ status: "S" });
+  } catch (error: any) {
+    console.error(error);
+    return res.json({ status: "F", data: error.message });
+  }
+});
+
+router.get("/user/:uid", isAuth, async (req: TRequest, res: TResponse) => {
+  try {
+    const user = await User.findOne({
+      where: { id: req.params.uid },
+      relations: ["avatar"],
+    });
+    return res.json({ status: "S", data: user });
   } catch (error: any) {
     console.error(error);
     return res.json({ status: "F", data: error.message });

@@ -203,7 +203,7 @@ function Notification() {
           }
         });
     }
-  }, [unread_notifications, notifications]);
+  }, [unread_notifications, notifications, dispatch]);
 
   return (
     <Fragment>

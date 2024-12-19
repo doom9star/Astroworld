@@ -6,14 +6,12 @@ import Back from "../../../components/Back";
 import Button from "../../../components/Button";
 import Spinner from "../../../components/Spinner";
 import { cAxios } from "../../../misc/constants";
-import { getExpiryDate } from "../../../misc/utils";
 import {
   setAlert,
   setUser,
   useGlobalState,
 } from "../../../redux/slices/global";
 import { EGender, IFile, TResponse } from "../../../redux/types";
-import { getDate } from "../../../misc/utils";
 
 type AvatarPickerProps = {
   avatars: IFile[];
@@ -38,7 +36,7 @@ function AvatarPicker({
         >
           x
         </span>
-        <div className="grid grid-cols-3">
+        <div className="grid grid-cols-3 overflow-y-scroll">
           {avatars.map((avatar) => (
             <div
               className="flex flex-col items-center justify-center"
@@ -69,7 +67,6 @@ function AvatarPicker({
 type TInfo = {
   name: string;
   avatar: IFile;
-  birthDate: string;
   gender: EGender;
   description: string;
 };
@@ -80,7 +77,6 @@ export default function Edit() {
   const [info, setInfo] = useState<TInfo>({
     name: user?.name || "",
     avatar: user?.avatar || ({} as IFile),
-    birthDate: user?.birthDate ? getDate(user.birthDate, false) : "",
     gender: user?.gender || EGender.MALE,
     description: user?.description || "",
   });
@@ -115,8 +111,12 @@ export default function Edit() {
 
   const onSave = useCallback(() => {
     setSaveLoading(true);
+
     cAxios
-      .put<TResponse>("/user", info)
+      .put<TResponse>("/user", {
+        ...info,
+        avatar: info.avatar ? info.avatar.id : null,
+      })
       .then(({ data }) => {
         if (data.status === "S") {
           dispatch(setUser({ ...user!, ...info }));
@@ -172,20 +172,6 @@ export default function Edit() {
           onChange={onChange}
         />
         {errors.name && <span className="input-error">{errors.name}</span>}
-        <input
-          type={"date"}
-          max={getExpiryDate(-(365 * 10))}
-          placeholder="Birth Date"
-          className={`input ${classNames({
-            "border-red-500": errors.birthDate,
-          })}`}
-          name="birthDate"
-          value={info.birthDate}
-          onChange={onChange}
-        />
-        {errors.birthDate && (
-          <span className="input-error">{errors.birthDate}</span>
-        )}
         <div className="flex justify-between items-center my-2">
           <span className="text-xs border border-gray-300 text-awblack py-2 px-8">
             Gender

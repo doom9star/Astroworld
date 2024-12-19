@@ -28,11 +28,11 @@ const main = async () => {
 
         if (res) {
           let file = await File.findOne({
-            where: { cid: fpath.split(".")[0] + ".avatar" },
+            where: { cid: fpath.split(".")[0] + "-avatar" },
           });
           if (!file) {
             file = new File();
-            file.url = res.secure_url;
+            file.url = res.url;
             file.cid = res.public_id;
             file.type = EFileType.IMAGE;
           }
